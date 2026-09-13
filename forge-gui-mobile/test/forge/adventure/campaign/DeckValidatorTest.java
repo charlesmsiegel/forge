@@ -73,7 +73,8 @@ public class DeckValidatorTest extends AdventureTestBase {
         Deck deck = legalDeck();
         CardPool available = new CardPool();
         PaperCard bolt = card("Lightning Bolt", "M10");
-        available.add(bolt, 2); // one copy short; basics need not be owned
+        available.add(bolt, 2); // one copy short
+        available.add(card("Mountain", "M10"), 37);
         List<String> problems = DeckValidator.problems(deck, available, config());
         assertEquals(problems.size(), 1, problems.toString());
         assertTrue(problems.get(0).contains("Lightning Bolt") && problems.get(0).contains("only 2 available"), problems.get(0));

@@ -88,7 +88,7 @@ public class ExpeditionState implements SaveFileContent {
 
     /**
      * The copies usable right now: (carried + acquired) clamped to what the collection actually
-     * still contains. Ordinary basic lands are always available (Forge treats them as unlimited).
+     * still contains. Basic lands follow the same carried-inventory rule as other cards.
      */
     public CardPool available(CardPool collection) {
         if (!active)
@@ -102,10 +102,6 @@ public class ExpeditionState implements SaveFileContent {
             int usable = Math.min(e.getValue(), owned);
             if (usable > 0)
                 result.add(e.getKey(), usable);
-        }
-        for (Map.Entry<PaperCard, Integer> e : collection) {
-            if (AnteService.isOrdinaryBasicLand(e.getKey()) && result.count(e.getKey()) < e.getValue())
-                result.add(e.getKey(), e.getValue() - result.count(e.getKey()));
         }
         return result;
     }

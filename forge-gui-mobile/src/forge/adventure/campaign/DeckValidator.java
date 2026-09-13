@@ -62,8 +62,6 @@ public final class DeckValidator {
         if (available != null) {
             for (Map.Entry<PaperCard, Integer> e : all) {
                 PaperCard card = e.getKey();
-                if (AnteService.isOrdinaryBasicLand(card))
-                    continue;
                 int owned = available.count(card);
                 if (e.getValue() > owned)
                     problems.add(card.getName() + " (" + card.getEdition() + "): deck uses " + e.getValue()

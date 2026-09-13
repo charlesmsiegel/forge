@@ -30,7 +30,9 @@ public final class CardOwnership {
     public static boolean removeOne(AdventurePlayer player, PaperCard card) {
         CardPool collection = player.getCards();
         int owned = collection.count(card);
-        if (owned < 1)
+        CampaignState state = CampaignState.instance();
+        int available = state.availableCards(player).count(card);
+        if (owned < 1 || available < 1)
             return false;
         int remaining = owned - 1;
         for (int i = 0; i < player.getDeckCount(); i++) {
@@ -39,6 +41,9 @@ public final class CardOwnership {
         if (!collection.remove(card, 1))
             return false;
         CampaignState.instance().onCardsLost(card, 1);
+        // Home copies cannot silently replace a card lost from the expedition deck.
+        if (state.expedition().isActive())
+            trimDeck(player.getSelectedDeck(), card, available - 1);
         return true;
     }
 
