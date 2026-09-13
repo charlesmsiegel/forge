@@ -178,6 +178,12 @@ public class TileMapScene extends HudScene {
         return saved;
     }
 
+    /** Returning from a save/menu is not a new map visit. */
+    public void resumeAfterMenu() {
+        resumingSave = true;
+        Forge.switchScene(this);
+    }
+
     public void resume(MapResumeState saved) {
         PointOfInterest point = null;
         for (PointOfInterest candidate : Current.world().getAllPointOfInterest()) {
