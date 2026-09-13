@@ -57,6 +57,7 @@ public class DialogData implements Serializable {
             public int val;
         }
         public String removeItem;         //Remove item name from inventory.
+        public String removeCard;         //Remove one copy of the named card from the player's collection.
         public String addItem;            //Add item name to inventory.
         public int addLife = 0;           //Gives the player X health. Negative to take.
         public int addGold = 0;           //Gives the player X gold. Negative to take.
@@ -86,6 +87,7 @@ public class DialogData implements Serializable {
 
         public ActionData(ActionData other){
             removeItem = other.removeItem;
+            removeCard = other.removeCard;
             addItem = other.addItem;
             addLife = other.addLife;
             addGold = other.addGold;
@@ -125,6 +127,7 @@ public class DialogData implements Serializable {
             public int val;
         }
         public String item;
+        public String hasCard = null;              //Check for a card (by name) the player can currently use.
         public int actorID = 0;                    //Check for an actor ID.
         public String hasBlessing = null;          //Check for specific blessing, if named.
         public int hasGold = 0;                    //Check for player gold. True if gold is equal or higher than X.

@@ -1062,6 +1062,12 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
         onLifeTotalChangeList.emit();
     }
 
+    /** Sets the current life directly (persistent-life dungeons carry a duel's ending life over). */
+    public void setLife(int newLife) {
+        life = newLife;
+        onLifeTotalChangeList.emit();
+    }
+
     public boolean potionOfFalseLife() {
         if (gold >= falseLifeCost() && life == maxLife) {
             life = maxLife + 2;
@@ -1279,7 +1285,9 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
             return 0;
         }
 
-        int basePrice = (int) (CardUtil.getCardPrice(card) * difficultyData.sellFactor);
+        forge.adventure.campaign.CampaignConfig campaign = forge.adventure.campaign.CampaignConfig.instance();
+        float sellFactor = campaign.isActive() ? campaign.economy.cardSellMultiplier : difficultyData.sellFactor;
+        int basePrice = (int) (CardUtil.getCardPrice(card) * sellFactor);
 
         if (card.isFoil()) {
             basePrice += basePrice * 20 / 100;
