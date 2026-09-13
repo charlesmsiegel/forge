@@ -247,6 +247,33 @@ public class CampaignState implements SaveFileContent {
         return rival.id;
     }
 
+    /** Physical effects may transfer a copy even when its former owner wins the duel. */
+    public String onPhysicalMatchEnd(String rivalId, EnemyData enemy, boolean playerWon,
+                                     AnteService.PhysicalResult result, AnteStake stake) {
+        Rival rival = rivals.byId(rivalId);
+        boolean promoted = false;
+        if (rival == null && !result.lost.isEmpty()) {
+            rival = rivals.promote(enemy, CampaignConfig.instance().rivals, random);
+            promoted = true;
+        }
+        if (rival == null) return null;
+        if (playerWon) rival.playerWins++;
+        else rival.playerLosses++;
+        for (OwnedCard copy : result.lost) rival.addTaken(copy);
+        // Only actual IDs that came back are reclaimed, regardless of match victory.
+        for (OwnedCard copy : result.won)
+            if (rival.removeTaken(copy))
+                CampaignLog.event("card_reclaimed").with("rival", rival.name)
+                        .with("instanceId", copy.id).with("card", copy.card).write();
+        if (!result.lost.isEmpty())
+            CampaignLog.event(promoted ? "rival_created" : "rival_took_cards")
+                    .with("rival", rival.name).with("rivalId", rival.id).with("record", rival.record()).write();
+        if (stake != null && stake.kind == AnteStake.Kind.RECLAMATION)
+            CampaignLog.event("reclamation_result").with("rival", rival.name).with("won", playerWon)
+                    .withCards("target", stake.opponentCards).withCards("risked", stake.playerCards).write();
+        return rival.id;
+    }
+
     @Override
     public void load(SaveFileData data) {
         clear();

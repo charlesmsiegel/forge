@@ -67,6 +67,16 @@ public final class CardOwnership {
         player.addCard(card, 1);
     }
 
+    /** Receive an existing physical copy without passing through ordinary acquisition minting. */
+    public static void addCopy(AdventurePlayer player, OwnedCard copy) {
+        CampaignState state = CampaignState.instance();
+        if (state.ownedCopies(player).stream().anyMatch(c -> c.id.equals(copy.id)))
+            throw new IllegalArgumentException("Already owned physical card: " + copy.id);
+        player.getCards().add(copy.card);
+        player.newCards.add(copy.card);
+        state.receiveCopy(copy);
+    }
+
     /**
      * Moves exactly one copy of the exact printing from one pool to another.
      *

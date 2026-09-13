@@ -15,11 +15,20 @@ public class AnteStake {
     public final Kind kind;
     public final List<PaperCard> playerCards;
     public final List<PaperCard> opponentCards;
+    public final List<String> playerIds;
+    public final List<String> opponentIds;
 
     public AnteStake(Kind kind, List<PaperCard> playerCards, List<PaperCard> opponentCards) {
+        this(kind, playerCards, opponentCards, List.of(), List.of());
+    }
+
+    public AnteStake(Kind kind, List<PaperCard> playerCards, List<PaperCard> opponentCards,
+                     List<String> playerIds, List<String> opponentIds) {
         this.kind = kind;
         this.playerCards = Collections.unmodifiableList(new ArrayList<>(playerCards));
         this.opponentCards = Collections.unmodifiableList(new ArrayList<>(opponentCards));
+        this.playerIds = List.copyOf(playerIds);
+        this.opponentIds = List.copyOf(opponentIds);
     }
 
     public boolean isEmpty() {
