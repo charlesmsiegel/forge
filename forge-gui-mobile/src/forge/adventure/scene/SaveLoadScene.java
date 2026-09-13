@@ -262,10 +262,9 @@ public class SaveLoadScene extends UIScene {
         loaded = true;
         switch (mode) {
             case Save:
-                if (TileMapScene.instance().currentMap().isInMap()) {
+                if (!WorldSave.canSave()) {
                     //Access to screen should be disabled, but stop the process just in case.
-                    //Saving needs to be disabled inside maps until we can capture and load exact map state
-                    //Otherwise location based events for quests can be skipped by saving and then loading outside the map
+                    // Ordinary Forge maps do not have campaign resume snapshots.
                     Dialog noSave = createGenericDialog("", Forge.getLocalizer().getMessage("lblGameNotSaved"), Forge.getLocalizer().getMessage("lblOK"), null, null, null);
                     showDialog(noSave);
                     return;
@@ -344,7 +343,7 @@ public class SaveLoadScene extends UIScene {
 
 
     public void save() {
-        if (!TileMapScene.instance().currentMap().isInMap()) {
+        if (WorldSave.canSave()) {
             if (WorldSave.getCurrentSave().save(textInput.getText() + getSaveFileSuffix(), currentSlot)) {
                 updateFiles();
                 //ensure the dialog is hidden before switching

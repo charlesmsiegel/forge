@@ -34,6 +34,7 @@ import forge.adventure.data.EffectData;
 import forge.adventure.data.PointOfInterestData;
 import forge.adventure.pointofintrest.PointOfInterest;
 import forge.adventure.scene.Scene;
+import forge.adventure.scene.GameScene;
 import forge.adventure.scene.StartScene;
 import forge.adventure.scene.TileMapScene;
 import forge.adventure.util.Config;
@@ -531,7 +532,7 @@ public abstract class GameStage extends Stage {
         }
         if (keycode == Input.Keys.F5)//todo config
         {
-            if (TileMapScene.instance().currentMap().isInMap()) {
+            if (!WorldSave.canSave()) {
                 DialogData noQuicksave = new DialogData();
                 DialogData noQuicksaveOK = new DialogData();
                 noQuicksave.text = Forge.getLocalizer().getMessageorUseDefault("lblQuicksaveOnlyOnWorldMap", "Game not saved. Quicksave is only available on the world map.");
@@ -541,7 +542,7 @@ public abstract class GameStage extends Stage {
                 showDialog();
                 noQuicksaveDialog.activate();
             } else {
-                getPlayerSprite().storePos();
+                WorldStage.getInstance().getPlayerSprite().storePos();
                 WorldSave.requestPreview();
                 WorldSave.getCurrentSave().quickSave();
             }
@@ -549,8 +550,8 @@ public abstract class GameStage extends Stage {
         if (keycode == Input.Keys.F8)//todo config
         {
             if (!TileMapScene.instance().currentMap().isInMap()) {
-                WorldSave.getCurrentSave().quickLoad();
-                enter();
+                if (WorldSave.getCurrentSave().quickLoad())
+                    Forge.switchScene(GameScene.instance());
             }
         }
         if (keycode == Input.Keys.F11) {
