@@ -204,6 +204,7 @@ public class Match {
             final PaperCard cp = stackOfCards.getKey();
             for (int i = 0; i < stackOfCards.getValue(); i++) {
                 final Card card = Card.fromPaperCard(cp, player);
+                player.getGame().registerPhysicalCard(card, null);
 
                 // Assign card-specific foiling or random foiling on approximately 1:20 cards if enabled
                 if (cp.isFoil() || (canRandomFoil && MyRandom.percentTrue(5))) {
@@ -357,11 +358,18 @@ public class Match {
         }
     }
 
+    private static List<GameOutcome.AnteCard> physicalCards(Game game, Iterable<Card> cards) {
+        List<GameOutcome.AnteCard> result = new ArrayList<>();
+        for (Card card : cards) if (card.isCollectible()) result.add(game.getPhysicalCard(card));
+        return result;
+    }
+
     private void executeOwnershipChanges(Game lastGame) {
         GameOutcome outcome = lastGame.getOutcome();
 
         // remove all the lost cards from owners' decks
         List<PaperCard> losses = new ArrayList<>();
+        List<GameOutcome.AnteCard> physicalLosses = new ArrayList<>();
         int cntPlayers = players.size();
         int iWinner = -1;
         for (int i = 0; i < cntPlayers; i++) {
@@ -371,6 +379,10 @@ public class Match {
             // Add/Remove Cards lost via ChangeOwnership cards like Darkpact
             CardCollectionView lostOwnership = gamePlayer.getLostOwnership();
             CardCollectionView gainedOwnership = gamePlayer.getGainedOwnership();
+            if (lastGame.tracksPhysicalCards()) {
+                outcome.addAnteLostPhysical(registered, physicalCards(lastGame, lostOwnership));
+                outcome.addAnteWonPhysical(registered, physicalCards(lastGame, gainedOwnership));
+            }
 
             if (!lostOwnership.isEmpty()) {
                 List<PaperCard> lostPaperOwnership = new ArrayList<>();
@@ -403,6 +415,7 @@ public class Match {
 
             Deck losersDeck = players.get(i).getDeck();
             List<PaperCard> personalLosses = new ArrayList<>();
+            List<GameOutcome.AnteCard> personalPhysicalLosses = new ArrayList<>();
             for (Card c : gamePlayer.getCardsIn(ZoneType.Ante)) {
                 if (!c.isCollectible())
                     continue;
@@ -412,9 +425,15 @@ public class Match {
                 losersDeck.getMain().remove(toRemove);
                 personalLosses.add(toRemove);
                 losses.add(toRemove);
+                if (lastGame.tracksPhysicalCards()) {
+                    GameOutcome.AnteCard physical = lastGame.getPhysicalCard(c);
+                    personalPhysicalLosses.add(physical);
+                    physicalLosses.add(physical);
+                }
             }
 
             outcome.addAnteLost(registered, personalLosses);
+            if (lastGame.tracksPhysicalCards()) outcome.addAnteLostPhysical(registered, personalPhysicalLosses);
         }
 
         if (rules.useAnte() && iWinner >= 0) {
@@ -422,6 +441,7 @@ public class Match {
             Player fromGame = lastGame.getRegisteredPlayers().get(iWinner);
             RegisteredPlayer registered = fromGame.getRegisteredPlayer();
             outcome.addAnteWon(registered, losses);
+            if (lastGame.tracksPhysicalCards()) outcome.addAnteWonPhysical(registered, physicalLosses);
 
             if (rules.getGameType().canAddWonCardsMidGame()) {
                 // But only certain game types lets you swap midgame
@@ -446,6 +466,10 @@ public class Match {
             }
             out.addWon(gameAnte.wonCards);
             out.addLost(gameAnte.lostCards);
+            if (gameAnte.hasPhysicalCards) {
+                out.addWonPhysical(gameAnte.wonPhysicalCards);
+                out.addLostPhysical(gameAnte.lostPhysicalCards);
+            }
         }
         return out;
     }

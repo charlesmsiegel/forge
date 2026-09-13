@@ -5,6 +5,7 @@ import forge.adventure.util.SaveFileData;
 import forge.deck.Deck;
 import forge.item.PaperCard;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
 import java.io.*;
@@ -15,6 +16,7 @@ import static org.testng.Assert.*;
 public class PhysicalIdentityTest extends AdventureTestBase {
     @BeforeMethod
     public void resetCampaign() { CampaignState.setInstance(new CampaignState()); }
+    @AfterMethod public void clearCampaign() { CampaignState.setInstance(new CampaignState()); }
 
     @Test
     public void identicalCopiesHaveStableDistinctIdsAndSaleRetiresOnlyOne() {
