@@ -15,6 +15,7 @@ import forge.adventure.campaign.AnteService;
 import forge.adventure.campaign.AnteStake;
 import forge.adventure.campaign.CampaignConfig;
 import forge.adventure.campaign.CampaignLog;
+import forge.adventure.campaign.CampaignState;
 import forge.adventure.character.EnemySprite;
 import forge.adventure.character.PlayerSprite;
 import forge.adventure.data.*;
@@ -97,9 +98,12 @@ public class DuelScene extends ForgeScene {
     private AnteStake campaignStake;
     private boolean campaignAnteActive;
 
-    /** Pre-set the stake (reclamation ante) before the duel starts; otherwise a normal stake is rolled. */
-    public void setCampaignStake(AnteStake stake) {
+    private EnemySprite campaignStakeEnemy;
+
+    /** Pre-set the stake (reclamation ante) for a duel against {@code forEnemy}; otherwise a normal stake is rolled. */
+    public void setCampaignStake(AnteStake stake, EnemySprite forEnemy) {
         this.campaignStake = stake;
+        this.campaignStakeEnemy = forEnemy;
     }
 
     public AnteStake getCampaignStake() {
@@ -175,6 +179,10 @@ public class DuelScene extends ForgeScene {
         String enemyName = enemy.getName();
         String insult = enemy.getBossInsult();
         if (CampaignConfig.instance().isActive() && eventData == null) {
+            String rivalId = CampaignState.instance().onMatchEnd(enemy.campaignRivalId, enemy.getData(), winner,
+                    anteWonCards, anteLostCards, campaignStake);
+            if (rivalId != null)
+                enemy.campaignRivalId = rivalId;
             CampaignLog.event("match")
                     .with("enemy", enemyName)
                     .with("enemyTemplate", enemy.getData().name)
@@ -440,8 +448,9 @@ public class DuelScene extends ForgeScene {
         AdventurePlayer advPlayer = Current.player();
         CampaignConfig campaign = CampaignConfig.instance();
         campaignAnteActive = campaign.isActive() && campaign.ante.enabled && eventData == null && !isArena && !chaosBattle;
-        if (!campaignAnteActive)
-            campaignStake = null;
+        if (!campaignAnteActive || campaignStakeEnemy != enemy)
+            campaignStake = null; // a pre-set stake only applies to the enemy it was rolled for
+        campaignStakeEnemy = null;
 
         List<RegisteredPlayer> players = new ArrayList<>();
 

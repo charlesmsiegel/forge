@@ -23,7 +23,10 @@ import com.github.tommyettinger.textra.TextraButton;
 import com.github.tommyettinger.textra.TypingAdapter;
 import com.github.tommyettinger.textra.TypingLabel;
 import forge.Forge;
+import forge.adventure.campaign.CampaignState;
 import forge.adventure.campaign.DeckRepairGate;
+import forge.adventure.campaign.Rival;
+import forge.adventure.campaign.RivalEncounter;
 import forge.adventure.character.*;
 import forge.adventure.data.*;
 import forge.adventure.player.AdventurePlayer;
@@ -570,6 +573,24 @@ public class MapStage extends GameStage {
                             addMapActor(obj, mob);
                         }
                         break;
+                    case "rival": { //Shandalar Reborn: the n-th persistent rival stands here (if it exists).
+                        int slot = prop.containsKey("slot") ? Integer.parseInt(prop.get("slot").toString()) : 0;
+                        Rival rival = CampaignState.instance().rivals().atSlot(slot);
+                        if (rival == null) break;
+                        EnemyData base = WorldData.getEnemy(rival.baseEnemyName);
+                        if (base == null) {
+                            System.err.printf("Rival %s: base enemy \"%s\" not found\n", rival.name, rival.baseEnemyName);
+                            break;
+                        }
+                        EnemyData rivalData = new EnemyData(base);
+                        rivalData.nameOverride = rival.name;
+                        EnemySprite rivalMob = new EnemySprite(id, rivalData);
+                        rivalMob.campaignRivalId = rival.id;
+                        rivalMob.nameOverride = rival.name;
+                        enemies.add(rivalMob);
+                        addMapActor(obj, rivalMob);
+                        break;
+                    }
                     case "dummy": //Does nothing. Mostly obstacles to be removed by ID by switches or such.
                         TiledMapTileMapObject obj2 = (TiledMapTileMapObject) obj;
                         DummySprite D = new DummySprite(id, obj2.getTextureRegion(), this);
@@ -1101,7 +1122,9 @@ public class MapStage extends GameStage {
                     EnemySprite mob = (EnemySprite) actor;
                     currentMob = mob;
                     resetPosition();
-                    if (mob.dialog != null && mob.dialog.canShow()) { //This enemy has something to say. Display a dialog like if it was a DialogActor but only if dialogue is possible.
+                    if (mob.campaignRivalId != null) { //Shandalar Reborn rival: offer normal duel / reclamation / leave.
+                        RivalEncounter.start(this, mob);
+                    } else if (mob.dialog != null && mob.dialog.canShow()) { //This enemy has something to say. Display a dialog like if it was a DialogActor but only if dialogue is possible.
                         mob.dialog.activate();
                     } else { //Duel the enemy.
                         beginDuel(mob);

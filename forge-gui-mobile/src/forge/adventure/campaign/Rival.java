@@ -1,0 +1,97 @@
+package forge.adventure.campaign;
+
+import com.google.common.collect.Lists;
+import forge.adventure.util.SaveFileContent;
+import forge.adventure.util.SaveFileData;
+import forge.deck.CardPool;
+import forge.item.PaperCard;
+
+import java.util.List;
+
+/**
+ * A formerly generic opponent that won a card from the player and therefore became a persistent
+ * NPC (MVP.md §16). Keeps the exact printings it took so they can be reclaimed (§17).
+ */
+public class Rival implements SaveFileContent {
+    public String id = "";
+    public String name = "";
+    /** Name of the enemy template (world/enemies.json) this rival was promoted from. */
+    public String baseEnemyName = "";
+    public int playerWins;
+    public int playerLosses;
+    public long createdAt;
+    private final CardPool cardsTakenFromPlayer = new CardPool();
+
+    public Rival() {
+    }
+
+    public Rival(String id, String name, String baseEnemyName) {
+        this.id = id;
+        this.name = name;
+        this.baseEnemyName = baseEnemyName;
+        this.createdAt = System.currentTimeMillis();
+    }
+
+    /** Exact printings this rival personally won from the player, one entry per copy. */
+    public List<PaperCard> getCardsTakenFromPlayer() {
+        return cardsTakenFromPlayer.toFlatList();
+    }
+
+    public CardPool getTakenPool() {
+        return cardsTakenFromPlayer;
+    }
+
+    public void addTaken(PaperCard card) {
+        cardsTakenFromPlayer.add(card, 1);
+    }
+
+    /** @return true if one copy was removed (the player reclaimed it). */
+    public boolean removeTaken(PaperCard card) {
+        if (cardsTakenFromPlayer.count(card) < 1)
+            return false;
+        return cardsTakenFromPlayer.remove(card, 1);
+    }
+
+    public boolean hasTaken(PaperCard card) {
+        return cardsTakenFromPlayer.count(card) > 0;
+    }
+
+    public String record() {
+        return playerWins + "-" + playerLosses;
+    }
+
+    @Override
+    public void load(SaveFileData data) {
+        id = data.readString("id");
+        name = data.readString("name");
+        baseEnemyName = data.readString("baseEnemyName");
+        playerWins = data.readInt("playerWins");
+        playerLosses = data.readInt("playerLosses");
+        createdAt = data.containsKey("createdAt") ? data.readLong("createdAt") : 0;
+        cardsTakenFromPlayer.clear();
+        if (data.containsKey("cardsTaken")) {
+            String[] lines = (String[]) data.readObject("cardsTaken");
+            if (lines != null)
+                cardsTakenFromPlayer.addAll(CardPool.fromCardList(Lists.newArrayList(lines)));
+        }
+    }
+
+    @Override
+    public SaveFileData save() {
+        SaveFileData data = new SaveFileData();
+        data.store("id", id);
+        data.store("name", name);
+        data.store("baseEnemyName", baseEnemyName);
+        data.store("playerWins", playerWins);
+        data.store("playerLosses", playerLosses);
+        data.store("createdAt", createdAt);
+        String list = cardsTakenFromPlayer.toCardList("\n");
+        data.storeObject("cardsTaken", list.isEmpty() ? new String[0] : list.split("\n"));
+        return data;
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + baseEnemyName + ", " + record() + ")";
+    }
+}

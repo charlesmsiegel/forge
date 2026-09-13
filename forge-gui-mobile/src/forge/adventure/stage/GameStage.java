@@ -165,6 +165,31 @@ public abstract class GameStage extends Stage {
     }
 
     /**
+     * Generic vertical multi-choice dialog (campaign prompts). Each label gets one button;
+     * the matching action runs after the dialog is hidden.
+     */
+    public void showOptionsDialog(String message, java.util.List<String> labels, java.util.List<Runnable> actions) {
+        dialog.getContentTable().clear();
+        dialog.getButtonTable().clear();
+        dialog.clearListeners();
+        TypingLabel L = Controls.newTypingLabel(message);
+        L.setWrap(true);
+        L.skipToTheEnd();
+        dialog.getContentTable().add(L).width(260f);
+        for (int i = 0; i < labels.size(); i++) {
+            final Runnable action = i < actions.size() ? actions.get(i) : null;
+            dialog.getButtonTable().add(Controls.newTextButton(labels.get(i), () -> {
+                hideDialog();
+                if (action != null)
+                    action.run();
+            })).width(240f).row();
+        }
+        dialog.setKeepWithinStage(true);
+        setDialogStage(GameHUD.getInstance());
+        showDialog();
+    }
+
+    /**
      * Generic two-button dialog (campaign prompts). {@code cancelLabel} may be null for a
      * single-button dialog. Both callbacks run after the dialog is hidden.
      */
