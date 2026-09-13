@@ -39,6 +39,7 @@ public class RegisteredPlayer {
     private Integer id = null;
     private boolean randomFoil = false;
     private boolean enableETBCountersEffect = false;
+    private List<PaperCard> anteCards = null;
 
     public RegisteredPlayer(Deck deck0) {
         originalDeck = deck0;
@@ -80,6 +81,20 @@ public class RegisteredPlayer {
     public final Iterable<? extends IPaperCard> getCardsOnBattlefield() {
         return extraCardsOnBattlefield == null ? EmptyList : extraCardsOnBattlefield;
     }
+    /**
+     * Cards this player antes when the match is played for ante, chosen by the caller instead of
+     * randomly by the engine (e.g. a campaign that stakes cards from outside the main deck).
+     * Cards not found in the library are added to it before being moved to the ante zone.
+     *
+     * @return null when the engine should pick the ante randomly.
+     */
+    public final List<PaperCard> getAnteCards() {
+        return anteCards;
+    }
+    public final void setAnteCards(List<PaperCard> anteCards) {
+        this.anteCards = anteCards == null ? null : Lists.newArrayList(anteCards);
+    }
+
     public final Iterable<? extends IPaperCard> getExtraCardsInCommandZone() {
         return extraCardsInCommandZone == null ? EmptyList : extraCardsInCommandZone;
     }

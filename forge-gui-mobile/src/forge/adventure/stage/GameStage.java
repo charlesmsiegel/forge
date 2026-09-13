@@ -164,6 +164,35 @@ public abstract class GameStage extends Stage {
         showDialog();
     }
 
+    /**
+     * Generic two-button dialog (campaign prompts). {@code cancelLabel} may be null for a
+     * single-button dialog. Both callbacks run after the dialog is hidden.
+     */
+    public void showChoiceDialog(String message, String okLabel, Runnable onOk, String cancelLabel, Runnable onCancel) {
+        dialog.getContentTable().clear();
+        dialog.getButtonTable().clear();
+        dialog.clearListeners();
+        TypingLabel L = Controls.newTypingLabel(message);
+        L.setWrap(true);
+        L.skipToTheEnd();
+        dialog.getContentTable().add(L).width(250f);
+        dialog.getButtonTable().add(Controls.newTextButton(okLabel, () -> {
+            hideDialog();
+            if (onOk != null)
+                onOk.run();
+        })).width(cancelLabel == null ? 240f : 118f);
+        if (cancelLabel != null) {
+            dialog.getButtonTable().add(Controls.newTextButton(cancelLabel, () -> {
+                hideDialog();
+                if (onCancel != null)
+                    onCancel.run();
+            })).width(118f);
+        }
+        dialog.setKeepWithinStage(true);
+        setDialogStage(GameHUD.getInstance());
+        showDialog();
+    }
+
     public void showImageDialog(String message, FBufferedImage fb, Runnable runnable) {
         dialog.getContentTable().clear();
         dialog.getButtonTable().clear();

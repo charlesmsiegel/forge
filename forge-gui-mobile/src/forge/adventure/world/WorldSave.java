@@ -3,6 +3,7 @@ package forge.adventure.world;
 import com.badlogic.gdx.Gdx;
 import forge.Forge;
 import forge.OverlayText;
+import forge.adventure.campaign.CampaignState;
 import forge.adventure.data.DifficultyData;
 import forge.adventure.player.AdventurePlayer;
 import forge.adventure.pointofintrest.PointOfInterest;
@@ -79,6 +80,7 @@ public class WorldSave {
                     currentSave.world.load(mainData.readSubData("world"));
                     currentSave.pointOfInterestChanges.load(mainData.readSubData("pointOfInterestChanges"));
                     WorldStage.getInstance().load(mainData.readSubData("worldStage"));
+                    CampaignState.instance().load(mainData.containsKey("campaign") ? mainData.readSubData("campaign") : null);
 
                 } catch (Exception e) {
                     System.err.println("Generating New World");
@@ -133,6 +135,7 @@ public class WorldSave {
     public static WorldSave generateNewWorld(String name, boolean male, int race, int avatarIndex, ColorSet startingColorIdentity, DifficultyData diff, AdventureModes mode, int customDeckIndex, CardEdition starterEdition, long seed) {
         currentSave.world.generateNew(seed);
         currentSave.pointOfInterestChanges.clear();
+        CampaignState.setInstance(new CampaignState());
         boolean chaos = mode == AdventureModes.Chaos;
         boolean custom = mode == AdventureModes.Custom;
 
@@ -176,8 +179,9 @@ public class WorldSave {
                 SaveFileData world = currentSave.world.save();
                 SaveFileData worldStage = WorldStage.getInstance().save();
                 SaveFileData poiChanges = currentSave.pointOfInterestChanges.save();
+                SaveFileData campaign = CampaignState.instance().save();
 
-                String message = getExceptionMessage(player, world, worldStage, poiChanges);
+                String message = getExceptionMessage(player, world, worldStage, poiChanges, campaign);
                 if (!message.isEmpty()) {
                     oos.close();
                     fos.close();
@@ -191,6 +195,7 @@ public class WorldSave {
                 mainData.store("world", world);
                 mainData.store("worldStage", worldStage);
                 mainData.store("pointOfInterestChanges", poiChanges);
+                mainData.store("campaign", campaign);
 
                 if (mainData.readString("IOException") != null) {
                     oos.close();
