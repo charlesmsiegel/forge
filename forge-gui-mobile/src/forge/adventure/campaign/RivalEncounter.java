@@ -91,14 +91,14 @@ public final class RivalEncounter {
     }
 
     private static void chooseCard(MapStage stage, EnemySprite mob, Rival rival, int index) {
-        List<PaperCard> taken = rival.getCardsTakenFromPlayer();
+        List<OwnedCard> taken = rival.getTakenCopies();
         if (taken.isEmpty()) {
             start(stage, mob);
             return;
         }
         index = Math.floorMod(index, taken.size());
-        PaperCard card = taken.get(index);
-        String message = "Reclaim [GOLD]" + DuelScene.describeAll(List.of(card)) + "[WHITE]?\n"
+        OwnedCard card = taken.get(index);
+        String message = "Reclaim [GOLD]" + DuelScene.describeAll(List.of(card.card)) + "[WHITE]?\n"
                 + "(" + (index + 1) + " of " + taken.size() + ")\nYou will risk "
                 + CampaignConfig.instance().ante.reclamationRiskCount + " random cards from your deck and sideboard.";
         List<String> labels = new ArrayList<>();
@@ -115,7 +115,7 @@ public final class RivalEncounter {
         stage.showOptionsDialog(message, labels, actions);
     }
 
-    private static void confirmStake(MapStage stage, EnemySprite mob, Rival rival, PaperCard card) {
+    private static void confirmStake(MapStage stage, EnemySprite mob, Rival rival, OwnedCard card) {
         CampaignConfig.AnteRules rules = CampaignConfig.instance().ante;
         AnteStake stake = AnteService.reclamationStake(Current.player().getSelectedDeck(), card, rules, MyRandom.getRandom());
         if (stake.playerCards.size() < rules.reclamationRiskCount) {
