@@ -64,6 +64,38 @@ public class ExpeditionStateTest extends AdventureTestBase {
     }
 
     @Test
+    public void basicLandsLeftAtHomeCannotBeUsedInAnExpedition() {
+        AdventurePlayer player = playerWithHomeCollection();
+        PaperCard island = card("Island", "M10");
+        player.addCard(island, 20);
+        state.enterExpedition("stronghold", player);
+        assertEquals(state.availableCards(player).count(island), 0);
+        player.getSelectedDeck().getMain().add(island, 1);
+        assertFalse(DeckValidator.isValid(player.getSelectedDeck(), state.availableCards(player),
+                CampaignConfig.instance()), "a saved deck cannot import home lands either");
+    }
+
+    @Test
+    public void losingACarriedCopyTrimsTheDeckEvenWhenAnotherCopyIsAtHome() {
+        AdventurePlayer player = playerWithHomeCollection();
+        PaperCard bolt = card("Lightning Bolt", "M10");
+        state.enterExpedition("stronghold", player);
+        assertTrue(CardOwnership.removeOne(player, bolt));
+        assertEquals(player.getSelectedDeck().getMain().count(bolt), 2);
+        assertEquals(player.getSelectedDeck().getMain().countAll(), 39);
+        assertEquals(player.getCards().count(bolt), 3, "home copy remains owned");
+    }
+
+    @Test
+    public void lossCannotConsumeAHomeOnlyCopy() {
+        AdventurePlayer player = playerWithHomeCollection();
+        PaperCard wrath = card("Wrath of God", "7ED");
+        state.enterExpedition("stronghold", player);
+        assertFalse(CardOwnership.removeOne(player, wrath));
+        assertEquals(player.getCards().count(wrath), 2);
+    }
+
+    @Test
     public void cardsAcquiredDuringTheExpeditionBecomeAvailable() {
         AdventurePlayer player = playerWithHomeCollection();
         PaperCard queen = card("Sliver Queen", "STH");
