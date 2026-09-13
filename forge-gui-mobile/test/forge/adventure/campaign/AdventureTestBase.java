@@ -39,6 +39,7 @@ public abstract class AdventureTestBase {
             return null;
         });
         CampaignConfig.setInstance(CampaignConfig.load(PLANE_DIR + "campaign.json"));
+        CampaignLog.setPath(System.getProperty("java.io.tmpdir") + "/shandalar-reborn-test-telemetry.jsonl");
         initialized = true;
     }
 

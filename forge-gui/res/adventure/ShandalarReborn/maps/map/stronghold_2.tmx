@@ -34,15 +34,10 @@
   </data>
  </layer>
  <objectgroup id="4" name="Objects">
-  <object id="38" template="../../../common/maps/obj/entry_up.tx" x="217.032" y="271.777">
-   <properties>
-    <property name="teleport" value="maps/map/stronghold_1.tmx"/>
-   </properties>
-  </object>
   <object id="303" template="../../../common/maps/obj/portal.tx" x="217" y="235">
    <properties>
     <property name="teleport" value="maps/map/stronghold_1.tmx"/>
-    <property name="direction" value="down"/>
+    <property name="direction" value="up"/>
     <property name="portalState" value="active"/>
    </properties>
   </object>

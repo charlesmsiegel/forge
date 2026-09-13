@@ -168,8 +168,8 @@ public class GameHUD extends Stage {
         lifePoints.setText("[%95][+Life]");
         expeditionLabel = Controls.newTypingLabel("");
         expeditionLabel.skipToTheEnd();
-        expeditionLabel.setPosition(4, 4);
-        hudGroup.addActor(expeditionLabel);
+        expeditionLabel.setPosition(8, 150);
+        ui.addActor(expeditionLabel);
         enemyCounterText = Controls.newTypingLabel(Forge.getLocalizer().getMessage("lblRemainingEnemies", String.valueOf(0)));
         enemyCounterText.setColor(Color.BLACK);
         enemyCounterText.skipToTheEnd();

@@ -31,7 +31,7 @@
  </layer>
  <objectgroup id="4" name="Objects">
   <object id="38" template="../../../common/maps/obj/entry_up.tx" x="217.032" y="271.777"></object>
-  <object id="300" template="../../../common/maps/obj/portal.tx" type="expeditionGate" x="217" y="150">
+  <object id="300" template="../../../common/maps/obj/portal.tx" type="expeditionGate" x="217" y="232">
    <properties>
     <property name="mode" value="enter"/>
     <property name="region" value="stronghold"/>
