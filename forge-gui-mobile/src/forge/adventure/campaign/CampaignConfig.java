@@ -64,6 +64,10 @@ public class CampaignConfig implements Serializable {
     }
 
     public static class StrongholdRules implements Serializable {
+        /** Region id used by expedition gates and completesRegion tags. */
+        public String region = "stronghold";
+        /** Plane-relative maps whose per-map state is reset when the expedition ends. */
+        public String[] maps = new String[0];
         public String[] editions = new String[]{"STH"};
         public String boosterEdition = "STH";
         public int firstClearBoxBoosterCount = 36;

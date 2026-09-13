@@ -1,0 +1,347 @@
+[
+  {
+    "name": "Mogg Raider",
+    "sprite": "sprites/enemy/humanoid/goblin/goblin.atlas",
+    "deck": [
+      "decks/stronghold/mogg_raiders.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "STH"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "R",
+    "questTags": [
+      "Stronghold",
+      "Historical"
+    ]
+  },
+  {
+    "name": "Spike Shepherd",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/stronghold/spike_grove.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 14,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "STH"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "G",
+    "questTags": [
+      "Stronghold",
+      "Historical"
+    ]
+  },
+  {
+    "name": "Kor Vanguard",
+    "sprite": "sprites/enemy/humanoid/kor/kor_blue.atlas",
+    "deck": [
+      "decks/stronghold/kor_vanguard.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 14,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "STH"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "W",
+    "questTags": [
+      "Stronghold",
+      "Historical"
+    ]
+  },
+  {
+    "name": "Thalakos Mystic",
+    "sprite": "sprites/enemy/humanoid/human/wizard/blue_wiz2.atlas",
+    "deck": [
+      "decks/stronghold/thalakos_tempo.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "STH"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "U",
+    "questTags": [
+      "Stronghold",
+      "Historical"
+    ]
+  },
+  {
+    "name": "Dauthi Cultist",
+    "sprite": "sprites/enemy/humanoid/human/wizard/black_wiz2.atlas",
+    "deck": [
+      "decks/stronghold/dauthi_pact.dck",
+      "decks/stronghold/mind_games.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 14,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "STH"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "UB",
+    "questTags": [
+      "Stronghold",
+      "Historical"
+    ]
+  },
+  {
+    "name": "Flowstone Brute",
+    "sprite": "sprites/enemy/giant/ascendedtitan.atlas",
+    "deck": [
+      "decks/stronghold/flowstone_fury.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 16,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "STH"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      },
+      {
+        "type": "card",
+        "probability": 1,
+        "count": 1,
+        "editions": [
+          "STH"
+        ],
+        "rarity": [
+          "Rare"
+        ]
+      }
+    ],
+    "colors": "R",
+    "questTags": [
+      "Stronghold",
+      "Historical"
+    ]
+  },
+  {
+    "name": "Sliver Broodmother",
+    "sprite": "sprites/enemy/aberration/sliver_queen.atlas",
+    "deck": [
+      "decks/stronghold/sliver_hive.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": true,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 0,
+    "life": 20,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 100,
+        "addMaxCount": 100
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "STH"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      },
+      {
+        "type": "card",
+        "probability": 1,
+        "count": 1,
+        "editions": [
+          "STH"
+        ],
+        "rarity": [
+          "Rare"
+        ]
+      }
+    ],
+    "colors": "WUBRG",
+    "questTags": [
+      "Stronghold",
+      "Historical"
+    ]
+  }
+]

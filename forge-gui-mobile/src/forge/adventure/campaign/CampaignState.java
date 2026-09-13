@@ -8,7 +8,14 @@ import forge.deck.CardPool;
 import forge.item.PaperCard;
 import forge.util.MyRandom;
 
+import forge.adventure.pointofintrest.PointOfInterestChanges;
+import forge.adventure.world.WorldSave;
+import forge.deck.Deck;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -23,6 +30,7 @@ public class CampaignState implements SaveFileContent {
 
     private final RivalRegistry rivals = new RivalRegistry();
     private final ExpeditionState expedition = new ExpeditionState();
+    private final Map<String, Integer> completions = new HashMap<>();
     private Random random = MyRandom.getRandom();
 
     public static CampaignState instance() {
@@ -37,6 +45,7 @@ public class CampaignState implements SaveFileContent {
     public void clear() {
         rivals.load(null);
         expedition.leave();
+        completions.clear();
     }
 
     /** Deterministic randomness for tests. */
@@ -60,7 +69,12 @@ public class CampaignState implements SaveFileContent {
 
     /** Leave home with the active deck + sideboard as the only usable cards. */
     public void enterExpedition(String regionId, AdventurePlayer player) {
+        enterExpedition(regionId, player, "");
+    }
+
+    public void enterExpedition(String regionId, AdventurePlayer player, String rootPoiId) {
         expedition.enter(regionId, player.getSelectedDeck());
+        expedition.setRootPoiId(rootPoiId);
         CampaignLog.event("expedition_enter").with("region", regionId)
                 .with("carried", expedition.getCarried().countAll()).write();
     }
@@ -71,7 +85,63 @@ public class CampaignState implements SaveFileContent {
             return;
         CampaignLog.event("expedition_leave").with("region", expedition.getRegionId()).with("reason", reason)
                 .with("acquired", expedition.getAcquired().countAll()).write();
+        resetRegionMaps(expedition.getRegionId(), expedition.getRootPoiId());
         expedition.leave();
+    }
+
+    /** Any exit from a map to the world ends an active expedition (retreat, defeat, HUD exit). */
+    public void onExitToWorld(String reason) {
+        leaveExpedition(reason);
+    }
+
+    /** Forgets defeated enemies / map flags of the region's maps so the next run starts fresh. */
+    public void resetRegionMaps(String regionId, String rootPoiId) {
+        if (regionId == null || regionId.isEmpty() || rootPoiId == null || rootPoiId.isEmpty())
+            return;
+        try {
+            for (String map : regionMaps(regionId)) {
+                PointOfInterestChanges changes = WorldSave.getCurrentSave().getPointOfInterestChanges(rootPoiId + map);
+                changes.clearDeletedObjects();
+                changes.getMapFlags().clear();
+            }
+        } catch (Throwable t) {
+            System.err.println("Could not reset region maps for " + regionId + ": " + t);
+        }
+    }
+
+    private static String[] regionMaps(String regionId) {
+        CampaignConfig config = CampaignConfig.instance();
+        if (regionId.equals(config.stronghold.region))
+            return config.stronghold.maps;
+        return new String[0];
+    }
+
+    public int completions(String regionId) {
+        return completions.getOrDefault(regionId, 0);
+    }
+
+    /**
+     * The region's final encounter was won: count the completion and hand out sealed product
+     * (first clear: a booster box; later clears: loose boosters). Packs go to the player's
+     * unopened-booster inventory to be opened one at a time.
+     *
+     * @return the packs granted
+     */
+    public List<Deck> onRegionCompleted(String regionId, AdventurePlayer player) {
+        int count = completions(regionId) + 1;
+        completions.put(regionId, count);
+        CampaignConfig config = CampaignConfig.instance();
+        List<Deck> packs = new ArrayList<>();
+        if (regionId.equals(config.stronghold.region)) {
+            boolean first = count == 1;
+            int packCount = first ? config.stronghold.firstClearBoxBoosterCount : config.stronghold.repeatClearBoosterCount;
+            packs = RegionCompletion.createBoosters(config.stronghold.boosterEdition, packCount, first ? "Box" : null);
+        }
+        for (Deck pack : packs)
+            player.addBooster(pack);
+        CampaignLog.event("region_completed").with("region", regionId).with("completion", count)
+                .with("packs", packs.size()).write();
+        return packs;
     }
 
     /** Called whenever copies enter the permanent collection (rewards, packs, purchases, ante wins). */
@@ -139,6 +209,12 @@ public class CampaignState implements SaveFileContent {
             rivals.load(data.readSubData("rivals"));
         if (data.containsKey("expedition"))
             expedition.load(data.readSubData("expedition"));
+        if (data.containsKey("completionKeys")) {
+            String[] keys = (String[]) data.readObject("completionKeys");
+            Integer[] values = (Integer[]) data.readObject("completionValues");
+            for (int i = 0; i < keys.length && i < values.length; i++)
+                completions.put(keys[i], values[i]);
+        }
     }
 
     @Override
@@ -147,6 +223,8 @@ public class CampaignState implements SaveFileContent {
         data.store("version", SAVE_VERSION);
         data.store("rivals", rivals.save());
         data.store("expedition", expedition.save());
+        data.storeObject("completionKeys", completions.keySet().toArray(new String[0]));
+        data.storeObject("completionValues", completions.values().toArray(new Integer[0]));
         return data;
     }
 }

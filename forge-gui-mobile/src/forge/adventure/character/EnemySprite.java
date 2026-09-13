@@ -88,6 +88,8 @@ public class EnemySprite extends CharacterSprite implements Steerable<Vector2> {
     public String questStageID;
     /** Shandalar Reborn: id of the persistent rival this sprite represents, or null for a generic enemy. */
     public String campaignRivalId;
+    /** Shandalar Reborn: defeating this enemy completes the named region (Tiled property completesRegion). */
+    public String completesRegion;
     private ProgressableGraphPath<NavigationVertex> navPath;
     public Vector2 fleeTarget;
 
