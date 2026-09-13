@@ -25,6 +25,7 @@ public class ExpeditionState implements SaveFileContent {
     private boolean active;
     private String regionId = "";
     private String rootPoiId = "";
+    private long startedAtMillis;
     private final CardPool carried = new CardPool();
     private final CardPool acquired = new CardPool();
     private final Set<String> carriedIds = new LinkedHashSet<>();
@@ -73,6 +74,11 @@ public class ExpeditionState implements SaveFileContent {
         return active;
     }
 
+    /** Wall-clock run duration, including time between saves; unknown for legacy saves. */
+    public long elapsedMillis() {
+        return !active || startedAtMillis == 0 ? 0 : Math.max(0, System.currentTimeMillis() - startedAtMillis);
+    }
+
     public String getRegionId() {
         return regionId;
     }
@@ -97,6 +103,7 @@ public class ExpeditionState implements SaveFileContent {
     /** Starts an expedition: the active deck's main deck and sideboard are the carried pool. */
     public void enter(String regionId, Deck activeDeck) {
         this.active = true;
+        startedAtMillis = System.currentTimeMillis();
         this.regionId = regionId == null ? "" : regionId;
         carried.clear();
         acquired.clear();
@@ -111,6 +118,7 @@ public class ExpeditionState implements SaveFileContent {
     /** Ends the expedition: every surviving card is simply part of the permanent collection again. */
     public void leave() {
         active = false;
+        startedAtMillis = 0;
         regionId = "";
         rootPoiId = "";
         carried.clear();
@@ -164,6 +172,7 @@ public class ExpeditionState implements SaveFileContent {
         if (data == null || !data.containsKey("active"))
             return;
         active = data.readBool("active");
+        startedAtMillis = data.containsKey("startedAtMillis") ? data.readLong("startedAtMillis") : 0;
         regionId = data.containsKey("regionId") ? data.readString("regionId") : "";
         if (regionId == null)
             regionId = "";
@@ -195,6 +204,7 @@ public class ExpeditionState implements SaveFileContent {
     public SaveFileData save() {
         SaveFileData data = new SaveFileData();
         data.store("active", active);
+        data.store("startedAtMillis", startedAtMillis);
         data.store("regionId", regionId);
         data.store("rootPoiId", rootPoiId);
         data.storeObject("carried", writePool(carried));
