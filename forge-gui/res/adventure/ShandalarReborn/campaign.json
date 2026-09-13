@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "campaignId": "shandalar-reborn-mvp",
+  "player": {
+    "startingLife": 12,
+    "ordinaryCopyLimit": 3,
+    "restrictedCopyLimit": 1,
+    "minDeckSize": 40
+  },
+  "cards": {
+    "restrictedCards": [
+      "Black Lotus", "Mox Emerald", "Mox Pearl", "Mox Ruby", "Mox Sapphire", "Mox Jet",
+      "Ancestral Recall", "Timetwister", "Time Walk", "Sol Ring", "Mana Crypt", "Mana Vault",
+      "Tolarian Academy", "Yawgmoth's Bargain", "Library of Alexandria", "Bazaar of Baghdad",
+      "Demonic Tutor", "Vampiric Tutor", "Tinker", "Time Vault", "Fastbond", "Mishra's Workshop"
+    ],
+    "bannedCards": []
+  },
+  "ante": {
+    "enabled": true,
+    "excludeBasicLands": true,
+    "playerAnteCount": 1,
+    "opponentAnteCount": 1,
+    "reclamationRiskCount": 3
+  },
+  "economy": {
+    "cardSellMultiplier": 0.5,
+    "shopPriceMultiplier": 1.0,
+    "boosterPriceMultiplier": 1.0
+  },
+  "stronghold": {
+    "editions": ["STH"],
+    "boosterEdition": "STH",
+    "firstClearBoxBoosterCount": 36,
+    "repeatClearBoosterCount": 6
+  },
+  "dungeon": {
+    "persistentLifeMapKeyword": "persistentLife"
+  }
+}
