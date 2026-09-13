@@ -22,6 +22,7 @@ public class CampaignState implements SaveFileContent {
     private static CampaignState current = new CampaignState();
 
     private final RivalRegistry rivals = new RivalRegistry();
+    private final ExpeditionState expedition = new ExpeditionState();
     private Random random = MyRandom.getRandom();
 
     public static CampaignState instance() {
@@ -35,6 +36,7 @@ public class CampaignState implements SaveFileContent {
 
     public void clear() {
         rivals.load(null);
+        expedition.leave();
     }
 
     /** Deterministic randomness for tests. */
@@ -46,9 +48,40 @@ public class CampaignState implements SaveFileContent {
         return rivals;
     }
 
-    /** The cards the player may currently use for deck building. Filtered during expeditions (M4). */
+    public ExpeditionState expedition() {
+        return expedition;
+    }
+
+    /** The cards the player may currently use for deck building: the whole collection at home,
+     *  only carried + acquired copies during an expedition (MVP.md 12). */
     public CardPool availableCards(AdventurePlayer player) {
-        return player.getCards();
+        return expedition.available(player.getCards());
+    }
+
+    /** Leave home with the active deck + sideboard as the only usable cards. */
+    public void enterExpedition(String regionId, AdventurePlayer player) {
+        expedition.enter(regionId, player.getSelectedDeck());
+        CampaignLog.event("expedition_enter").with("region", regionId)
+                .with("carried", expedition.getCarried().countAll()).write();
+    }
+
+    /** Return home: the full surviving permanent collection becomes usable again. */
+    public void leaveExpedition(String reason) {
+        if (!expedition.isActive())
+            return;
+        CampaignLog.event("expedition_leave").with("region", expedition.getRegionId()).with("reason", reason)
+                .with("acquired", expedition.getAcquired().countAll()).write();
+        expedition.leave();
+    }
+
+    /** Called whenever copies enter the permanent collection (rewards, packs, purchases, ante wins). */
+    public void onCardsAcquired(PaperCard card, int amount) {
+        expedition.onAcquired(card, amount);
+    }
+
+    /** Called whenever copies leave the permanent collection (ante losses, sales). */
+    public void onCardsLost(PaperCard card, int amount) {
+        expedition.onLost(card, amount);
     }
 
     /**
@@ -104,6 +137,8 @@ public class CampaignState implements SaveFileContent {
             return;
         if (data.containsKey("rivals"))
             rivals.load(data.readSubData("rivals"));
+        if (data.containsKey("expedition"))
+            expedition.load(data.readSubData("expedition"));
     }
 
     @Override
@@ -111,6 +146,7 @@ public class CampaignState implements SaveFileContent {
         SaveFileData data = new SaveFileData();
         data.store("version", SAVE_VERSION);
         data.store("rivals", rivals.save());
+        data.store("expedition", expedition.save());
         return data;
     }
 }

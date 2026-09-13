@@ -9,6 +9,7 @@ import com.github.tommyettinger.textra.TextraLabel;
 import com.google.common.collect.Lists;
 
 import forge.Forge;
+import forge.adventure.campaign.CampaignState;
 import forge.adventure.data.*;
 import forge.adventure.pointofintrest.PointOfInterestChanges;
 import forge.adventure.scene.AdventureDeckEditor;
@@ -965,11 +966,14 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
     public void addCard(PaperCard card, int amount) {
         cards.add(card, amount);
         newCards.add(card, amount);
+        CampaignState.instance().onCardsAcquired(card, amount);
     }
 
     public void addCards(ItemPool<PaperCard> cardPool) {
         cards.addAll(cardPool);
         newCards.addAll(cardPool);
+        for (Map.Entry<PaperCard, Integer> e : cardPool)
+            CampaignState.instance().onCardsAcquired(e.getKey(), e.getValue());
     }
 
     public void addReward(Reward reward) {
@@ -977,6 +981,7 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
             case Card:
                 cards.add(reward.getCard());
                 newCards.add(reward.getCard());
+                CampaignState.instance().onCardsAcquired(reward.getCard(), 1);
                 if (reward.isAutoSell()) {
                     autoSellCards.add(reward.getCard());
                     refreshEditor();
@@ -1321,6 +1326,7 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
         int amountToSell = Math.min(amount, cards.count(card));
         if(!cards.remove(card, amountToSell))
             return 0; //Failed to sell?
+        CampaignState.instance().onCardsLost(card, amountToSell);
         return cardSellPrice(card) * amountToSell;
     }
 
@@ -1610,7 +1616,8 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
      */
     public ItemPool<PaperCard> getSellableCards() {
         ItemPool<PaperCard> sellableCards = new ItemPool<>(PaperCard.class);
-        sellableCards.addAllFlat(cards.toFlatList());
+        // During an expedition only the copies carried/acquired can be sold (Shandalar Reborn).
+        sellableCards.addAllFlat(CampaignState.instance().availableCards(this).toFlatList());
 
         // Nosell cards used to be filtered out here. Instead we're going to replace their value with 0
 

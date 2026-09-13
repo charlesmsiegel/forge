@@ -36,7 +36,10 @@ public final class CardOwnership {
         for (int i = 0; i < player.getDeckCount(); i++) {
             trimDeck(player.getDeck(i), card, remaining);
         }
-        return collection.remove(card, 1);
+        if (!collection.remove(card, 1))
+            return false;
+        CampaignState.instance().onCardsLost(card, 1);
+        return true;
     }
 
     /** Adds one copy of the exact printing to the player's permanent collection. */
