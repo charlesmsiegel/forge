@@ -185,4 +185,19 @@ public class ExpeditionStateTest extends AdventureTestBase {
         assertEquals(available.count(wrath), 0, "home collection still hidden after load");
         assertEquals(available.count(card("Lightning Bolt", "M10")), 3);
     }
+
+    @Test
+    public void expeditionStartTimeSurvivesSerializedResumeAndLegacyStartsUnknown() throws Exception {
+        ExpeditionState run = new ExpeditionState();
+        long before = System.currentTimeMillis();
+        run.enter("stronghold", new Deck());
+        SaveFileData saved = PhysicalIdentityTest.roundTrip(run.save());
+        long started = saved.readLong("startedAtMillis");
+        assertTrue(started >= before && started <= System.currentTimeMillis());
+        ExpeditionState resumed = new ExpeditionState(); resumed.load(saved);
+        assertEquals(resumed.save().readLong("startedAtMillis"), started);
+        saved.remove("startedAtMillis");
+        resumed.load(saved);
+        assertEquals(resumed.save().readLong("startedAtMillis"), 0L);
+    }
 }
