@@ -47,6 +47,12 @@
     "boosterPriceMultiplier": 1.0
   },
   "stronghold": {
+    "region": "stronghold",
+    "maps": [
+      "maps/map/stronghold_1.tmx",
+      "maps/map/stronghold_2.tmx",
+      "maps/map/stronghold_gate.tmx"
+    ],
     "editions": [
       "STH"
     ],

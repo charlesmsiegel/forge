@@ -72,6 +72,7 @@ public class GameHUD extends Stage {
     private final Image avatar, miniMapPlayer;
     private final TypingLabel keyCollection;
     private final TypingLabel lifePoints;
+    private final TypingLabel expeditionLabel;
     private final TypingLabel money;
     private final TypingLabel shards;
     private final TypingLabel enemyCounterText;
@@ -165,6 +166,10 @@ public class GameHUD extends Stage {
         shards.setText("[%95][+Shards]");
         money.setText("[%95][+Gold]");
         lifePoints.setText("[%95][+Life]");
+        expeditionLabel = Controls.newTypingLabel("");
+        expeditionLabel.skipToTheEnd();
+        expeditionLabel.setPosition(4, 4);
+        hudGroup.addActor(expeditionLabel);
         enemyCounterText = Controls.newTypingLabel(Forge.getLocalizer().getMessage("lblRemainingEnemies", String.valueOf(0)));
         enemyCounterText.setColor(Color.BLACK);
         enemyCounterText.skipToTheEnd();
@@ -668,8 +673,26 @@ public class GameHUD extends Stage {
         SoundSystem.instance.fadeModifier(value);
     }
 
+    private boolean expeditionShown = false;
+
+    private void updateExpeditionLabel() {
+        boolean active = forge.adventure.campaign.CampaignState.instance().expedition().isActive();
+        if (active == expeditionShown && !active)
+            return;
+        if (active) {
+            String region = forge.adventure.campaign.CampaignState.instance().expedition().getRegionId();
+            String text = "[RED]EXPEDITION: " + region.toUpperCase() + "[WHITE] only carried cards usable";
+            if (!text.equals(expeditionLabel.getOriginalText()))
+                expeditionLabel.restart(text);
+        } else {
+            expeditionLabel.restart("");
+        }
+        expeditionShown = active;
+    }
+
     @Override
     public void act(float delta) {
+        updateExpeditionLabel();
         super.act(delta);
 
         updateBGM();

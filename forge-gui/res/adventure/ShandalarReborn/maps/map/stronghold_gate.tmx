@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="80">
+ <editorsettings>
+  <export target="wastetown..tmx" format="tmx"/>
+ </editorsettings>
+ <tileset firstgid="1" source="../../../common/maps/tileset/main.tsx"/>
+ <tileset firstgid="10113" source="../../../common/maps/tileset/buildings.tsx"/>
+ <tileset firstgid="11905" source="../../../common/maps/tileset/dungeon.tsx"/>
+ <layer id="1" name="Background" width="30" height="17">
+  <data encoding="base64" compression="zlib">
+   eJwL42RgCBvFo5jOOA4NYxPDpoaadpKCB8peSuweCHuHol+pEbcgQOv0S4p/aZFnR/HwwQDYMMBE
+  </data>
+ </layer>
+ <layer id="2" name="Ground" width="30" height="17">
+  <data encoding="base64" compression="zlib">
+   eJzVk00OgjAQhbuE9hgeQjFsReMNPJrxZ2sEryOoW6N4DDuhL5axSlrcOMkLpNX3zWuHLBYi81AeCVEYHSK//4b609pNP1HXuM3Of9DLjPkXjMn3sM978c3qYnTVUgpxVkKspP899GFeNHOkNdbaaZ9H4Pl+yoNMLia4c88zvmvto+95SIlyr4M76TlTqJR5E9fFBDdkvsC152RoPNf6vdTPSr33gv3KnIXPWdNcgUdZFnHT/1G9eCha28hGpXm39324lDU1POjkmKWuCplnyrGVbTYpUd28kKyY59qRGfc2sNiUqTa/t78B36ycj7vDvdn+3Bv9kkKZ3Iv7Ezvk++yrafy/3CdWVrhX
+  </data>
+ </layer>
+ <layer id="3" name="Foreground" width="30" height="17">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFyOAnFrHdNgwMe2zoY/8fJPZvoJ1/0OyNQWI/5qTMrs1QehsO+eUcDAwrgHglB4T9nBPCjqbMWgyzQUAUSQ7krzVA8WdA+gUQrwKyn3LidicpANlsmH+wybtxQtSgy1MCXDkh5oKwO5a480KS96AwbsWR2CA/PUHyN3K4w+wFhTFIzVMK7MWlF1eYemEJYzHyrccKYGEOS0PI7qE0fvGlR5AdqzkwwwRmN6XxSw54TGH8wgAszGBlAgxsodzoUUAnAAB51T3h
+  </data>
+ </layer>
+ <layer id="6" name="Clutter" width="30" height="17">
+  <properties>
+   <property name="spriteLayer" type="bool" value="true"/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFhMAeWwaGvbYDY/ffAbJ3FIyCoQaMgXnFBIhN6ZxnioH2lQBx6WheHQVDBAAA29EGlA==
+  </data>
+ </layer>
+ <objectgroup id="4" name="Objects">
+  <object id="38" template="../../../common/maps/obj/entry_up.tx" x="217.032" y="271.777"></object>
+  <object id="300" template="../../../common/maps/obj/portal.tx" type="expeditionGate" x="217" y="150">
+   <properties>
+    <property name="mode" value="enter"/>
+    <property name="region" value="stronghold"/>
+    <property name="teleport" value="maps/map/stronghold_1.tmx"/>
+    <property name="direction" value="down"/>
+    <property name="portalState" value="active"/>
+   </properties>
+  </object>
+  <object id="67" template="../../../common/maps/obj/waypoint.tx" x="230.472" y="130.16"/>
+  <object id="68" template="../../../common/maps/obj/waypoint.tx" x="255.88" y="196.858"/>
+  <object id="69" template="../../../common/maps/obj/waypoint.tx" x="298.228" y="213.003"/>
+  <object id="70" template="../../../common/maps/obj/waypoint.tx" x="328.401" y="214.591"/>
+  <object id="71" template="../../../common/maps/obj/waypoint.tx" x="334.224" y="76.6958"/>
+  <object id="72" template="../../../common/maps/obj/waypoint.tx" x="257.733" y="61.874"/>
+  <object id="73" template="../../../common/maps/obj/waypoint.tx" x="104.487" y="84.636"/>
+  <object id="74" template="../../../common/maps/obj/waypoint.tx" x="82.7832" y="200.563"/>
+  <object id="75" template="../../../common/maps/obj/waypoint.tx" x="170.126" y="171.184"/>
+  <object id="76" template="../../../common/maps/obj/waypoint.tx" x="164.303" y="83.3126"/>
+  <object id="77" template="../../../common/maps/obj/waypoint.tx" x="134.395" y="226.236"/>
+ </objectgroup>
+</map>

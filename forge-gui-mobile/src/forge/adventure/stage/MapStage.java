@@ -24,6 +24,7 @@ import com.github.tommyettinger.textra.TypingAdapter;
 import com.github.tommyettinger.textra.TypingLabel;
 import forge.Forge;
 import forge.adventure.campaign.CampaignState;
+import forge.adventure.campaign.ExpeditionGateActor;
 import forge.adventure.campaign.DeckRepairGate;
 import forge.adventure.campaign.Rival;
 import forge.adventure.campaign.RivalEncounter;
@@ -470,6 +471,24 @@ public class MapStage extends GameStage {
                         }
                         addMapActor(obj, portal);
                         break;
+                    case "expeditionGate": { //Shandalar Reborn: enter/retreat portal of a historical region.
+                        float gx = Float.parseFloat(prop.get("x").toString());
+                        float gy = Float.parseFloat(prop.get("y").toString());
+                        float gw = Float.parseFloat(prop.get("width").toString());
+                        float gh = Float.parseFloat(prop.get("height").toString());
+                        String gateSprite = prop.get("sprite") == null || prop.get("sprite").toString().isEmpty() ? "sprites/portal.atlas" : prop.get("sprite").toString();
+                        String gateTarget = prop.get("teleport") == null ? "" : prop.get("teleport").toString();
+                        int gateTargetId = (!prop.containsKey("teleportObjectId") || prop.get("teleportObjectId") == null || prop.get("teleportObjectId").toString().isEmpty()) ? 0 : Integer.parseInt(prop.get("teleportObjectId").toString());
+                        String gateDirection = prop.get("direction") == null ? "down" : prop.get("direction").toString();
+                        boolean gateSpawnPoint = (gateTarget.isEmpty() && sourceMap.isEmpty()) || (!sourceMap.isEmpty() && gateTarget.equals(sourceMap));
+                        ExpeditionGateActor gate = new ExpeditionGateActor(this, id, gateTarget, gx, gy, gw, gh, gateDirection, currentMap, gateTargetId, gateSprite,
+                                prop.get("mode") == null ? "enter" : prop.get("mode").toString(),
+                                prop.get("region") == null ? "" : prop.get("region").toString());
+                        if (gateSpawnPoint) sourceMapMatch.add(gate);
+                        else otherEntries.add(gate);
+                        addMapActor(obj, gate);
+                        break;
+                    }
                     case "reward":
                         if (!canSpawn(prop)) break;
                         Object R = prop.get("reward");
@@ -521,6 +540,10 @@ public class MapStage extends GameStage {
                             dialogObject = prop.get("reward"); //Check for additional rewards.
                             if (dialogObject != null && !dialogObject.toString().isEmpty()) {
                                 mob.rewards = JSONStringLoader.parse(RewardData[].class, dialogObject.toString(), "[]");
+                            }
+                            dialogObject = prop.get("completesRegion"); //Shandalar Reborn: final encounter of a region.
+                            if (dialogObject != null && !dialogObject.toString().isEmpty()) {
+                                mob.completesRegion = dialogObject.toString();
                             }
                             if (prop.containsKey("threatRange")) //Check for threat range.
                             {
@@ -786,6 +809,7 @@ public class MapStage extends GameStage {
     }
 
     public boolean exitDungeon(boolean defeated, boolean defeatedByBoss) {
+        CampaignState.instance().onExitToWorld(defeated ? "defeated" : (defeatedByBoss ? "lost_to_boss" : "exit"));
         if (mustClearOnExit) {
             mustClearOnExit = false;
 
@@ -1008,9 +1032,30 @@ public class MapStage extends GameStage {
         return null;
     }
 
+    /** Shown once the map is back on screen (after a reward scene); campaign announcements. */
+    private String pendingCampaignMessage;
+
+    public void showPendingCampaignMessage() {
+        if (pendingCampaignMessage == null)
+            return;
+        String message = pendingCampaignMessage;
+        pendingCampaignMessage = null;
+        showChoiceDialog(message, "OK", null, null, null);
+    }
+
     protected void getReward() {
         isLoadingMatch = false;
-        RewardScene.instance().loadRewards(currentMob.getRewards(), RewardScene.Type.Loot, null);
+        Array<Reward> rewards = currentMob.getRewards();
+        if (currentMob.completesRegion != null && !currentMob.completesRegion.isEmpty()) {
+            java.util.List<forge.deck.Deck> packs = CampaignState.instance().onRegionCompleted(currentMob.completesRegion, Current.player());
+            int completion = CampaignState.instance().completions(currentMob.completesRegion);
+            pendingCampaignMessage = "[GOLD]" + Character.toUpperCase(currentMob.completesRegion.charAt(0)) + currentMob.completesRegion.substring(1)
+                    + " completed![WHITE] (clear #" + completion + ")\n"
+                    + (packs.isEmpty() ? "" : packs.size() + " unopened " + packs.get(0).getComment()
+                    + " booster" + (packs.size() == 1 ? "" : "s") + " added to your inventory. Open them one at a time from the Inventory screen.\n")
+                    + "Use the exit portal or the map exit to return to Shandalar; this region resets when you leave.";
+        }
+        RewardScene.instance().loadRewards(rewards, RewardScene.Type.Loot, null);
         Forge.switchScene(RewardScene.instance());
         if (currentMob.defeatDialog == null) {
             currentMob.remove();

@@ -47,5 +47,21 @@
       "RivalCamp",
       "BiomeColorless"
     ]
+  },
+  {
+    "name": "Stronghold Gate",
+    "displayName": "Stronghold",
+    "type": "dungeon",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "MageTower",
+    "map": "../ShandalarReborn/maps/map/stronghold_gate.tmx",
+    "radiusFactor": 0.6,
+    "questTags": [
+      "Hostile",
+      "Stronghold",
+      "Expedition",
+      "BiomeColorless"
+    ]
   }
 ]

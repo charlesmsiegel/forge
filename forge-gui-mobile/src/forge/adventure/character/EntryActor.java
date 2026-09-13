@@ -9,14 +9,14 @@ import forge.adventure.stage.MapStage;
  */
 public class EntryActor extends MapActor{
     final MapStage stage;
-    String targetMap;
+    protected String targetMap;
     float x;
     float y;
     float w;
     float h;
     String direction;
-    String currentMap;
-    int entryTargetObject;
+    protected String currentMap;
+    protected int entryTargetObject;
 
     public EntryActor(MapStage stage, int id,String targetMap,float x,float y,float w,float h,String direction, String currentMap, int entryTargetObject)
     {
