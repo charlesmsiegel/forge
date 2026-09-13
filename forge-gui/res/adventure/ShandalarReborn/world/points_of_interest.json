@@ -32,5 +32,20 @@
       "BiomeColorless",
       "Sidequest"
     ]
+  },
+  {
+    "name": "Rival Camp",
+    "displayName": "Rivals' Camp",
+    "type": "dungeon",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "BarbarianCamp",
+    "map": "../ShandalarReborn/maps/map/rival_camp.tmx",
+    "radiusFactor": 0.5,
+    "questTags": [
+      "Hostile",
+      "RivalCamp",
+      "BiomeColorless"
+    ]
   }
 ]
