@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Align;
 import forge.Forge;
 import forge.Graphics;
 import forge.adventure.data.AdventureEventData;
+import forge.adventure.campaign.CampaignState;
 import forge.adventure.data.ItemData;
 import forge.adventure.player.AdventurePlayer;
 import forge.adventure.util.AdventureEventController;
@@ -96,7 +97,8 @@ public class AdventureDeckEditor extends FDeckEditor {
         @Override
         public ItemPool<PaperCard> getCardPool() {
             ItemPool<PaperCard> pool = new ItemPool<>(PaperCard.class);
-            pool.addAll(Current.player().getCards());
+            // Shandalar Reborn: during an expedition only carried + acquired copies are usable.
+            pool.addAll(CampaignState.instance().availableCards(Current.player()));
             return pool;
         }
 
