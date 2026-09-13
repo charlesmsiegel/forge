@@ -125,6 +125,7 @@ public class CampaignState implements SaveFileContent {
         if (!expedition.isActive())
             return;
         CampaignLog.event("expedition_leave").with("region", expedition.getRegionId()).with("reason", reason)
+                .with("elapsedMillis", expedition.elapsedMillis())
                 .with("acquired", expedition.getAcquired().countAll()).write();
         resetRegionMaps(expedition.getRegionId(), expedition.getRootPoiId());
         expedition.leave();
@@ -181,6 +182,7 @@ public class CampaignState implements SaveFileContent {
         for (Deck pack : packs)
             player.addBooster(pack);
         CampaignLog.event("region_completed").with("region", regionId).with("completion", count)
+                .with("elapsedMillis", expedition.elapsedMillis())
                 .with("packs", packs.size()).write();
         return packs;
     }
