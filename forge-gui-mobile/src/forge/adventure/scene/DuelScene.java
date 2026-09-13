@@ -87,6 +87,7 @@ public class DuelScene extends ForgeScene {
     RegisteredPlayer humanPlayer;
     private EffectData dungeonEffect;
     Deck playerDeck;
+    private List<PaperCard> campaignDeckBefore = List.of();
     boolean chaosBattle = false;
     boolean callbackExit = false;
     boolean arenaBattleChallenge = false;
@@ -254,6 +255,8 @@ public class DuelScene extends ForgeScene {
                     .withCards("opponentStake", campaignStake == null ? List.of() : campaignStake.opponentCards)
                     .withCards("cardsWon", anteWonCards)
                     .withCards("cardsLost", anteLostCards)
+                    .withCards("deckBefore", campaignDeckBefore)
+                    .withCards("deckAfter", Current.player().getSelectedDeck().getMain().toFlatList())
                     .with("lifeAfter", Current.player().getLife())
                     .write();
         }
@@ -959,6 +962,7 @@ public class DuelScene extends ForgeScene {
             this.playerDeck = (Deck) eventData.registeredDeck.copyTo("EventDeckCopy");
         else
             this.playerDeck = (Deck) Current.player().getSelectedDeck().copyTo("PlayerDeckCopy");
+        campaignDeckBefore = new ArrayList<>(this.playerDeck.getMain().toFlatList());
         this.chaosBattle = this.enemy.getData().copyPlayerDeck && Current.player().isFantasyMode();
         this.AIExtras.clear();
         this.playerExtras.clear();
