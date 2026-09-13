@@ -60,6 +60,20 @@ public class DeckValidatorTest extends AdventureTestBase {
     }
 
     @Test
+    public void premiumBasicLandsHaveTheSameCopyRulesAsOtherBasics() {
+        Deck deck = deckOf(card("Mountain", "M10").getFoiled(), 40);
+        assertTrue(DeckValidator.isValid(deck, deck.getMain(), config()),
+                "printing treatment does not turn basic lands into three-copy cards");
+    }
+
+    @Test
+    public void explicitCampaignBansAlsoApplyToBasicLands() {
+        CampaignConfig rules = config();
+        rules.cards.bannedCards = new String[]{"Mountain"};
+        assertFalse(DeckValidator.isValid(deckOf(card("Mountain", "M10"), 40), null, rules));
+    }
+
+    @Test
     public void restrictedAndBannedCardsAreEnforced() {
         Deck deck = deckOf(card("Demonic Tutor", "3ED"), 2, card("Chaos Orb", "3ED"), 1, card("Swamp", "M10"), 37);
         List<String> problems = DeckValidator.problems(deck, null, config());
