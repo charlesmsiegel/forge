@@ -4,12 +4,15 @@ import forge.Forge;
 import com.badlogic.gdx.Gdx;
 import forge.OverlayText;
 import forge.adventure.campaign.CampaignState;
+import forge.adventure.campaign.CampaignConfig;
+import forge.adventure.campaign.MapResumeState;
 import forge.adventure.data.DifficultyData;
 import forge.adventure.player.AdventurePlayer;
 import forge.adventure.pointofintrest.PointOfInterest;
 import forge.adventure.pointofintrest.PointOfInterestChanges;
 import forge.adventure.scene.MapViewScene;
 import forge.adventure.scene.SaveLoadScene;
+import forge.adventure.scene.TileMapScene;
 import forge.adventure.stage.PointOfInterestMapSprite;
 import forge.adventure.stage.WorldStage;
 import forge.adventure.util.AdventureModes;
@@ -40,6 +43,18 @@ public class WorldSave {
     private final AdventurePlayer player = new AdventurePlayer();
     private final World world = new World();
     private final PointOfInterestChanges.Map pointOfInterestChanges = new PointOfInterestChanges.Map();
+    private MapResumeState pendingMapResume;
+
+    /** Campaign maps have an explicit resume snapshot; ordinary Forge maps retain their policy. */
+    public static boolean canSave() {
+        return !TileMapScene.instance().currentMap().isInMap() || CampaignConfig.instance().isActive();
+    }
+
+    public MapResumeState takeMapResume() {
+        MapResumeState result = pendingMapResume;
+        pendingMapResume = null;
+        return result;
+    }
 
 
     private final SignalList onLoadList = new SignalList();
@@ -63,9 +78,8 @@ public class WorldSave {
     }
 
     static public boolean load(int currentSlot) {
-
+        currentSave.pendingMapResume = null;
         Forge.getLocalizer().loadAdventureBundle(Config.instance().getPlanePath(Config.instance().getSettingData().plane) + "languages/");
-
         Forge.invokeWorldSave = true; // This is for dispose method check
         String fileName = WorldSave.getSaveFile(currentSlot);
         if (!new File(fileName).exists())
@@ -84,6 +98,13 @@ public class WorldSave {
                     currentSave.pointOfInterestChanges.load(mainData.readSubData("pointOfInterestChanges"));
                     WorldStage.getInstance().load(mainData.readSubData("worldStage"));
                     CampaignState.instance().load(mainData.containsKey("campaign") ? mainData.readSubData("campaign") : null);
+                    CampaignState.instance().initializeOwnership(currentSave.player);
+                    if (mainData.containsKey("mapResume")) {
+                        MapResumeState resume = new MapResumeState();
+                        resume.load(mainData.readSubData("mapResume"));
+                        if (resume.isActive())
+                            currentSave.pendingMapResume = resume;
+                    }
 
                 } catch (Exception e) {
                     System.err.println("Generating New World");
@@ -140,6 +161,7 @@ public class WorldSave {
         currentSave.world.generateNew(seed);
         currentSave.pointOfInterestChanges.clear();
         CampaignState.setInstance(new CampaignState());
+        currentSave.pendingMapResume = null;
         boolean chaos = mode == AdventureModes.Chaos;
         boolean custom = mode == AdventureModes.Custom;
 
@@ -165,6 +187,8 @@ public class WorldSave {
     }
 
     public boolean save(String text, int currentSlot) {
+        if (!canSave())
+            return false;
         header.name = text;
 
         String fileName = WorldSave.getSaveFile(currentSlot);
@@ -183,6 +207,7 @@ public class WorldSave {
                 SaveFileData world = currentSave.world.save();
                 SaveFileData worldStage = WorldStage.getInstance().save();
                 SaveFileData poiChanges = currentSave.pointOfInterestChanges.save();
+                CampaignState.instance().initializeOwnership(currentSave.player);
                 SaveFileData campaign = CampaignState.instance().save();
 
                 String message = getExceptionMessage(player, world, worldStage, poiChanges, campaign);
@@ -200,6 +225,8 @@ public class WorldSave {
                 mainData.store("worldStage", worldStage);
                 mainData.store("pointOfInterestChanges", poiChanges);
                 mainData.store("campaign", campaign);
+                if (CampaignConfig.instance().isActive() && TileMapScene.instance().currentMap().isInMap())
+                    mainData.store("mapResume", TileMapScene.instance().captureResumeState().save());
 
                 if (mainData.readString("IOException") != null) {
                     oos.close();
@@ -262,6 +289,8 @@ public class WorldSave {
     }
 
     public void clearChanges() {
+        pendingMapResume = null;
+        CampaignState.instance().leaveExpedition("new_game_plus");
         pointOfInterestChanges.clear();
     }
 

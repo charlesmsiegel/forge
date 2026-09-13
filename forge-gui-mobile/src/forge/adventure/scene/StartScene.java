@@ -69,7 +69,7 @@ public class StartScene extends UIScene {
     }
 
     public boolean Save() {
-        if (TileMapScene.instance().currentMap().isInMap()) {
+        if (!WorldSave.canSave()) {
             Dialog noSave = createGenericDialog("", Forge.getLocalizer().getMessage("lblGameNotSaved"), Forge.getLocalizer().getMessage("lblOK"),null, null, null);
             showDialog(noSave);
         } else {
@@ -250,10 +250,10 @@ public class StartScene extends UIScene {
         boolean hasSaveButton = WorldSave.getCurrentSave().getWorld().getData() != null;
         if (hasSaveButton) {
             TileMapScene scene = TileMapScene.instance();
-            hasSaveButton = !scene.currentMap().isInMap() || scene.isAutoHealLocation();
+            hasSaveButton = WorldSave.canSave() || scene.isAutoHealLocation();
         }
         saveButton.setVisible(hasSaveButton);
-        saveButton.setDisabled(TileMapScene.instance().currentMap().isInMap());
+        saveButton.setDisabled(!WorldSave.canSave());
         updateResumeContinue();
 
         FSkinTexture.invalidateAdventureTextures();
