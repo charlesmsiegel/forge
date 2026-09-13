@@ -48,12 +48,12 @@ public final class DeckValidator {
             String name = e.getKey();
             int count = e.getValue();
             PaperCard sample = firstByName(all, name);
-            if (sample != null && AnteService.isOrdinaryBasicLand(sample))
-                continue; // ordinary basic lands are unlimited
             if (config.cards.isBanned(name)) {
                 problems.add(name + " is banned in this campaign.");
                 continue;
             }
+            if (sample != null && sample.getRules().getType().isBasicLand())
+                continue; // Copy rules follow the card type, not the foil/ante exemption.
             int limit = config.cards.isRestricted(name) ? config.player.restrictedCopyLimit : config.player.ordinaryCopyLimit;
             if (count > limit)
                 problems.add(name + ": " + count + " copies, limit " + limit + (config.cards.isRestricted(name) ? " (restricted)." : "."));
