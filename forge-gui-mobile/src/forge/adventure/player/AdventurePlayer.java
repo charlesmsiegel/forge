@@ -1125,7 +1125,11 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
     }
 
     public void takeGold(int price) {
+        int before = gold;
         gold -= price;
+        if (forge.adventure.campaign.CampaignConfig.instance().isActive())
+            forge.adventure.campaign.CampaignLog.event("gold_changed").with("before", before)
+                    .with("after", gold).with("delta", gold - before).write();
         onGoldChangeList.emit();
         //play sfx
         SoundSystem.instance.play(SoundEffectType.CoinsDrop, false);
@@ -1309,7 +1313,7 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
         if (amount == null || amount < 1)
             return 0;
 
-        int amountToSell = Math.min(amount, cards.count(card));
+        int amountToSell = Math.min(amount, CampaignState.instance().availableCards(this).count(card));
         int earned = performSale(card, amountToSell);
 
         if(earned > 0)
@@ -1336,10 +1340,15 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
      */
     private int performSale(PaperCard card, int amount) {
         int amountToSell = Math.min(amount, CampaignState.instance().availableCards(this).count(card));
+        if (amountToSell <= 0) return 0;
         if(!cards.remove(card, amountToSell))
             return 0; //Failed to sell?
         CampaignState.instance().onCardsLost(card, amountToSell);
-        return cardSellPrice(card) * amountToSell;
+        int proceeds = cardSellPrice(card) * amountToSell;
+        if (forge.adventure.campaign.CampaignConfig.instance().isActive())
+            forge.adventure.campaign.CampaignLog.event("card_sold").with("card", card)
+                    .with("count", amountToSell).with("gold", proceeds).write();
+        return proceeds;
     }
 
     public void removeItem(String name) {
