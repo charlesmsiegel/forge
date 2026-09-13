@@ -1,5 +1,8 @@
 package forge.adventure.scene;
 
+import forge.adventure.campaign.CampaignConfig;
+import forge.adventure.campaign.CampaignLog;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -295,6 +298,12 @@ public class InventoryScene extends UIScene {
         RewardScene.instance().loadRewards(data, RewardScene.Type.Loot, null, data.getTags().contains("noSell"));
         Forge.switchScene(RewardScene.instance());
         Current.player().getBoostersOwned().removeValue(data, true);
+        if (CampaignConfig.instance().isActive()) {
+            java.util.List<forge.item.PaperCard> cards = data.getMain().toFlatList();
+            CampaignLog.event("pack_opened").with("name", data.getName()).with("edition", data.getComment())
+                    .withCards("cards", cards)
+                    .with("rarities", cards.stream().map(card -> card.getRarity().toString()).toList()).write();
+        }
     }
 
     private void use() {

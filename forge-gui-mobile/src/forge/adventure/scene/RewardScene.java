@@ -1,5 +1,8 @@
 package forge.adventure.scene;
 
+import forge.adventure.campaign.CampaignConfig;
+import forge.adventure.campaign.CampaignLog;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.Controllers;
@@ -640,6 +643,13 @@ public class RewardScene extends UIScene {
 
                         Current.player().takeGold(price);
                         Current.player().addReward(rewardActor.getReward());
+                        if (CampaignConfig.instance().isActive()) {
+                            Reward purchased = rewardActor.getReward();
+                            CampaignLog.event("purchase").with("type", purchased.getType().toString())
+                                    .with("card", purchased.getCard())
+                                    .with("pack", purchased.getDeck() == null ? null : purchased.getDeck().getName())
+                                    .with("goldSpent", price).with("goldAfter", Current.player().getGold()).write();
+                        }
 
                         HapticEngine.vibrate(FPref.UI_VIBRATE_ON_SHOP_ACTION, 5);
                         SoundSystem.instance.play(SoundEffectType.FlipCoin, false);
