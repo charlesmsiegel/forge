@@ -19,6 +19,7 @@ import java.util.Map;
 public class ExpeditionState implements SaveFileContent {
     private boolean active;
     private String regionId = "";
+    private String rootPoiId = "";
     private final CardPool carried = new CardPool();
     private final CardPool acquired = new CardPool();
 
@@ -28,6 +29,15 @@ public class ExpeditionState implements SaveFileContent {
 
     public String getRegionId() {
         return regionId;
+    }
+
+    /** Id of the point of interest whose sub-maps form the region (for resetting them). */
+    public String getRootPoiId() {
+        return rootPoiId;
+    }
+
+    public void setRootPoiId(String rootPoiId) {
+        this.rootPoiId = rootPoiId == null ? "" : rootPoiId;
     }
 
     public CardPool getCarried() {
@@ -53,6 +63,7 @@ public class ExpeditionState implements SaveFileContent {
     public void leave() {
         active = false;
         regionId = "";
+        rootPoiId = "";
         carried.clear();
         acquired.clear();
     }
@@ -108,6 +119,9 @@ public class ExpeditionState implements SaveFileContent {
         regionId = data.containsKey("regionId") ? data.readString("regionId") : "";
         if (regionId == null)
             regionId = "";
+        rootPoiId = data.containsKey("rootPoiId") ? data.readString("rootPoiId") : "";
+        if (rootPoiId == null)
+            rootPoiId = "";
         carried.addAll(readPool(data, "carried"));
         acquired.addAll(readPool(data, "acquired"));
     }
@@ -129,6 +143,7 @@ public class ExpeditionState implements SaveFileContent {
         SaveFileData data = new SaveFileData();
         data.store("active", active);
         data.store("regionId", regionId);
+        data.store("rootPoiId", rootPoiId);
         data.storeObject("carried", writePool(carried));
         data.storeObject("acquired", writePool(acquired));
         return data;

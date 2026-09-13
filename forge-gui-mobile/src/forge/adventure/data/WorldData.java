@@ -61,6 +61,14 @@ public class WorldData implements Serializable {
                 Array readList =  json.fromJson(Array.class, EnemyData.class, handle);
                 allEnemies = readList;
             }
+            // Planes may add enemies without copying the whole common list.
+            FileHandle extra = Config.instance().getFile("world/enemies_extra.json");
+            if (extra != null && extra.exists()) {
+                Array<EnemyData> more = json.fromJson(Array.class, EnemyData.class, extra);
+                if (allEnemies == null)
+                    allEnemies = new Array<>();
+                allEnemies.addAll(more);
+            }
         }
         return allEnemies;
     }
