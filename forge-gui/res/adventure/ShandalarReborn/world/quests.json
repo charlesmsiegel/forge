@@ -58,7 +58,7 @@
         "id": 1,
         "name": "Leave",
         "description": "Leave town with the letter.",
-        "anyPOI": true,
+        "here": true,
         "objective": "Leave",
         "prologue": {},
         "epilogue": {}
@@ -67,8 +67,8 @@
         "id": 2,
         "name": "Deliver",
         "description": "Deliver the letter to $(poi_2).",
-        "count1": 30,
-        "count2": 10,
+        "count1": 50,
+        "count2": 0,
         "POITags": [
           "Town"
         ],
