@@ -30,6 +30,7 @@ import forge.card.CardRarity;
 import forge.card.CardStateName;
 import forge.game.ability.AbilityKey;
 import forge.game.card.*;
+import forge.item.PaperCard;
 import forge.game.combat.Combat;
 import forge.game.event.Event;
 import forge.game.event.GameEventDayTimeChanged;
@@ -1052,6 +1053,31 @@ public class Game {
     public Multimap<Player, Card> chooseCardsForAnte(final boolean matchRarity, final boolean includeBasicLands) {
         Multimap<Player, Card> anteed = ArrayListMultimap.create();
 
+        // Pre-selected ante (RegisteredPlayer.getAnteCards) takes precedence over random selection.
+        // Players without a pre-selection still ante a random card; rarity matching is skipped then.
+        boolean anyPreselected = false;
+        for (final Player player : getPlayers()) {
+            RegisteredPlayer registered = player.getRegisteredPlayer();
+            if (registered != null && registered.getAnteCards() != null) {
+                anyPreselected = true;
+                break;
+            }
+        }
+        if (anyPreselected) {
+            for (final Player player : getPlayers()) {
+                RegisteredPlayer registered = player.getRegisteredPlayer();
+                List<PaperCard> chosen = registered == null ? null : registered.getAnteCards();
+                if (chosen == null) {
+                    chooseRandomCardsForAnte(player, anteed, includeBasicLands);
+                    continue;
+                }
+                for (PaperCard pc : chosen) {
+                    anteed.put(player, resolvePreselectedAnteCard(player, pc, anteed.get(player)));
+                }
+            }
+            return anteed;
+        }
+
         if (matchRarity) {
             boolean onePlayerHasTimeShifted = false;
 
@@ -1130,6 +1156,25 @@ public class Game {
             }
         }
         return anteed;
+    }
+
+    /**
+     * Finds the library card matching a pre-selected ante printing (skipping cards already chosen),
+     * or creates it and adds it to the library when the player is staking a card from outside the
+     * main deck (sideboard, collection). The card is collectible so ownership changes apply.
+     */
+    private Card resolvePreselectedAnteCard(final Player player, final PaperCard pc, final Collection<Card> alreadyChosen) {
+        for (final Card c : player.getCardsIn(ZoneType.Library)) {
+            if (!alreadyChosen.contains(c) && pc.equals(c.getPaperCard())) {
+                return c;
+            }
+        }
+        final Card created = Card.fromPaperCard(pc, player);
+        created.setCollectible(true);
+        created.setGameTimestamp(getNextTimestamp());
+        player.getZone(ZoneType.Library).add(created);
+        fireEvent(new GameEventAddLog(GameLogEntryType.ANTE, player + " adds " + pc + " to their library for ante"));
+        return created;
     }
 
     private void chooseRandomCardsForAnte(final Player player, final Multimap<Player, Card> anteed, final boolean includeBasicLands) {

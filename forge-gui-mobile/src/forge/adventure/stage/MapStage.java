@@ -23,6 +23,7 @@ import com.github.tommyettinger.textra.TextraButton;
 import com.github.tommyettinger.textra.TypingAdapter;
 import com.github.tommyettinger.textra.TypingLabel;
 import forge.Forge;
+import forge.adventure.campaign.DeckRepairGate;
 import forge.adventure.character.*;
 import forge.adventure.data.*;
 import forge.adventure.player.AdventurePlayer;
@@ -1149,6 +1150,12 @@ public class MapStage extends GameStage {
     
     public void beginDuel(EnemySprite mob) {
         if (mob == null) return;
+        if (!DeckRepairGate.ensureDeckLegal(this)) {
+            mob.freezeMovement();
+            resetPosition();
+            currentMob = null;
+            return;
+        }
         mob.clearCollisionHeight();
         currentMob = mob;
         player.setAnimation(CharacterSprite.AnimationTypes.Attack);

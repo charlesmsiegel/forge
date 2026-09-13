@@ -11,6 +11,10 @@ import forge.LobbyPlayer;
 import forge.card.CardRenderer;
 import forge.card.CardRenderer.CardStackPosition;
 import forge.card.CardZoom;
+import forge.adventure.campaign.AnteService;
+import forge.adventure.campaign.AnteStake;
+import forge.adventure.campaign.CampaignConfig;
+import forge.adventure.campaign.CampaignLog;
 import forge.adventure.character.EnemySprite;
 import forge.adventure.character.PlayerSprite;
 import forge.adventure.data.*;
@@ -52,6 +56,7 @@ import forge.toolbox.FOptionPane;
 import forge.trackable.TrackableCollection;
 import forge.util.Aggregates;
 import forge.util.Localizer;
+import forge.util.MyRandom;
 import forge.util.ScreenUtil;
 import forge.util.StreamUtil;
 import org.apache.commons.lang3.tuple.Pair;
@@ -88,6 +93,18 @@ public class DuelScene extends ForgeScene {
     FOptionPane bossDialogue;
     List<IPaperCard> playerExtras = new ArrayList<>();
     List<IPaperCard> AIExtras = new ArrayList<>();
+    /** Shandalar Reborn: cards at stake in this duel (null = no campaign ante). */
+    private AnteStake campaignStake;
+    private boolean campaignAnteActive;
+
+    /** Pre-set the stake (reclamation ante) before the duel starts; otherwise a normal stake is rolled. */
+    public void setCampaignStake(AnteStake stake) {
+        this.campaignStake = stake;
+    }
+
+    public AnteStake getCampaignStake() {
+        return campaignStake;
+    }
 
 
     private DuelScene() {
@@ -137,6 +154,9 @@ public class DuelScene extends ForgeScene {
                     }
                     //Could also add the cards to the opponent's pool, but their games aren't simulated and they never edit their decks.
                 }
+                else if (CampaignConfig.instance().isActive()) {
+                    AnteService.applyResult(Current.player(), anteResult.wonCards, anteResult.lostCards);
+                }
                 else {
                     for (PaperCard card : anteResult.wonCards) {
                         Current.player().addCard(card);
@@ -154,6 +174,20 @@ public class DuelScene extends ForgeScene {
         }
         String enemyName = enemy.getName();
         String insult = enemy.getBossInsult();
+        if (CampaignConfig.instance().isActive() && eventData == null) {
+            CampaignLog.event("match")
+                    .with("enemy", enemyName)
+                    .with("enemyTemplate", enemy.getData().name)
+                    .with("won", winner)
+                    .with("stake", campaignStake == null ? "none" : campaignStake.kind.toString())
+                    .withCards("playerStake", campaignStake == null ? List.of() : campaignStake.playerCards)
+                    .withCards("opponentStake", campaignStake == null ? List.of() : campaignStake.opponentCards)
+                    .withCards("cardsWon", anteWonCards)
+                    .withCards("cardsLost", anteLostCards)
+                    .with("lifeAfter", Current.player().getLife())
+                    .write();
+        }
+        campaignStake = null;
         boolean showMessages = enemy.getData().boss || (enemy.getData().copyPlayerDeck && Current.player().isUsingCustomDeck());
         Current.player().clearBlessing();
 
@@ -294,6 +328,69 @@ public class DuelScene extends ForgeScene {
         FThreads.invokeInEdtNowOrLater(popup::show);
     }
 
+    /** Shows the exact printings both sides put up before the duel (MVP.md 13). */
+    private void showAnteStakePopup(AnteStake stake, Runnable onDone) {
+        List<CardView> views = new ArrayList<>();
+        for (PaperCard pc : stake.playerCards) views.add(CardView.getCardForUi(pc));
+        for (PaperCard pc : stake.opponentCards) views.add(CardView.getCardForUi(pc));
+        final int playerCount = stake.playerCards.size();
+
+        FDisplayObject cardDisplay = new FDisplayObject() {
+            private float cardWidth() { return getHeight() / FCardPanel.ASPECT_RATIO; }
+            private float gap() { return cardWidth() * 0.15f; }
+            private float startX() {
+                float w = cardWidth(), gap = gap();
+                float total = views.size() * w + Math.max(0, views.size() - 1) * gap
+                        + (playerCount > 0 && playerCount < views.size() ? gap * 2 : 0);
+                return (getWidth() - total) / 2;
+            }
+            private int indexAt(float x) {
+                float w = cardWidth(), gap = gap(), xPos = startX();
+                for (int i = 0; i < views.size(); i++) {
+                    if (i == playerCount && playerCount > 0) xPos += gap * 2;
+                    if (x >= xPos && x <= xPos + w) return i;
+                    xPos += w + gap;
+                }
+                return -1;
+            }
+            @Override
+            public boolean tap(float x, float y, int count) {
+                int idx = indexAt(x);
+                if (idx >= 0) CardZoom.show(views.get(idx));
+                return true;
+            }
+            @Override
+            public void draw(Graphics g) {
+                float h = getHeight(), w = cardWidth(), gap = gap(), xPos = startX();
+                for (int i = 0; i < views.size(); i++) {
+                    if (i == playerCount && playerCount > 0) xPos += gap * 2;
+                    CardRenderer.drawCard(g, views.get(i), xPos, 0, w, h, CardStackPosition.Top, true);
+                    xPos += w + gap;
+                }
+            }
+        };
+        cardDisplay.setHeight(Forge.getScreenHeight() / 3);
+
+        String message = (stake.kind == AnteStake.Kind.RECLAMATION ? "Reclamation ante." : "Ante duel.")
+                + "\nYou risk: " + describeAll(stake.playerCards)
+                + "\n" + enemy.getName() + " risks: " + describeAll(stake.opponentCards);
+
+        FOptionPane popup = new FOptionPane(message, null, "Ante", null, cardDisplay,
+                ImmutableList.of(Forge.getLocalizer().getMessage("lblOK")), 0, result -> {
+                    if (onDone != null) onDone.run();
+                });
+        FThreads.invokeInEdtNowOrLater(popup::show);
+    }
+
+    /** "Name (SET #num, foil), ..." for dialogs and logs. */
+    public static String describeAll(List<PaperCard> cards) {
+        if (cards.isEmpty()) return "nothing";
+        List<String> parts = new ArrayList<>();
+        for (PaperCard pc : cards)
+            parts.add(pc.getName() + " (" + pc.getEdition() + " #" + pc.getCollectorNumber() + (pc.isFoil() ? ", foil" : "") + ")");
+        return String.join(", ", parts);
+    }
+
     void addEffects(RegisteredPlayer player, Array<EffectData> effects) {
         if (effects == null) return;
         //Apply various combat effects.
@@ -341,6 +438,10 @@ public class DuelScene extends ForgeScene {
         Set<GameType> appliedVariants = EnumSet.of(mainGameType);
 
         AdventurePlayer advPlayer = Current.player();
+        CampaignConfig campaign = CampaignConfig.instance();
+        campaignAnteActive = campaign.isActive() && campaign.ante.enabled && eventData == null && !isArena && !chaosBattle;
+        if (!campaignAnteActive)
+            campaignStake = null;
 
         List<RegisteredPlayer> players = new ArrayList<>();
 
@@ -449,6 +550,12 @@ public class DuelScene extends ForgeScene {
                 deck = this.eventData == null && canUseGeneticAI ? Aggregates.random(DeckProxy.getAllGeneticAIDecks()).getDeck() : this.playerDeck;
             }
             RegisteredPlayer aiPlayer = RegisteredPlayer.forVariants(playerCount, appliedVariants, deck, null, false, null, null);
+            if (campaignAnteActive && i == 0) {
+                if (campaignStake == null)
+                    campaignStake = AnteService.normalStake(playerDeck, deck, campaign.ante, MyRandom.getRandom());
+                humanPlayer.setAnteCards(campaignStake.playerCards);
+                aiPlayer.setAnteCards(campaignStake.opponentCards);
+            }
 
             LobbyPlayer enemyPlayer = GamePlayerUtil.createAiPlayer(currentEnemy.getName(), selectAI(currentEnemy.ai));
             enemyPlayer.setName(enemy.getName()); //Override name if defined in the map.(only supported for 1 enemy atm)
@@ -512,9 +619,10 @@ public class DuelScene extends ForgeScene {
             rules = new GameRules(GameType.Adventure);
             rules.setGamesPerMatch(enemy.getData().gamesPerMatch);
         }
-        rules.setPlayForAnte(FModel.getPreferences().getPrefBoolean(ForgePreferences.FPref.UI_ANTE));
+        rules.setPlayForAnte(campaignAnteActive || FModel.getPreferences().getPrefBoolean(ForgePreferences.FPref.UI_ANTE));
         rules.setMatchAnteRarity(FModel.getPreferences().getPrefBoolean(ForgePreferences.FPref.UI_ANTE_MATCH_RARITY));
-        rules.setAnteIncludeBasicLands(FModel.getPreferences().getPrefBoolean(ForgePreferences.FPref.UI_ANTE_INCLUDE_BASIC_LANDS));
+        rules.setAnteIncludeBasicLands(campaignAnteActive ? !campaign.ante.excludeBasicLands
+                : FModel.getPreferences().getPrefBoolean(ForgePreferences.FPref.UI_ANTE_INCLUDE_BASIC_LANDS));
         rules.setManaBurn(false);
         rules.setWarnAboutAICards(false);
 
@@ -523,6 +631,7 @@ public class DuelScene extends ForgeScene {
         MatchController.instance.setGameView(hostedMatch.getGameView());
         boolean showMessages = enemy.getData().boss || (enemy.getData().copyPlayerDeck && Current.player().isUsingCustomDeck());
         LoadingOverlay matchOverlay;
+        Runnable introDialog = null;
         if (chaosBattle || showMessages || isDeckMissing) {
             final FBufferedImage fb = getFBEnemyAvatar();
             String Intro = enemy.getBossIntro();
@@ -533,8 +642,17 @@ public class DuelScene extends ForgeScene {
                 bossDialogue = createFOption(isDeckMissing ? isDeckMissingMsg : localizer.getMessage("AdvBossIntro" + Aggregates.randomInt(1, 35)),
                 enemy.getName(), fb, fb::dispose);
                 }
-            matchOverlay = new LoadingOverlay(() -> FThreads.delayInEDT(300, () -> FThreads.invokeInEdtNowOrLater(() ->
-            bossDialogue.show())), false, true);
+            introDialog = () -> bossDialogue.show();
+        }
+        Runnable afterLoad = introDialog;
+        if (campaignAnteActive && campaignStake != null && !campaignStake.isEmpty()) {
+            final AnteStake stakeToShow = campaignStake;
+            final Runnable next = introDialog;
+            afterLoad = () -> showAnteStakePopup(stakeToShow, next);
+        }
+        if (afterLoad != null) {
+            final Runnable toRun = afterLoad;
+            matchOverlay = new LoadingOverlay(() -> FThreads.delayInEDT(300, () -> FThreads.invokeInEdtNowOrLater(toRun)), false, true);
         } else {
             matchOverlay = new LoadingOverlay(null);
         }

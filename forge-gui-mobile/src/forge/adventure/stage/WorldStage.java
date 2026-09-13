@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import forge.Forge;
 import forge.OverlayText;
+import forge.adventure.campaign.DeckRepairGate;
 import forge.adventure.character.CharacterSprite;
 import forge.adventure.character.EnemySprite;
 import forge.adventure.data.*;
@@ -116,6 +117,10 @@ public class WorldStage extends GameStage implements SaveFileContent {
                 if (player.collideWith(mob)) {
                     if (collided)
                         return;
+                    if (!DeckRepairGate.ensureDeckLegal(this)) {
+                        removeEnemy(mob);
+                        break;
+                    }
                     collided = true;
                     player.setAnimation(CharacterSprite.AnimationTypes.Attack);
                     player.playEffect(Paths.EFFECT_SPARKS, 0.5f);
