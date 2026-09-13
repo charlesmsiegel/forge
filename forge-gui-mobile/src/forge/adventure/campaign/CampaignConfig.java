@@ -25,6 +25,7 @@ public class CampaignConfig implements Serializable {
     public EconomyRules economy = new EconomyRules();
     public StrongholdRules stronghold = new StrongholdRules();
     public DungeonRules dungeon = new DungeonRules();
+    public RivalRules rivals = new RivalRules();
 
     public static class PlayerRules implements Serializable {
         public int startingLife = 12;
@@ -67,6 +68,12 @@ public class CampaignConfig implements Serializable {
         public String boosterEdition = "STH";
         public int firstClearBoxBoosterCount = 36;
         public int repeatClearBoosterCount = 6;
+    }
+
+    public static class RivalRules implements Serializable {
+        /** Given names and epithets combined into "Name, Epithet" for promoted rivals. */
+        public String[] names = new String[]{"Krag", "Vesna", "Torvald", "Ilsa", "Mogrin", "Selene", "Bram", "Nadira"};
+        public String[] epithets = new String[]{"Ember-Sneak", "the Cardsharp", "Ante-Taker", "the Vulture", "Deckbreaker", "the Grifter"};
     }
 
     public static class DungeonRules implements Serializable {

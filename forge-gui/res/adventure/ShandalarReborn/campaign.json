@@ -9,10 +9,28 @@
   },
   "cards": {
     "restrictedCards": [
-      "Black Lotus", "Mox Emerald", "Mox Pearl", "Mox Ruby", "Mox Sapphire", "Mox Jet",
-      "Ancestral Recall", "Timetwister", "Time Walk", "Sol Ring", "Mana Crypt", "Mana Vault",
-      "Tolarian Academy", "Yawgmoth's Bargain", "Library of Alexandria", "Bazaar of Baghdad",
-      "Demonic Tutor", "Vampiric Tutor", "Tinker", "Time Vault", "Fastbond", "Mishra's Workshop"
+      "Black Lotus",
+      "Mox Emerald",
+      "Mox Pearl",
+      "Mox Ruby",
+      "Mox Sapphire",
+      "Mox Jet",
+      "Ancestral Recall",
+      "Timetwister",
+      "Time Walk",
+      "Sol Ring",
+      "Mana Crypt",
+      "Mana Vault",
+      "Tolarian Academy",
+      "Yawgmoth's Bargain",
+      "Library of Alexandria",
+      "Bazaar of Baghdad",
+      "Demonic Tutor",
+      "Vampiric Tutor",
+      "Tinker",
+      "Time Vault",
+      "Fastbond",
+      "Mishra's Workshop"
     ],
     "bannedCards": []
   },
@@ -29,12 +47,38 @@
     "boosterPriceMultiplier": 1.0
   },
   "stronghold": {
-    "editions": ["STH"],
+    "editions": [
+      "STH"
+    ],
     "boosterEdition": "STH",
     "firstClearBoxBoosterCount": 36,
     "repeatClearBoosterCount": 6
   },
   "dungeon": {
     "persistentLifeMapKeyword": "persistentLife"
+  },
+  "rivals": {
+    "names": [
+      "Krag",
+      "Vesna",
+      "Torvald",
+      "Ilsa",
+      "Mogrin",
+      "Selene",
+      "Bram",
+      "Nadira",
+      "Orrin",
+      "Thessaly"
+    ],
+    "epithets": [
+      "Ember-Sneak",
+      "the Cardsharp",
+      "Ante-Taker",
+      "the Vulture",
+      "Deckbreaker",
+      "the Grifter",
+      "Sevenfingers",
+      "the Collector"
+    ]
   }
 }
