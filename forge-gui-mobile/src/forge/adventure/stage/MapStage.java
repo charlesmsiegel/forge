@@ -397,7 +397,7 @@ public class MapStage extends GameStage {
             String type = prop.get("type", String.class);
             if (type != null) {
                 int id = prop.get("id", int.class);
-                if (changes.isObjectDeleted(id))
+                if (changes.isObjectDeleted(id) && !"rival".equals(type))
                     continue;
 
                 boolean hidden = !obj.isVisible(); //Check if the object is invisible.
@@ -615,8 +615,7 @@ public class MapStage extends GameStage {
                             System.err.printf("Rival %s: base enemy \"%s\" not found\n", rival.name, rival.baseEnemyName);
                             break;
                         }
-                        EnemyData rivalData = new EnemyData(base);
-                        rivalData.nameOverride = rival.name;
+                        EnemyData rivalData = rival.encounterData(base);
                         EnemySprite rivalMob = new EnemySprite(id, rivalData);
                         rivalMob.campaignRivalId = rival.id;
                         rivalMob.nameOverride = rival.name;
@@ -1070,9 +1069,9 @@ public class MapStage extends GameStage {
         if (currentMob.defeatDialog == null) {
             currentMob.remove();
             actors.removeValue(currentMob, true);
-            if (!respawnEnemies || currentMob.getData().boss)
+            if (currentMob.campaignRivalId == null && (!respawnEnemies || currentMob.getData().boss))
                 changes.deleteObject(currentMob.getId());
-                enemies.remove(currentMob);
+            enemies.remove(currentMob);
         } else {
             currentMob.defeatDialog.activate();
             player.setAnimation(CharacterSprite.AnimationTypes.Idle);

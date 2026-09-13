@@ -4,6 +4,8 @@ import forge.adventure.character.EnemySprite;
 import forge.adventure.scene.DuelScene;
 import forge.adventure.stage.MapStage;
 import forge.adventure.util.Current;
+import forge.adventure.data.EnemyData;
+import forge.adventure.data.WorldData;
 import forge.item.PaperCard;
 import forge.util.MyRandom;
 
@@ -41,9 +43,46 @@ public final class RivalEncounter {
             labels.add("Reclaim a card...");
             actions.add(() -> chooseCard(stage, mob, rival, 0));
         }
+        if (CampaignState.instance().rivals().size() > 1) {
+            labels.add("Find another rival...");
+            actions.add(() -> chooseRival(stage, mob, 0));
+        }
         labels.add("Walk away");
         actions.add(() -> walkAway(stage, mob));
         stage.showOptionsDialog(message.toString(), labels, actions);
+    }
+
+    private static void chooseRival(MapStage stage, EnemySprite host, int page) {
+        RivalRegistry roster = CampaignState.instance().rivals();
+        List<String> labels = new ArrayList<>();
+        List<Runnable> actions = new ArrayList<>();
+        for (Rival rival : roster.page(page, 4)) {
+            labels.add(rival.name);
+            actions.add(() -> {
+                EnemyData base = WorldData.getEnemy(rival.baseEnemyName);
+                if (base == null) {
+                    stage.showOptionsDialog("This rival's encounter is unavailable.", List.of("Back"),
+                            List.of(() -> chooseRival(stage, host, page)));
+                    return;
+                }
+                EnemySprite chosen = new EnemySprite(host.getId(), rival.encounterData(base));
+                chosen.campaignRivalId = rival.id;
+                chosen.nameOverride = rival.name;
+                chosen.setPosition(host.getX(), host.getY());
+                start(stage, chosen);
+            });
+        }
+        if (page > 0) {
+            labels.add("Previous");
+            actions.add(() -> chooseRival(stage, host, page - 1));
+        }
+        if (!roster.page(page + 1, 4).isEmpty()) {
+            labels.add("Next");
+            actions.add(() -> chooseRival(stage, host, page + 1));
+        }
+        labels.add("Back");
+        actions.add(() -> start(stage, host));
+        stage.showOptionsDialog("Rivals' Camp — choose a rival", labels, actions);
     }
 
     private static void walkAway(MapStage stage, EnemySprite mob) {
