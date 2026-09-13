@@ -1,0 +1,36 @@
+[
+  {
+    "name": "SR Town",
+    "displayName": "Town",
+    "type": "town",
+    "count": 3,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "WasteTown",
+    "map": "../common/maps/map/towns/waste_town_generic.tmx",
+    "radiusFactor": 0.7,
+    "questTags": [
+      "Town",
+      "TownGeneric",
+      "BiomeColorless",
+      "Sidequest",
+      "QuestSource"
+    ]
+  },
+  {
+    "name": "SR Cave",
+    "displayName": "Goblin Cave",
+    "type": "cave",
+    "count": 2,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "Cave",
+    "map": "../ShandalarReborn/maps/map/sr_cave.tmx",
+    "radiusFactor": 0.8,
+    "questTags": [
+      "Hostile",
+      "Cave",
+      "Dungeon",
+      "BiomeColorless",
+      "Sidequest"
+    ]
+  }
+]
