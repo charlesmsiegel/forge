@@ -1,0 +1,159 @@
+{
+  "startPointX": 0.5,
+  "startPointY": 0.5,
+  "noiseWeight": 0.3,
+  "distWeight": 1,
+  "name": "shandalar_reborn",
+  "tilesetAtlas": "world/tilesets/terrain.atlas",
+  "tilesetName": "Colorless",
+  "terrain": [
+    {
+      "spriteName": "Colorless_1",
+      "max": 0.2,
+      "resolution": 5
+    },
+    {
+      "spriteName": "Colorless_2",
+      "min": 0.8,
+      "max": 1,
+      "resolution": 5
+    }
+  ],
+  "width": 0.9,
+  "height": 0.9,
+  "color": "aeaeae",
+  "spriteNames": [
+    "Stone"
+  ],
+  "enemies": [
+    "Bandit",
+    "Dog",
+    "Fox",
+    "Wild Rat",
+    "Snail",
+    "Goblin Rager",
+    "Elf Vagabond",
+    "Caracal",
+    "Raven",
+    "Falcon",
+    "Human Looter",
+    "Pirate",
+    "Mummy",
+    "Ooze",
+    "Worm",
+    "Weak Demon",
+    "Bloodied Skeleton",
+    "Apprentice Black Wizard",
+    "Apprentice Blue Wizard",
+    "Apprentice Green Wizard",
+    "Apprentice Red Wizard",
+    "Apprentice White Wizard",
+    "Adept Black Wizard",
+    "Adept Blue Wizard",
+    "Adept Green Wizard",
+    "Adept Red Wizard",
+    "Adept White Wizard"
+  ],
+  "pointsOfInterest": [
+    "SR Town",
+    "SR Cave"
+  ],
+  "structures": [
+    {
+      "N": 2,
+      "x": 0.5,
+      "y": 0.5,
+      "structureAtlasPath": "world/structures/colorless_structures.atlas",
+      "sourcePath": "world/structures/models/colorless.png",
+      "maskPath": "world/structures/masks/circle.png",
+      "height": 0.25,
+      "width": 0.25,
+      "symmetry": 8,
+      "mappingInfo": [
+        {
+          "name": "crater",
+          "color": "808080",
+          "collision": true
+        },
+        {
+          "name": "tree",
+          "color": "ff0000",
+          "collision": true
+        },
+        {
+          "name": "tree2",
+          "color": "00ff00",
+          "collision": true
+        },
+        {
+          "name": "tree3",
+          "color": "0000ff",
+          "collision": true
+        },
+        {
+          "name": "tree4",
+          "color": "00ffff",
+          "collision": true
+        },
+        {
+          "name": "rock",
+          "color": "ff00ff",
+          "collision": true
+        },
+        {
+          "name": "mountain",
+          "color": "000000",
+          "collision": true
+        }
+      ]
+    },
+    {
+      "N": 2,
+      "x": 0.5,
+      "y": 0.5,
+      "structureAtlasPath": "world/structures/colorless_structures.atlas",
+      "sourcePath": "world/structures/models/colorless.png",
+      "maskPath": "world/structures/masks/ring.png",
+      "height": 0.5,
+      "width": 0.5,
+      "symmetry": 8,
+      "mappingInfo": [
+        {
+          "name": "hole",
+          "color": "808080",
+          "collision": true
+        },
+        {
+          "name": "tree",
+          "color": "ff0000",
+          "collision": true
+        },
+        {
+          "name": "tree2",
+          "color": "00ff00",
+          "collision": true
+        },
+        {
+          "name": "tree3",
+          "color": "0000ff",
+          "collision": true
+        },
+        {
+          "name": "tree4",
+          "color": "00ffff",
+          "collision": true
+        },
+        {
+          "name": "rock",
+          "color": "ff00ff",
+          "collision": true
+        },
+        {
+          "name": "mountain",
+          "color": "000000",
+          "collision": true
+        }
+      ]
+    }
+  ]
+}
