@@ -1,5 +1,7 @@
 package forge.adventure.scene;
 
+import forge.adventure.stage.MapStage;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -346,6 +348,10 @@ public class SaveLoadScene extends UIScene {
         if (WorldSave.canSave()) {
             if (WorldSave.getCurrentSave().save(textInput.getText() + getSaveFileSuffix(), currentSlot)) {
                 updateFiles();
+                if (MapStage.getInstance().isInMap()) {
+                    TileMapScene.instance().resumeAfterMenu();
+                    return;
+                }
                 //ensure the dialog is hidden before switching
 
                 Scene restoreScene = Forge.switchToLast();
