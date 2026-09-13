@@ -173,6 +173,7 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
         decks.set(0, deck);
 
         cards.addAllFlat(deck.getAllCardsInASinglePool(true, true).toFlatList());
+        CampaignState.instance().initializeOwnership(this);
 
         this.difficultyData.startingLife = difficultyData.startingLife;
         this.difficultyData.startingMoney = difficultyData.startingMoney;
@@ -964,12 +965,14 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
     }
 
     public void addCard(PaperCard card, int amount) {
+        CampaignState.instance().initializeOwnership(this);
         cards.add(card, amount);
         newCards.add(card, amount);
         CampaignState.instance().onCardsAcquired(card, amount);
     }
 
     public void addCards(ItemPool<PaperCard> cardPool) {
+        CampaignState.instance().initializeOwnership(this);
         cards.addAll(cardPool);
         newCards.addAll(cardPool);
         for (Map.Entry<PaperCard, Integer> e : cardPool)
@@ -979,6 +982,7 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
     public void addReward(Reward reward) {
         switch (reward.getType()) {
             case Card:
+                CampaignState.instance().initializeOwnership(this);
                 cards.add(reward.getCard());
                 newCards.add(reward.getCard());
                 CampaignState.instance().onCardsAcquired(reward.getCard(), 1);
@@ -1331,7 +1335,7 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
      * Does *not* update the player's gold. Can be used as part of bulk-sell operations that update the amount all at once.
      */
     private int performSale(PaperCard card, int amount) {
-        int amountToSell = Math.min(amount, cards.count(card));
+        int amountToSell = Math.min(amount, CampaignState.instance().availableCards(this).count(card));
         if(!cards.remove(card, amountToSell))
             return 0; //Failed to sell?
         CampaignState.instance().onCardsLost(card, amountToSell);

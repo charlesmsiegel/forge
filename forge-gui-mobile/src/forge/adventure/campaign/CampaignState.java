@@ -24,13 +24,15 @@ import java.util.Random;
  * optional on load so older saves keep working.
  */
 public class CampaignState implements SaveFileContent {
-    public static final int SAVE_VERSION = 1;
+    public static final int SAVE_VERSION = 2;
 
     private static CampaignState current = new CampaignState();
 
     private final RivalRegistry rivals = new RivalRegistry();
     private final ExpeditionState expedition = new ExpeditionState();
     private final Map<String, Integer> completions = new HashMap<>();
+    private final CardIdentityLedger ownership = new CardIdentityLedger();
+    private String campaignId = "";
     private Random random = MyRandom.getRandom();
 
     public static CampaignState instance() {
@@ -46,6 +48,8 @@ public class CampaignState implements SaveFileContent {
         rivals.load(null);
         expedition.leave();
         completions.clear();
+        ownership.clear();
+        campaignId = "";
     }
 
     /** Deterministic randomness for tests. */
@@ -64,7 +68,39 @@ public class CampaignState implements SaveFileContent {
     /** The cards the player may currently use for deck building: the whole collection at home,
      *  only carried + acquired copies during an expedition (MVP.md 12). */
     public CardPool availableCards(AdventurePlayer player) {
-        return expedition.available(player.getCards());
+        if (!CampaignConfig.instance().isActive()) return expedition.available(player.getCards());
+        if (!expedition.isActive()) {
+            initializeOwnership(player);
+            return player.getCards();
+        }
+        CardPool result = new CardPool();
+        for (OwnedCard copy : availableCopies(player)) result.add(copy.card);
+        return result;
+    }
+
+    public void initializeOwnership(AdventurePlayer player) {
+        if (!CampaignConfig.instance().isActive()) return;
+        if (campaignId.isEmpty()) campaignId = CampaignConfig.instance().campaignId;
+        ownership.reconcile(player.getCards());
+        expedition.bindCopies(ownership.copies());
+    }
+
+    public List<OwnedCard> ownedCopies(AdventurePlayer player) {
+        initializeOwnership(player);
+        return ownership.copies();
+    }
+
+    public List<OwnedCard> availableCopies(AdventurePlayer player) {
+        return expedition.availableCopies(ownedCopies(player));
+    }
+
+    void receiveCopy(OwnedCard copy) {
+        ownership.add(copy);
+        expedition.onAcquired(copy);
+    }
+
+    void loseCopy(OwnedCard copy) {
+        if (ownership.remove(copy)) expedition.onLost(copy);
     }
 
     /** Leave home with the active deck + sideboard as the only usable cards. */
@@ -73,7 +109,9 @@ public class CampaignState implements SaveFileContent {
     }
 
     public void enterExpedition(String regionId, AdventurePlayer player, String rootPoiId) {
+        initializeOwnership(player);
         expedition.enter(regionId, player.getSelectedDeck());
+        expedition.bindCopies(ownership.copies());
         expedition.setRootPoiId(rootPoiId);
         CampaignLog.event("expedition_enter").with("region", regionId)
                 .with("carried", expedition.getCarried().countAll()).write();
@@ -146,12 +184,17 @@ public class CampaignState implements SaveFileContent {
 
     /** Called whenever copies enter the permanent collection (rewards, packs, purchases, ante wins). */
     public void onCardsAcquired(PaperCard card, int amount) {
-        expedition.onAcquired(card, amount);
+        if (!CampaignConfig.instance().isActive()) return;
+        for (int i = 0; i < amount; i++) receiveCopy(OwnedCard.mint(card));
     }
 
     /** Called whenever copies leave the permanent collection (ante losses, sales). */
     public void onCardsLost(PaperCard card, int amount) {
-        expedition.onLost(card, amount);
+        if (!CampaignConfig.instance().isActive()) return;
+        for (OwnedCard copy : expedition.availableCopies(ownership.copies())) {
+            if (amount == 0) break;
+            if (copy.card.equals(card)) { loseCopy(copy); amount--; }
+        }
     }
 
     /**
@@ -209,6 +252,8 @@ public class CampaignState implements SaveFileContent {
         clear();
         if (data == null)
             return;
+        if (data.containsKey("campaignId")) campaignId = data.readString("campaignId");
+        if (data.containsKey("ownership")) ownership.load(data.readSubData("ownership"));
         if (data.containsKey("rivals"))
             rivals.load(data.readSubData("rivals"));
         if (data.containsKey("expedition"))
@@ -225,6 +270,8 @@ public class CampaignState implements SaveFileContent {
     public SaveFileData save() {
         SaveFileData data = new SaveFileData();
         data.store("version", SAVE_VERSION);
+        data.store("campaignId", campaignId);
+        data.store("ownership", ownership.save());
         data.store("rivals", rivals.save());
         data.store("expedition", expedition.save());
         data.storeObject("completionKeys", completions.keySet().toArray(new String[0]));
