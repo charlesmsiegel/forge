@@ -26,6 +26,7 @@ import forge.Forge;
 import forge.adventure.campaign.CampaignState;
 import forge.adventure.campaign.ExpeditionGateActor;
 import forge.adventure.campaign.DeckRepairGate;
+import forge.adventure.campaign.DungeonLife;
 import forge.adventure.campaign.Rival;
 import forge.adventure.campaign.RivalEncounter;
 import forge.adventure.character.*;
@@ -69,6 +70,12 @@ public class MapStage extends GameStage {
     private boolean isPlayerLeavingDungeon = false;
     //private HashMap<String, Byte> mapFlags = new HashMap<>(); //Stores local map flags. These aren't available outside this map.
     private boolean mustClearOnExit = false;
+    /** Shandalar Reborn: map property persistentLife - duel ending life carries between fights. */
+    private boolean persistentLifeMap = false;
+
+    public boolean isPersistentLifeMap() {
+        return isInMap && persistentLifeMap;
+    }
 
     //Map properties.
     //These maps are defined as embedded properties within the Tiled maps.
@@ -253,6 +260,9 @@ public class MapStage extends GameStage {
             canFailDungeon = false;
         }
         if (MP.get("preventEscape") != null) preventEscape = (boolean) MP.get("preventEscape");
+        persistentLifeMap = MP.get("persistentLife") instanceof Boolean && (Boolean) MP.get("persistentLife");
+        if (persistentLifeMap && sourceMap.isEmpty()) //entering the dungeon from the world map
+            DungeonLife.onEnter(Current.player());
 
         if (MP.get("music") != null && !MP.get("music").toString().isEmpty()) {
             //TODO: Add a way to play a music file directly without using a playlist.

@@ -1,1 +1,104 @@
-[]
+[
+  {
+    "id": 1,
+    "isTemplate": true,
+    "name": "A Letter for the Next Town",
+    "description": "Carry a sealed letter to another town and return with the reply.",
+    "offerDialog": {
+      "text": "A nervous clerk waves a sealed letter. \"This must reach the next town, and I cannot leave my post. 120 gold when you bring back the reply.\"",
+      "options": [
+        {
+          "name": "\"I'll carry it.\" (Accept Quest)",
+          "action": [
+            {
+              "issueQuest": "1"
+            }
+          ]
+        },
+        {
+          "name": "\"Find another courier.\" (Decline Quest)"
+        }
+      ]
+    },
+    "prologue": {},
+    "epilogue": {
+      "text": "The clerk breaks the seal on the reply, sighs with relief, and counts out your gold.",
+      "options": [
+        {
+          "name": "(Collect 120 gold)"
+        }
+      ]
+    },
+    "failureDialog": {
+      "text": "The letter is long overdue; the clerk has given up on you.",
+      "options": [
+        {
+          "name": "(Quest Failed)"
+        }
+      ]
+    },
+    "declinedDialog": {
+      "text": "\"Come back if you change your mind.\"",
+      "options": [
+        {
+          "name": "(Leave)"
+        }
+      ]
+    },
+    "reward": {
+      "type": "gold",
+      "count": 120
+    },
+    "rewardDescription": "120 gold",
+    "questSourceTags": [
+      "waste_town_generic"
+    ],
+    "stages": [
+      {
+        "id": 1,
+        "name": "Leave",
+        "description": "Leave town with the letter.",
+        "anyPOI": true,
+        "objective": "Leave",
+        "prologue": {},
+        "epilogue": {}
+      },
+      {
+        "id": 2,
+        "name": "Deliver",
+        "description": "Deliver the letter to $(poi_2).",
+        "count1": 30,
+        "count2": 10,
+        "POITags": [
+          "Town"
+        ],
+        "objective": "Travel",
+        "prerequisiteIDs": [
+          1
+        ],
+        "prologue": {},
+        "epilogue": {
+          "text": "The town's clerk reads the letter, scribbles a reply and seals it. \"Take this back, please.\"",
+          "options": [
+            {
+              "name": "(Take the reply)"
+            }
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "name": "Return",
+        "description": "Bring the reply back to $(poi_1).",
+        "here": true,
+        "objective": "Travel",
+        "prerequisiteIDs": [
+          2
+        ],
+        "POIToken": "$(poi_1)",
+        "prologue": {},
+        "epilogue": {}
+      }
+    ]
+  }
+]

@@ -409,8 +409,9 @@ public class CardUtil {
         PaperCard card = reward.getCard();
         Deck booster = reward.getDeck();
 
+        forge.adventure.campaign.CampaignConfig campaign = forge.adventure.campaign.CampaignConfig.instance();
         if (card != null)
-            return getCardPrice(card);
+            return campaign.isActive() ? Math.round(getCardPrice(card) * campaign.economy.shopPriceMultiplier) : getCardPrice(card);
         if (reward.getItem() != null)
             return reward.getItem().cost;
         if (reward.getType() == Reward.Type.Life)
@@ -420,7 +421,7 @@ public class CardUtil {
         if (reward.getType() == Reward.Type.Gold)
             return reward.getCount();
 		if(reward.getType() == Reward.Type.CardPack)                // TODO: Heitor - Price by card count and type of boosterPack.
-         return getBoosterPrice(booster);
+         return campaign.isActive() ? Math.round(getBoosterPrice(booster) * campaign.economy.boosterPriceMultiplier) : getBoosterPrice(booster);
 		
         return 1000;
     }

@@ -16,6 +16,8 @@ import forge.adventure.campaign.AnteStake;
 import forge.adventure.campaign.CampaignConfig;
 import forge.adventure.campaign.CampaignLog;
 import forge.adventure.campaign.CampaignState;
+import forge.adventure.campaign.DungeonLife;
+import forge.adventure.stage.MapStage;
 import forge.adventure.character.EnemySprite;
 import forge.adventure.character.PlayerSprite;
 import forge.adventure.data.*;
@@ -178,6 +180,18 @@ public class DuelScene extends ForgeScene {
         }
         String enemyName = enemy.getName();
         String insult = enemy.getBossInsult();
+        if (CampaignConfig.instance().isActive() && eventData == null && MapStage.getInstance().isPersistentLifeMap()) {
+            try {
+                for (Player p : hostedMatch.getGame().getRegisteredPlayers()) {
+                    if (p.getRegisteredPlayer() == humanPlayer) {
+                        DungeonLife.onDuelEnd(Current.player(), winner, p.getLife());
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         if (CampaignConfig.instance().isActive() && eventData == null) {
             String rivalId = CampaignState.instance().onMatchEnd(enemy.campaignRivalId, enemy.getData(), winner,
                     anteWonCards, anteLostCards, campaignStake);

@@ -325,6 +325,9 @@ public class MapDialog {
             if (E.removeItem != null&& (!E.removeItem.isEmpty())) { //Removes an item from the player's inventory.
                 Current.player().removeItem(E.removeItem);
             }
+            if (E.removeCard != null && !E.removeCard.isEmpty()) { //Takes one copy of a card from the player's collection.
+                forge.adventure.campaign.CampaignDialogs.removeCardByName(Current.player(), E.removeCard);
+            }
             if (E.addItem != null&& (!E.addItem.isEmpty())) { //Gives an item to the player.
                 Current.player().addItem(E.addItem);
             }
@@ -437,7 +440,11 @@ public class MapDialog {
         if (data == null) return true;
         AdventurePlayer player = Current.player();
         for (DialogData.ConditionData condition : data) {
-            //TODO:Check for card in inventory.
+            if (condition.hasCard != null && !condition.hasCard.isEmpty()) { //Check for a usable copy of a card.
+                if (!forge.adventure.campaign.CampaignDialogs.hasCard(player, condition.hasCard)) {
+                    if (!condition.not) return false;
+                } else if (condition.not) return false;
+            }
             if (condition.item != null && !condition.item.isEmpty()) { //Check for an item in player's inventory.
                 if (!player.hasItem(condition.item)) {
                     if (!condition.not) return false; //Only return on a false.
