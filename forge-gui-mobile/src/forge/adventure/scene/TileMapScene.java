@@ -12,6 +12,7 @@ import forge.adventure.stage.PointOfInterestMapRenderer;
 import forge.adventure.stage.WorldStage;
 import forge.adventure.util.*;
 import forge.adventure.world.WorldSave;
+import forge.adventure.campaign.MapResumeState;
 import forge.sound.SoundEffectType;
 import forge.sound.SoundSystem;
 
@@ -27,6 +28,7 @@ public class TileMapScene extends HudScene {
     private String nextMap;
     private int nextSpawnPoint;
     private boolean autoheal = false;
+    private boolean resumingSave;
 
     private TileMapScene() {
         super(MapStage.getInstance());
@@ -101,6 +103,10 @@ public class TileMapScene extends HudScene {
     @Override
     public void enter() {
         super.enter();
+        if (resumingSave) {
+            resumingSave = false;
+            return; // Resume is not a new visit: no healing or quest-entry event.
+        }
         if (isAutoHealLocation()) {
             // auto heal
             if (Current.player().fullHeal())
@@ -164,6 +170,40 @@ public class TileMapScene extends HudScene {
     public PointOfInterest rootPoint;
     String oldMap;
 
+    public MapResumeState captureResumeState() {
+        MapResumeState saved = new MapResumeState(rootPoint.getID(), oldMap,
+                stage.getPlayerSprite().getX(), stage.getPlayerSprite().getY(),
+                currentMap().snapshotEnemyPositions());
+        saved.rivalIds.putAll(currentMap().snapshotRivalIds());
+        return saved;
+    }
+
+    public void resume(MapResumeState saved) {
+        PointOfInterest point = null;
+        for (PointOfInterest candidate : Current.world().getAllPointOfInterest()) {
+            if (saved.rootPoiId.equals(candidate.getID())) {
+                point = candidate;
+                break;
+            }
+        }
+        if (point == null)
+            throw new IllegalStateException("Saved map location no longer exists: " + saved.rootPoiId);
+        int life = Current.player().getLife();
+        nextMap = null;
+        nextSpawnPoint = 0;
+        autoheal = false;
+        rootPoint = point;
+        AdventureQuestController.instance().mostRecentPOI = point;
+        // A nonempty source suppresses dungeon-entry healing in MapStage.loadMap.
+        oldMap = saved.mapPath;
+        load(saved.mapPath, 0);
+        currentMap().restoreEnemyPositions(saved.enemies, saved.rivalIds);
+        stage.getPlayerSprite().setPosition(saved.playerX, saved.playerY);
+        stage.getPlayerSprite().stop();
+        Current.player().setLife(life);
+        resumingSave = true;
+    }
+
     private void load(String targetMap, int nextSpawnPoint) {
         map = new TemplateTmxMapLoader().load(Config.instance().getFilePath(targetMap));
         ((MapStage) stage).setPointOfInterest(getPointOfInterestChanges(targetMap));
@@ -195,4 +235,3 @@ public class TileMapScene extends HudScene {
         nextSpawnPoint = entryTargetObject;
     }
 }
-

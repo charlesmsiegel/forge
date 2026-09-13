@@ -10,6 +10,8 @@ import forge.adventure.stage.MapStage;
 import forge.adventure.stage.WorldStage;
 import forge.adventure.util.Current;
 import forge.adventure.world.World;
+import forge.adventure.world.WorldSave;
+import forge.adventure.campaign.MapResumeState;
 import forge.util.TextUtil;
 
 import java.util.List;
@@ -56,6 +58,13 @@ public class GameScene extends HudScene {
         Forge.clearTransitionScreen();
         Forge.clearCurrentScreen();
         super.enter();
+        MapResumeState resume = WorldSave.getCurrentSave().takeMapResume();
+        if (resume != null) {
+            Gdx.app.postRunnable(() -> {
+                TileMapScene.instance().resume(resume);
+                Forge.switchScene(TileMapScene.instance());
+            });
+        }
         // This causes the inifine load of POI if the two collision point is too close.
         // IIRC This is used before and the player will start inside the POI.
         // but we don't allow saving inside the POI anymore.

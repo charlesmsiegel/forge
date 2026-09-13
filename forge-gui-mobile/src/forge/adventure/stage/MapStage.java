@@ -160,6 +160,66 @@ public class MapStage extends GameStage {
         foregroundSprites.addActor(newActor);
     }
 
+    public Map<Integer, Vector2> snapshotEnemyPositions() {
+        Map<Integer, Vector2> positions = new HashMap<>();
+        for (EnemySprite enemy : enemies)
+            positions.put(enemy.getId(), new Vector2(enemy.getX(), enemy.getY()));
+        return positions;
+    }
+
+    /** Restore transient defeats without permanently deleting respawning dungeon enemies. */
+    public Map<Integer, String> snapshotRivalIds() {
+        Map<Integer, String> ids = new HashMap<>();
+        for (EnemySprite enemy : enemies)
+            if (enemy.campaignRivalId != null)
+                ids.put(enemy.getId(), enemy.campaignRivalId);
+        return ids;
+    }
+
+    public void restoreEnemyPositions(Map<Integer, Vector2> remaining, Map<Integer, String> rivalIds) {
+        for (EnemySprite enemy : new ArrayList<>(enemies)) {
+            Vector2 position = remaining.get(enemy.getId());
+            if (position == null) {
+                enemy.remove();
+                actors.removeValue(enemy, true);
+                enemies.remove(enemy);
+            } else {
+                String rivalId = rivalIds.get(enemy.getId());
+                if (rivalId != null && !rivalId.equals(enemy.campaignRivalId)) {
+                    Rival rival = CampaignState.instance().rivals().byId(rivalId);
+                    if (rival == null)
+                        throw new IllegalStateException("Saved rival no longer exists: " + rivalId);
+                    EnemyData base = WorldData.getEnemy(rival.baseEnemyName);
+                    if (base == null)
+                        throw new IllegalStateException("Saved rival template no longer exists: " + rival.baseEnemyName);
+                    EnemySprite restored = new EnemySprite(enemy.getId(), rival.encounterData(base));
+                    restored.campaignRivalId = rival.id;
+                    restored.nameOverride = rival.name;
+                    replaceCampRival(enemy, restored);
+                    enemy = restored;
+                }
+                enemy.setPosition(position.x, position.y);
+            }
+        }
+    }
+
+    /** The roster selection becomes the actual camp actor used by duel animations. */
+    public void replaceCampRival(EnemySprite host, EnemySprite chosen) {
+        host.remove();
+        actors.removeValue(host, true);
+        enemies.remove(host);
+        addMapActor(chosen);
+        enemies.add(chosen);
+    }
+
+    public EnemySprite selectCampRival(EnemySprite host, EnemySprite chosen) {
+        for (EnemySprite existing : enemies)
+            if (chosen.campaignRivalId.equals(existing.campaignRivalId))
+                return existing;
+        replaceCampRival(host, chosen);
+        return chosen;
+    }
+
     @Override
     public boolean isColliding(Rectangle adjustedBoundingRect) {
         for (Rectangle collision : collisionRect) {

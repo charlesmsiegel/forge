@@ -69,7 +69,7 @@ public final class RivalEncounter {
                 chosen.campaignRivalId = rival.id;
                 chosen.nameOverride = rival.name;
                 chosen.setPosition(host.getX(), host.getY());
-                start(stage, chosen);
+                start(stage, stage.selectCampRival(host, chosen));
             });
         }
         if (page > 0) {
