@@ -36,6 +36,10 @@ public class AnteMatchIntegrationTest extends AdventureTestBase {
         RegisteredPlayer p2 = new RegisteredPlayer(burnDeck()).setPlayer(new LobbyPlayerAi("p2", null));
         p1.setAnteCards(List.of(myStake));
         p2.setAnteCards(List.of(theirStake));
+        p1.setPhysicalCards(java.util.Map.of());
+        p2.setPhysicalCards(java.util.Map.of());
+        p1.setAnteCardIds(List.of("my-stake-id"));
+        p2.setAnteCardIds(List.of("their-stake-id"));
         List<RegisteredPlayer> players = new ArrayList<>(List.of(p1, p2));
 
         GameRules rules = new GameRules(GameType.Adventure);
@@ -62,5 +66,8 @@ public class AnteMatchIntegrationTest extends AdventureTestBase {
         assertEquals(loserResult.wonCards, List.of());
         assertEquals(loserResult.lostCards.get(0).isFoil(), loserStake.isFoil(), "printing identity survives the game");
         assertNotEquals(winnerStake, loserStake);
+        String lostId = loser == p1 ? "my-stake-id" : "their-stake-id";
+        assertEquals(winnerResult.wonPhysicalCards.get(0).id, lostId);
+        assertEquals(loserResult.lostPhysicalCards.get(0).id, lostId);
     }
 }

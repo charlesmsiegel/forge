@@ -33,6 +33,7 @@ public class CampaignState implements SaveFileContent {
     private final Map<String, Integer> completions = new HashMap<>();
     private final CardIdentityLedger ownership = new CardIdentityLedger();
     private String campaignId = "";
+    private int configVersion;
     private Random random = MyRandom.getRandom();
 
     public static CampaignState instance() {
@@ -50,6 +51,7 @@ public class CampaignState implements SaveFileContent {
         completions.clear();
         ownership.clear();
         campaignId = "";
+        configVersion = 0;
     }
 
     /** Deterministic randomness for tests. */
@@ -81,6 +83,7 @@ public class CampaignState implements SaveFileContent {
     public void initializeOwnership(AdventurePlayer player) {
         if (!CampaignConfig.instance().isActive()) return;
         if (campaignId.isEmpty()) campaignId = CampaignConfig.instance().campaignId;
+        if (configVersion == 0) configVersion = CampaignConfig.instance().version;
         ownership.reconcile(player.getCards());
         expedition.bindCopies(ownership.copies());
     }
@@ -280,6 +283,7 @@ public class CampaignState implements SaveFileContent {
         if (data == null)
             return;
         if (data.containsKey("campaignId")) campaignId = data.readString("campaignId");
+        if (data.containsKey("configVersion")) configVersion = data.readInt("configVersion");
         if (data.containsKey("ownership")) ownership.load(data.readSubData("ownership"));
         if (data.containsKey("rivals"))
             rivals.load(data.readSubData("rivals"));
@@ -298,6 +302,7 @@ public class CampaignState implements SaveFileContent {
         SaveFileData data = new SaveFileData();
         data.store("version", SAVE_VERSION);
         data.store("campaignId", campaignId);
+        data.store("configVersion", configVersion);
         data.store("ownership", ownership.save());
         data.store("rivals", rivals.save());
         data.store("expedition", expedition.save());

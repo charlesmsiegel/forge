@@ -9,11 +9,9 @@ import forge.item.PaperCard;
 /**
  * Physical card ownership helpers for the Shandalar Reborn campaign.
  * <p>
- * A "physical copy" is one unit of count of an exact {@link PaperCard} printing (name, edition,
- * collector number, art index, foil, flags) inside a {@link CardPool}. Two copies of the same
- * printing are two units; different printings of the same card name are different keys.
- * This deliberately reuses Forge's collection model instead of introducing a parallel
- * per-instance card object (see docs/implementation-plan.md, decision 1).
+ * A physical copy is one unit of an exact {@link PaperCard} printing in Forge's {@link CardPool}.
+ * Campaign metadata gives each unit a stable ID; collection counts and deck rules remain Forge's.
+ * Printing-only operations choose an available ID, while ante transfers carry the selected ID.
  */
 public final class CardOwnership {
     private CardOwnership() {

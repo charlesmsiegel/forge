@@ -85,6 +85,45 @@ public class PhysicalIdentityTest extends AdventureTestBase {
         reloaded.initializeOwnership(player);
         assertEquals(reloaded.ownedCopies(player), ids);
         assertEquals(reloaded.availableCopies(player), migrated.availableCopies(player));
+
+        Rival oldRival = new Rival("legacy-rival", "Krag", "Goblin");
+        oldRival.addTaken(bolt);
+        SaveFileData oldRivalData = oldRival.save();
+        oldRivalData.remove("takenCopies");
+        Rival migratedRival = new Rival(); migratedRival.load(roundTrip(oldRivalData));
+        Rival reloadedRival = new Rival(); reloadedRival.load(roundTrip(migratedRival.save()));
+        assertEquals(reloadedRival.getTakenCopies(), migratedRival.getTakenCopies());
+        assertNotEquals(migratedRival.getTakenCopies().get(0).id, ids.get(0).id);
+    }
+
+    @Test
+    public void configurationVersionRemainsPinnedWhenInstalledConfigurationChanges() throws Exception {
+        CampaignConfig config = CampaignConfig.instance();
+        int originalVersion = config.version;
+        try {
+            config.version = 7;
+            AdventurePlayer player = newPlayer(deckOf(card("Lightning Bolt", "M10"), 1));
+            SaveFileData saved = roundTrip(CampaignState.instance().save());
+            config.version = 8;
+            CampaignState restored = new CampaignState(); restored.load(saved);
+            restored.initializeOwnership(player);
+            assertEquals(restored.save().readInt("configVersion"), 7);
+        } finally { config.version = originalVersion; }
+    }
+
+    @Test
+    public void sellingAvailableCopyRetiresItsIdAndReportsActualCountLeavingHomeCopy() {
+        PaperCard bolt = card("Lightning Bolt", "M10");
+        AdventurePlayer player = newPlayer(deckOf(bolt, 1));
+        player.addCard(bolt);
+        CampaignState state = CampaignState.instance();
+        state.enterExpedition("stronghold", player);
+        OwnedCard carried = state.availableCopies(player).get(0);
+        OwnedCard home = state.ownedCopies(player).stream().filter(c -> !c.id.equals(carried.id)).findFirst().orElseThrow();
+        assertEquals(player.sellCard(bolt, 2), 1);
+        assertEquals(state.ownedCopies(player), List.of(home));
+        assertTrue(state.availableCopies(player).isEmpty());
+        assertEquals(player.sellCard(bolt, 1), 0);
     }
 
     static SaveFileData roundTrip(SaveFileData data) throws Exception {
