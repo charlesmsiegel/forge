@@ -60,6 +60,35 @@ public class RivalRegistryTest extends AdventureTestBase {
     }
 
     @Test
+    public void campPagesReachEveryRivalAfterSaveLoad() {
+        CampaignState state = freshState();
+        PaperCard bolt = card("Lightning Bolt", "M10");
+        for (int i = 0; i < 9; i++)
+            state.onMatchEnd(null, goblin(), false, List.of(), List.of(bolt), null);
+        CampaignState loaded = freshState();
+        loaded.load(state.save());
+        assertEquals(loaded.rivals().page(0, 4), loaded.rivals().all().subList(0, 4));
+        assertEquals(loaded.rivals().page(1, 4), loaded.rivals().all().subList(4, 8));
+        assertEquals(loaded.rivals().page(2, 4), loaded.rivals().all().subList(8, 9));
+        assertTrue(loaded.rivals().page(3, 4).isEmpty());
+    }
+
+    @Test
+    public void bossRivalsBecomeRepeatableCampOpponentsWithoutChangingTheirTemplate() {
+        EnemyData boss = goblin();
+        boss.boss = true;
+        boss.nextEnemy = goblin();
+        Rival rival = new Rival("boss-rival", "Krag", boss.name);
+        EnemyData encounter = rival.encounterData(boss);
+        assertFalse(encounter.boss, "camp wins must not permanently delete a boss rival");
+        assertNull(encounter.nextEnemy, "a rival must not turn into its boss's next phase");
+        assertEquals(encounter.nameOverride, "Krag");
+        assertEquals(encounter.deck, boss.deck);
+        assertTrue(boss.boss);
+        assertNotNull(boss.nextEnemy);
+    }
+
+    @Test
     public void rivalNamesAreUnique() {
         CampaignState state = freshState();
         PaperCard bolt = card("Lightning Bolt", "M10");
@@ -101,6 +130,27 @@ public class RivalRegistryTest extends AdventureTestBase {
         assertEquals(state.rivals().reclaimable(first), List.of(angel));
         assertEquals(state.rivals().reclaimable(second), List.of(bolt));
         assertEquals(state.rivals().reclaimable("no-such-rival"), List.of());
+    }
+
+    @Test
+    public void winningATemplateCopyDoesNotReclaimAnIdenticalStolenCard() {
+        CampaignState state = freshState();
+        PaperCard bolt = card("Lightning Bolt", "M10");
+        String id = state.onMatchEnd(null, goblin(), false, List.of(), List.of(bolt), null);
+        AnteStake normal = new AnteStake(AnteStake.Kind.NORMAL, List.of(), List.of(bolt));
+        state.onMatchEnd(id, goblin(), true, List.of(bolt), List.of(), normal);
+        assertEquals(state.rivals().reclaimable(id), List.of(bolt));
+    }
+
+    @Test
+    public void reclamationRemovesOnlyThePledgedStolenCopy() {
+        CampaignState state = freshState();
+        PaperCard bolt = card("Lightning Bolt", "M10");
+        String id = state.onMatchEnd(null, goblin(), false, List.of(), List.of(bolt, bolt), null);
+        AnteStake reclamation = new AnteStake(AnteStake.Kind.RECLAMATION, List.of(), List.of(bolt));
+        // An ante card added another, identical template copy to the opponent's ante.
+        state.onMatchEnd(id, goblin(), true, List.of(bolt, bolt), List.of(), reclamation);
+        assertEquals(state.rivals().reclaimable(id), List.of(bolt));
     }
 
     @Test

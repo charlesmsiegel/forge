@@ -2,6 +2,7 @@ package forge.adventure.campaign;
 
 import com.google.common.collect.Lists;
 import forge.adventure.util.SaveFileContent;
+import forge.adventure.data.EnemyData;
 import forge.adventure.util.SaveFileData;
 import forge.deck.CardPool;
 import forge.item.PaperCard;
@@ -58,6 +59,15 @@ public class Rival implements SaveFileContent {
 
     public String record() {
         return playerWins + "-" + playerLosses;
+    }
+
+    /** A camp rival keeps its deck and life, but is never a one-time boss encounter. */
+    public EnemyData encounterData(EnemyData template) {
+        EnemyData encounter = new EnemyData(template);
+        encounter.nameOverride = name;
+        encounter.boss = false;
+        encounter.nextEnemy = null;
+        return encounter;
     }
 
     @Override

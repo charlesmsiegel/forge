@@ -27,6 +27,16 @@ public class RivalRegistry implements SaveFileContent {
         return rivals.size();
     }
 
+    /** A stable page of the camp roster, including rivals beyond the visible map slots. */
+    public List<Rival> page(int page, int size) {
+        if (page < 0 || size < 1)
+            throw new IllegalArgumentException("Invalid rival page");
+        long start = (long) page * size;
+        if (start >= rivals.size())
+            return List.of();
+        return List.copyOf(rivals.subList((int) start, (int) Math.min(start + size, rivals.size())));
+    }
+
     public Rival byId(String id) {
         if (id == null)
             return null;
