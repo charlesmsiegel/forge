@@ -847,6 +847,8 @@ public class AdventureDeckEditor extends FDeckEditor {
 
     @Override
     protected void addChosenBasicLands(CardPool landsToAdd) {
+        if (CampaignState.instance().expedition().isActive() && !isLimitedEditor())
+            return;
         if (isLimitedEditor())
             super.addChosenBasicLands(landsToAdd);
 
@@ -896,6 +898,8 @@ public class AdventureDeckEditor extends FDeckEditor {
 
     @Override
     protected boolean allowAddBasic() {
+        if (CampaignState.instance().expedition().isActive() && !isLimitedEditor())
+            return false;
         if (getEditorConfig() instanceof DeckPreviewConfig)
             return false;
         AdventureEventData currentEvent = getCurrentEvent();
