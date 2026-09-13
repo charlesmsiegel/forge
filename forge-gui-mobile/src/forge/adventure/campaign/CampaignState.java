@@ -187,9 +187,13 @@ public class CampaignState implements SaveFileContent {
             return null;
         if (playerWon) {
             rival.playerWins++;
-            for (PaperCard card : cardsWon) {
-                if (rival.removeTaken(card))
-                    CampaignLog.event("card_reclaimed").with("rival", rival.name).with("card", card).write();
+            // Template copies are not the stolen copies, even when their printings match.
+            if (stake != null && stake.kind == AnteStake.Kind.RECLAMATION) {
+                List<PaperCard> remainingWon = new ArrayList<>(cardsWon);
+                for (PaperCard card : stake.opponentCards) {
+                    if (remainingWon.remove(card) && rival.removeTaken(card))
+                        CampaignLog.event("card_reclaimed").with("rival", rival.name).with("card", card).write();
+                }
             }
         } else {
             rival.playerLosses++;
