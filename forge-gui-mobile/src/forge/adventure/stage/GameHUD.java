@@ -682,8 +682,11 @@ public class GameHUD extends Stage {
         if (active) {
             String region = forge.adventure.campaign.CampaignState.instance().expedition().getRegionId();
             String text = "[RED]EXPEDITION: " + region.toUpperCase() + "[WHITE] only carried cards usable";
-            if (!text.equals(expeditionLabel.getOriginalText()))
+            // TypingLabel exposes a StringBuilder; String.equals would restart every frame.
+            if (!text.contentEquals(expeditionLabel.getOriginalText())) {
                 expeditionLabel.restart(text);
+                expeditionLabel.skipToTheEnd();
+            }
         } else {
             expeditionLabel.restart("");
         }
