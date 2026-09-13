@@ -325,13 +325,33 @@ public class CardUtil {
                         PaperCard finalCandidate = CardUtil.getCardByNameAndEdition(candidate.getCardName(), candidate.getEdition());
                         result.add(finalCandidate);
                     } else {
-                        result.add(candidate);
+                        result.add(printingFromRequestedEditions(candidate, data));
                     }
                 }
             }
         }
         return result;
     }
+    /**
+     * When a reward asks for specific editions, hand out a printing from one of them instead of
+     * the default (latest) printing of the same card, so set-themed rewards are physically from
+     * that set. Falls back to the candidate when no such printing exists.
+     */
+    private static PaperCard printingFromRequestedEditions(PaperCard candidate, RewardData data) {
+        if (data == null || data.editions == null || data.editions.length == 0)
+            return candidate;
+        for (String edition : data.editions) {
+            if (edition.equals(candidate.getEdition()))
+                return candidate;
+        }
+        for (String edition : data.editions) {
+            PaperCard printed = StaticData.instance().getCommonCards().getCard(candidate.getCardName(), edition);
+            if (printed != null && edition.equals(printed.getEdition()))
+                return printed;
+        }
+        return candidate;
+    }
+
     private static AdventureReadPriceList.PriceData priceData;
 
     /**
