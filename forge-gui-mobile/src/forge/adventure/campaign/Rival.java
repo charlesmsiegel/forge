@@ -22,6 +22,23 @@ public class Rival implements SaveFileContent {
     public int playerLosses;
     public long createdAt;
     private final CardPool cardsTakenFromPlayer = new CardPool();
+    private final CardIdentityLedger takenCopies = new CardIdentityLedger();
+
+    public List<OwnedCard> getTakenCopies() {
+        takenCopies.reconcile(cardsTakenFromPlayer);
+        return takenCopies.copies();
+    }
+
+    public void addTaken(OwnedCard copy) {
+        takenCopies.add(copy);
+        cardsTakenFromPlayer.add(copy.card);
+    }
+
+    public boolean removeTaken(OwnedCard copy) {
+        if (!takenCopies.remove(copy)) return false;
+        cardsTakenFromPlayer.remove(copy.card);
+        return true;
+    }
 
     public Rival() {
     }
@@ -43,14 +60,14 @@ public class Rival implements SaveFileContent {
     }
 
     public void addTaken(PaperCard card) {
-        cardsTakenFromPlayer.add(card, 1);
+        addTaken(OwnedCard.mint(card));
     }
 
     /** @return true if one copy was removed (the player reclaimed it). */
     public boolean removeTaken(PaperCard card) {
-        if (cardsTakenFromPlayer.count(card) < 1)
-            return false;
-        return cardsTakenFromPlayer.remove(card, 1);
+        for (OwnedCard copy : getTakenCopies())
+            if (copy.card.equals(card)) return removeTaken(copy);
+        return false;
     }
 
     public boolean hasTaken(PaperCard card) {
@@ -79,11 +96,14 @@ public class Rival implements SaveFileContent {
         playerLosses = data.readInt("playerLosses");
         createdAt = data.containsKey("createdAt") ? data.readLong("createdAt") : 0;
         cardsTakenFromPlayer.clear();
+        takenCopies.clear();
         if (data.containsKey("cardsTaken")) {
             String[] lines = (String[]) data.readObject("cardsTaken");
             if (lines != null)
                 cardsTakenFromPlayer.addAll(CardPool.fromCardList(Lists.newArrayList(lines)));
         }
+        if (data.containsKey("takenCopies")) takenCopies.load(data.readSubData("takenCopies"));
+        takenCopies.reconcile(cardsTakenFromPlayer);
     }
 
     @Override
@@ -97,6 +117,8 @@ public class Rival implements SaveFileContent {
         data.store("createdAt", createdAt);
         String list = cardsTakenFromPlayer.toCardList("\n");
         data.storeObject("cardsTaken", list.isEmpty() ? new String[0] : list.split("\n"));
+        takenCopies.reconcile(cardsTakenFromPlayer);
+        data.store("takenCopies", takenCopies.save());
         return data;
     }
 

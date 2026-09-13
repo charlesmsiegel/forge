@@ -48,11 +48,43 @@ import forge.item.PaperCard;
 // only getters) and
 // GameObserver class - who should be notified of any considerable ingame event
 public final class GameOutcome implements Iterable<Entry<RegisteredPlayer, PlayerStatistics>> {
+    /** Optional persistent identity supplied by a campaign; independent of printing equality. */
+    public static final class AnteCard implements Serializable {
+        private static final long serialVersionUID = 1L;
+        public final String id;
+        public final PaperCard card;
+
+        public AnteCard(String id, PaperCard card) {
+            this.id = java.util.Objects.requireNonNull(id);
+            this.card = java.util.Objects.requireNonNull(card);
+        }
+    }
+
     public static class AnteResult implements Serializable {
         private static final long serialVersionUID = 5087554550408543192L;
 
         public final List<PaperCard> lostCards = Lists.newArrayList();
         public final List<PaperCard> wonCards = Lists.newArrayList();
+        public boolean hasPhysicalCards;
+        public final List<AnteCard> lostPhysicalCards = Lists.newArrayList();
+        public final List<AnteCard> wonPhysicalCards = Lists.newArrayList();
+
+        public void addWonPhysical(List<AnteCard> cards) {
+            hasPhysicalCards = true;
+            mergePhysical(cards, wonPhysicalCards, lostPhysicalCards);
+        }
+
+        public void addLostPhysical(List<AnteCard> cards) {
+            hasPhysicalCards = true;
+            mergePhysical(cards, lostPhysicalCards, wonPhysicalCards);
+        }
+
+        private static void mergePhysical(List<AnteCard> cards, List<AnteCard> own, List<AnteCard> opposite) {
+            for (AnteCard card : cards) {
+                if (!opposite.removeIf(c -> c.id.equals(card.id))
+                        && own.stream().noneMatch(c -> c.id.equals(card.id))) own.add(card);
+            }
+        }
 
         public AnteResult() {
         }
@@ -248,6 +280,14 @@ public final class GameOutcome implements Iterable<Entry<RegisteredPlayer, Playe
 
     public AnteResult getAnteResult(RegisteredPlayer pl) {
         return anteResult.get(pl);
+    }
+
+    public void addAnteWonPhysical(RegisteredPlayer player, List<AnteCard> cards) {
+        anteResult.computeIfAbsent(player, p -> new AnteResult()).addWonPhysical(cards);
+    }
+
+    public void addAnteLostPhysical(RegisteredPlayer player, List<AnteCard> cards) {
+        anteResult.computeIfAbsent(player, p -> new AnteResult()).addLostPhysical(cards);
     }
 
     public AnteResult getAnteResult(PlayerView pv) {

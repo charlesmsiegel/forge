@@ -132,6 +132,7 @@ public class DuelScene extends ForgeScene {
         boolean winner = false;
         List<PaperCard> anteWonCards = Collections.emptyList();
         List<PaperCard> anteLostCards = Collections.emptyList();
+        AnteService.PhysicalResult physicalAnte = null;
         try {
             winner = humanPlayer == hostedMatch.getGame().getMatch().getWinner();
 
@@ -161,7 +162,8 @@ public class DuelScene extends ForgeScene {
                     //Could also add the cards to the opponent's pool, but their games aren't simulated and they never edit their decks.
                 }
                 else if (CampaignConfig.instance().isActive()) {
-                    AnteService.applyResult(Current.player(), anteResult.wonCards, anteResult.lostCards);
+                    if (anteResult.hasPhysicalCards) physicalAnte = AnteService.applyResult(Current.player(), anteResult);
+                    else AnteService.applyResult(Current.player(), anteResult.wonCards, anteResult.lostCards);
                 }
                 else {
                     for (PaperCard card : anteResult.wonCards) {
@@ -174,6 +176,10 @@ public class DuelScene extends ForgeScene {
                 }
                 anteWonCards = new ArrayList<>(anteResult.wonCards);
                 anteLostCards = new ArrayList<>(anteResult.lostCards);
+                if (physicalAnte != null) {
+                    anteWonCards = physicalAnte.won.stream().map(c -> c.card).collect(java.util.stream.Collectors.toList());
+                    anteLostCards = physicalAnte.lost.stream().map(c -> c.card).collect(java.util.stream.Collectors.toList());
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -193,8 +199,11 @@ public class DuelScene extends ForgeScene {
             }
         }
         if (CampaignConfig.instance().isActive() && eventData == null) {
-            String rivalId = CampaignState.instance().onMatchEnd(enemy.campaignRivalId, enemy.getData(), winner,
-                    anteWonCards, anteLostCards, campaignStake);
+            String rivalId = physicalAnte == null
+                    ? CampaignState.instance().onMatchEnd(enemy.campaignRivalId, enemy.getData(), winner,
+                        anteWonCards, anteLostCards, campaignStake)
+                    : CampaignState.instance().onPhysicalMatchEnd(enemy.campaignRivalId, enemy.getData(), winner,
+                        physicalAnte, campaignStake);
             if (rivalId != null)
                 enemy.campaignRivalId = rivalId;
             CampaignLog.event("match")
@@ -576,6 +585,7 @@ public class DuelScene extends ForgeScene {
             if (campaignAnteActive && i == 0) {
                 if (campaignStake == null)
                     campaignStake = AnteService.normalStake(playerDeck, deck, campaign.ante, MyRandom.getRandom());
+                campaignStake = AnteService.preparePhysicalAnte(advPlayer, humanPlayer, aiPlayer, campaignStake, MyRandom.getRandom());
                 humanPlayer.setAnteCards(campaignStake.playerCards);
                 aiPlayer.setAnteCards(campaignStake.opponentCards);
             }

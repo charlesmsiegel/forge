@@ -5,10 +5,14 @@ import forge.deck.CardPool;
 import forge.deck.Deck;
 import forge.deck.DeckSection;
 import forge.item.PaperCard;
+import forge.game.GameOutcome;
+import forge.game.player.RegisteredPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 /**
  * Campaign ante rules (MVP.md §13, §17). Chooses the physical copies at stake before a duel and
@@ -80,6 +84,76 @@ public final class AnteService {
     public static AnteStake reclamationStake(Deck playerDeck, PaperCard reclaimed, CampaignConfig.AnteRules rules, Random random) {
         List<PaperCard> player = pickRandom(eligiblePlayerCards(playerDeck, rules), rules.reclamationRiskCount, random);
         return new AnteStake(AnteStake.Kind.RECLAMATION, player, List.of(reclaimed));
+    }
+
+    public static AnteStake reclamationStake(Deck playerDeck, OwnedCard reclaimed, CampaignConfig.AnteRules rules, Random random) {
+        AnteStake printingStake = reclamationStake(playerDeck, reclaimed.card, rules, random);
+        return new AnteStake(printingStake.kind, printingStake.playerCards, printingStake.opponentCards,
+                List.of(), List.of(reclaimed.id));
+    }
+
+    /** Bind every playable unit before Forge creates runtime cards, including additional effect antes. */
+    public static AnteStake preparePhysicalAnte(AdventurePlayer player, RegisteredPlayer human,
+                                                RegisteredPlayer opponent, AnteStake stake, Random random) {
+        CardPool deck = new CardPool();
+        deck.addAll(human.getDeck().getMain());
+        if (human.getDeck().has(DeckSection.Sideboard)) deck.addAll(human.getDeck().get(DeckSection.Sideboard));
+        Map<String, PaperCard> playerCopies = new LinkedHashMap<>();
+        for (OwnedCard copy : CampaignState.instance().availableCopies(player)) {
+            if (deck.count(copy.card) > 0) {
+                playerCopies.put(copy.id, copy.card);
+                deck.remove(copy.card);
+            }
+        }
+        if (!deck.isEmpty()) throw new IllegalStateException("Deck contains unavailable physical copies");
+        Map<String, PaperCard> opponentCopies = new LinkedHashMap<>();
+        for (PaperCard card : opponent.getDeck().getAllCardsInASinglePool().toFlatList()) {
+            OwnedCard copy = OwnedCard.mint(card);
+            opponentCopies.put(copy.id, card);
+        }
+        List<String> playerIds = selectIds(stake.playerCards, playerCopies, random);
+        List<String> opponentIds = stake.opponentIds.isEmpty()
+                ? selectIds(stake.opponentCards, opponentCopies, random) : stake.opponentIds;
+        human.setPhysicalCards(playerCopies);
+        opponent.setPhysicalCards(opponentCopies);
+        human.setAnteCardIds(playerIds);
+        opponent.setAnteCardIds(opponentIds);
+        return new AnteStake(stake.kind, stake.playerCards, stake.opponentCards, playerIds, opponentIds);
+    }
+
+    private static List<String> selectIds(List<PaperCard> cards, Map<String, PaperCard> copies, Random random) {
+        Map<String, PaperCard> remaining = new LinkedHashMap<>(copies);
+        List<String> ids = new ArrayList<>();
+        for (PaperCard card : cards) {
+            List<String> matching = new ArrayList<>();
+            remaining.forEach((id, printing) -> { if (printing.equals(card)) matching.add(id); });
+            if (matching.isEmpty()) throw new IllegalStateException("Ante copy unavailable: " + card);
+            String id = matching.get(random.nextInt(matching.size()));
+            ids.add(id);
+            remaining.remove(id);
+        }
+        return ids;
+    }
+
+    public static final class PhysicalResult {
+        public final List<OwnedCard> won = new ArrayList<>();
+        public final List<OwnedCard> lost = new ArrayList<>();
+    }
+
+    public static PhysicalResult applyResult(AdventurePlayer player, GameOutcome.AnteResult result) {
+        if (!result.hasPhysicalCards) throw new IllegalArgumentException("Missing physical ante result");
+        PhysicalResult applied = new PhysicalResult();
+        // Remove first: a newly won identical printing must never substitute for the lost ID.
+        for (GameOutcome.AnteCard lost : result.lostPhysicalCards) {
+            OwnedCard copy = new OwnedCard(lost.id, lost.card);
+            if (CardOwnership.removeCopy(player, copy)) applied.lost.add(copy);
+        }
+        for (GameOutcome.AnteCard won : result.wonPhysicalCards) {
+            OwnedCard copy = new OwnedCard(won.id, won.card);
+            CardOwnership.addCopy(player, copy);
+            applied.won.add(copy);
+        }
+        return applied;
     }
 
     /**

@@ -139,6 +139,37 @@ public class Game {
     private final Match match;
     private GameStage age = GameStage.BeforeMulligan;
     private GameOutcome outcome;
+    // Runtime IDs survive zone changes and ownership effects. Campaign IDs survive games/saves.
+    private final Map<Integer, GameOutcome.AnteCard> physicalCards = new HashMap<>();
+
+    public boolean tracksPhysicalCards() {
+        return match.getPlayers().stream().anyMatch(p -> p.getPhysicalCards() != null);
+    }
+
+    public void registerPhysicalCard(Card card, String requestedId) {
+        if (!tracksPhysicalCards() || physicalCards.containsKey(card.getId())) return;
+        String id = requestedId;
+        Map<String, PaperCard> supplied = card.getOwner().getRegisteredPlayer().getPhysicalCards();
+        if (id == null && supplied != null) {
+            for (Map.Entry<String, PaperCard> entry : supplied.entrySet()) {
+                if (entry.getValue().equals(card.getPaperCard())
+                        && physicalCards.values().stream().noneMatch(c -> c.id.equals(entry.getKey()))) {
+                    id = entry.getKey();
+                    break;
+                }
+            }
+        }
+        if (id == null) id = java.util.UUID.randomUUID().toString();
+        final String selectedId = id;
+        if (physicalCards.values().stream().anyMatch(c -> c.id.equals(selectedId)))
+            throw new IllegalArgumentException("Physical card already represented in game: " + id);
+        physicalCards.put(card.getId(), new GameOutcome.AnteCard(id, (PaperCard) card.getPaperCard()));
+    }
+
+    public GameOutcome.AnteCard getPhysicalCard(Card card) {
+        registerPhysicalCard(card, null);
+        return physicalCards.get(card.getId());
+    }
     private DrawOffer drawOffer;
 
     private final Game maingame;
@@ -1071,8 +1102,10 @@ public class Game {
                     chooseRandomCardsForAnte(player, anteed, includeBasicLands);
                     continue;
                 }
-                for (PaperCard pc : chosen) {
-                    anteed.put(player, resolvePreselectedAnteCard(player, pc, anteed.get(player)));
+                for (int i = 0; i < chosen.size(); i++) {
+                    List<String> ids = registered.getAnteCardIds();
+                    String id = ids == null ? null : ids.get(i);
+                    anteed.put(player, resolvePreselectedAnteCard(player, chosen.get(i), anteed.get(player), id));
                 }
             }
             return anteed;
@@ -1163,13 +1196,22 @@ public class Game {
      * or creates it and adds it to the library when the player is staking a card from outside the
      * main deck (sideboard, collection). The card is collectible so ownership changes apply.
      */
-    private Card resolvePreselectedAnteCard(final Player player, final PaperCard pc, final Collection<Card> alreadyChosen) {
+    private Card resolvePreselectedAnteCard(final Player player, final PaperCard pc, final Collection<Card> alreadyChosen, String physicalId) {
+        if (physicalId != null) {
+            for (ZoneType zone : List.of(ZoneType.Library, ZoneType.Sideboard)) {
+                for (Card c : player.getCardsIn(zone)) {
+                    if (!alreadyChosen.contains(c) && pc.equals(c.getPaperCard())
+                            && physicalId.equals(getPhysicalCard(c).id)) return c;
+                }
+            }
+        }
         for (final Card c : player.getCardsIn(ZoneType.Library)) {
-            if (!alreadyChosen.contains(c) && pc.equals(c.getPaperCard())) {
+            if (physicalId == null && !alreadyChosen.contains(c) && pc.equals(c.getPaperCard())) {
                 return c;
             }
         }
         final Card created = Card.fromPaperCard(pc, player);
+        registerPhysicalCard(created, physicalId);
         created.setCollectible(true);
         created.setGameTimestamp(getNextTimestamp());
         player.getZone(ZoneType.Library).add(created);

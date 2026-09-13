@@ -40,6 +40,19 @@ public class RegisteredPlayer {
     private boolean randomFoil = false;
     private boolean enableETBCountersEffect = false;
     private List<PaperCard> anteCards = null;
+    private java.util.Map<String, PaperCard> physicalCards;
+    private List<String> anteCardIds;
+
+    /** Optional metadata for deck/sideboard copies; null keeps ordinary Forge behavior. */
+    public void setPhysicalCards(java.util.Map<String, PaperCard> cards) {
+        physicalCards = cards == null ? null : new java.util.LinkedHashMap<>(cards);
+    }
+
+    public java.util.Map<String, PaperCard> getPhysicalCards() { return physicalCards; }
+
+    /** IDs parallel to preselected ante printings, including stakes outside the deck. */
+    public void setAnteCardIds(List<String> ids) { anteCardIds = ids == null ? null : List.copyOf(ids); }
+    public List<String> getAnteCardIds() { return anteCardIds; }
 
     public RegisteredPlayer(Deck deck0) {
         originalDeck = deck0;
