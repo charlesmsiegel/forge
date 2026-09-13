@@ -28,6 +28,20 @@ public final class CardOwnership {
      * @return false if the player owns no copy of that printing (nothing changes).
      */
     public static boolean removeOne(AdventurePlayer player, PaperCard card) {
+        if (CampaignConfig.instance().isActive()) {
+            for (OwnedCard copy : CampaignState.instance().availableCopies(player))
+                if (copy.card.equals(card)) return removeCopy(player, copy);
+            return false;
+        }
+        return removePrinting(player, card, null);
+    }
+
+    public static boolean removeCopy(AdventurePlayer player, OwnedCard copy) {
+        if (!CampaignState.instance().availableCopies(player).contains(copy)) return false;
+        return removePrinting(player, copy.card, copy);
+    }
+
+    private static boolean removePrinting(AdventurePlayer player, PaperCard card, OwnedCard copy) {
         CardPool collection = player.getCards();
         int owned = collection.count(card);
         CampaignState state = CampaignState.instance();
@@ -40,7 +54,8 @@ public final class CardOwnership {
         }
         if (!collection.remove(card, 1))
             return false;
-        CampaignState.instance().onCardsLost(card, 1);
+        if (copy != null) state.loseCopy(copy);
+        else state.onCardsLost(card, 1);
         // Home copies cannot silently replace a card lost from the expedition deck.
         if (state.expedition().isActive())
             trimDeck(player.getSelectedDeck(), card, available - 1);

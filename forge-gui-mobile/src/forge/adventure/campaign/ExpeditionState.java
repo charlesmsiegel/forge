@@ -9,6 +9,11 @@ import forge.deck.DeckSection;
 import forge.item.PaperCard;
 
 import java.util.Map;
+import java.util.List;
+import java.util.Set;
+import java.util.LinkedHashSet;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Availability filter for expeditions (MVP.md §12): while away from home only the carried copies
@@ -22,6 +27,47 @@ public class ExpeditionState implements SaveFileContent {
     private String rootPoiId = "";
     private final CardPool carried = new CardPool();
     private final CardPool acquired = new CardPool();
+    private final Set<String> carriedIds = new LinkedHashSet<>();
+    private final Set<String> acquiredIds = new LinkedHashSet<>();
+    private boolean hasIdentity;
+
+    void bindCopies(List<OwnedCard> owned) {
+        if (!active || hasIdentity) return;
+        CardPool remainingCarried = new CardPool();
+        remainingCarried.addAll(carried);
+        CardPool remainingAcquired = new CardPool();
+        remainingAcquired.addAll(acquired);
+        for (OwnedCard copy : owned) {
+            if (remainingCarried.count(copy.card) > 0) {
+                remainingCarried.remove(copy.card);
+                carriedIds.add(copy.id);
+            } else if (remainingAcquired.count(copy.card) > 0) {
+                remainingAcquired.remove(copy.card);
+                acquiredIds.add(copy.id);
+            }
+        }
+        hasIdentity = true;
+    }
+
+    List<OwnedCard> availableCopies(List<OwnedCard> owned) {
+        if (!active) return owned;
+        List<OwnedCard> result = new ArrayList<>();
+        for (OwnedCard copy : owned)
+            if (acquiredIds.contains(copy.id)) result.add(copy);
+        for (OwnedCard copy : owned)
+            if (carriedIds.contains(copy.id)) result.add(copy);
+        return result;
+    }
+
+    void onAcquired(OwnedCard copy) {
+        onAcquired(copy.card, 1);
+        if (active) acquiredIds.add(copy.id);
+    }
+
+    void onLost(OwnedCard copy) {
+        if (acquiredIds.remove(copy.id)) acquired.remove(copy.card);
+        else if (carriedIds.remove(copy.id)) carried.remove(copy.card);
+    }
 
     public boolean isActive() {
         return active;
@@ -54,6 +100,9 @@ public class ExpeditionState implements SaveFileContent {
         this.regionId = regionId == null ? "" : regionId;
         carried.clear();
         acquired.clear();
+        carriedIds.clear();
+        acquiredIds.clear();
+        hasIdentity = false;
         carried.addAll(activeDeck.getMain());
         if (activeDeck.has(DeckSection.Sideboard))
             carried.addAll(activeDeck.get(DeckSection.Sideboard));
@@ -66,6 +115,9 @@ public class ExpeditionState implements SaveFileContent {
         rootPoiId = "";
         carried.clear();
         acquired.clear();
+        carriedIds.clear();
+        acquiredIds.clear();
+        hasIdentity = false;
     }
 
     public void onAcquired(PaperCard card, int amount) {
@@ -120,6 +172,11 @@ public class ExpeditionState implements SaveFileContent {
             rootPoiId = "";
         carried.addAll(readPool(data, "carried"));
         acquired.addAll(readPool(data, "acquired"));
+        hasIdentity = data.containsKey("carriedIds");
+        if (hasIdentity) {
+            carriedIds.addAll(Arrays.asList((String[]) data.readObject("carriedIds")));
+            acquiredIds.addAll(Arrays.asList((String[]) data.readObject("acquiredIds")));
+        }
     }
 
     private static CardPool readPool(SaveFileData data, String key) {
@@ -142,6 +199,10 @@ public class ExpeditionState implements SaveFileContent {
         data.store("rootPoiId", rootPoiId);
         data.storeObject("carried", writePool(carried));
         data.storeObject("acquired", writePool(acquired));
+        if (hasIdentity) {
+            data.storeObject("carriedIds", carriedIds.toArray(new String[0]));
+            data.storeObject("acquiredIds", acquiredIds.toArray(new String[0]));
+        }
         return data;
     }
 }
