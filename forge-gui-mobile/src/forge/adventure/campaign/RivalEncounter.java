@@ -4,6 +4,8 @@ import forge.adventure.character.EnemySprite;
 import forge.adventure.scene.DuelScene;
 import forge.adventure.stage.MapStage;
 import forge.adventure.util.Current;
+import forge.adventure.util.Config;
+import forge.deck.Deck;
 import forge.adventure.data.EnemyData;
 import forge.adventure.data.WorldData;
 import forge.item.PaperCard;
@@ -38,7 +40,17 @@ public final class RivalEncounter {
         List<String> labels = new ArrayList<>();
         List<Runnable> actions = new ArrayList<>();
         labels.add("Duel (normal ante)");
-        actions.add(() -> stage.beginDuel(mob));
+        actions.add(() -> {
+            DuelScene.instance().setCampaignStake(null, mob);
+            stage.beginDuel(mob);
+        });
+        if (!CampaignState.instance().knowledge().known(rival.id).isEmpty()) {
+            Deck deck = deckForTargeting(mob);
+            if (!CampaignState.instance().knowledge().targets(rival.id, deck).isEmpty()) {
+                labels.add("Raise the ante (2 cards)...");
+                actions.add(() -> chooseTarget(stage, mob, rival, 0));
+            }
+        }
         if (!taken.isEmpty()) {
             labels.add("Reclaim a card...");
             actions.add(() -> chooseCard(stage, mob, rival, 0));
@@ -65,6 +77,7 @@ public final class RivalEncounter {
                             List.of(() -> chooseRival(stage, host, page)));
                     return;
                 }
+                host.campaignEncounter().clear();
                 EnemySprite chosen = new EnemySprite(host.getId(), rival.encounterData(base));
                 chosen.campaignRivalId = rival.id;
                 chosen.nameOverride = rival.name;
@@ -86,8 +99,62 @@ public final class RivalEncounter {
     }
 
     private static void walkAway(MapStage stage, EnemySprite mob) {
+        mob.campaignEncounter().clear();
+        DuelScene.instance().setCampaignStake(null, mob);
         mob.freezeMovement();
         stage.resetPosition();
+    }
+
+    private static Deck deckForTargeting(EnemySprite mob) {
+        return mob.campaignEncounter().deck(() -> {
+            boolean genetic = Config.instance().getConfigData().enableGeneticAI
+                    && (Current.player().isUsingCustomDeck() || Current.player().isHardorInsaneDifficulty());
+            return mob.getData().copyPlayerDeck ? Current.player().getSelectedDeck()
+                    : mob.getData().generateDeck(Current.player().isFantasyMode(), genetic);
+        });
+    }
+
+    private static void chooseTarget(MapStage stage, EnemySprite mob, Rival rival, int index) {
+        Deck deck = deckForTargeting(mob);
+        List<PaperCard> targets = CampaignState.instance().knowledge().targets(rival.id, deck);
+        if (targets.isEmpty()) { start(stage, mob); return; }
+        int selected = Math.floorMod(index, targets.size());
+        PaperCard target = targets.get(selected);
+        List<String> labels = new ArrayList<>();
+        List<Runnable> actions = new ArrayList<>();
+        labels.add("Risk two cards for it");
+        actions.add(() -> confirmTarget(stage, mob, rival, deck, target));
+        if (targets.size() > 1) {
+            labels.add("Next known card");
+            actions.add(() -> chooseTarget(stage, mob, rival, selected + 1));
+        }
+        labels.add("Back");
+        actions.add(() -> start(stage, mob));
+        stage.showOptionsDialog("[GOLD]Known card: " + DuelScene.describeAll(List.of(target))
+                + "[WHITE]\n(" + (selected + 1) + " of " + targets.size() + ")\n"
+                + "Risk two random eligible cards against this exact printing from the opponent's active deck.", labels, actions);
+    }
+
+    private static void confirmTarget(MapStage stage, EnemySprite mob, Rival rival, Deck deck, PaperCard target) {
+        final AnteStake stake;
+        try {
+            stake = AnteService.targetedStake(Current.player().getSelectedDeck(), deck, target,
+                    CampaignState.instance().knowledge(), rival.id, CampaignConfig.instance().ante, MyRandom.getRandom());
+        } catch (IllegalArgumentException e) {
+            stage.showOptionsDialog(e.getMessage(), List.of("Back"), List.of(() -> start(stage, mob)));
+            return;
+        }
+        CampaignLog.event("targeted_ante_offered").with("rivalId", rival.id)
+                .withCards("target", stake.opponentCards).withCards("risked", stake.playerCards).write();
+        stage.showOptionsDialog("[RED]Raise the ante.[WHITE]\nYou would risk: " + DuelScene.describeAll(stake.playerCards)
+                        + "\nagainst: " + DuelScene.describeAll(stake.opponentCards) + "\nFight?",
+                List.of("Fight", "Cancel"), List.of(() -> {
+                    DuelScene.instance().setCampaignStake(stake, mob);
+                    stage.beginDuel(mob);
+                }, () -> {
+                    DuelScene.instance().setCampaignStake(null, mob);
+                    start(stage, mob);
+                }));
     }
 
     private static void chooseCard(MapStage stage, EnemySprite mob, Rival rival, int index) {

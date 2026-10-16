@@ -28,6 +28,7 @@ public class CampaignState implements SaveFileContent {
 
     private static CampaignState current = new CampaignState();
 
+    private final OpponentKnowledge knowledge = new OpponentKnowledge();
     private final RivalRegistry rivals = new RivalRegistry();
     private final ExpeditionState expedition = new ExpeditionState();
     private final Map<String, Integer> completions = new HashMap<>();
@@ -48,6 +49,7 @@ public class CampaignState implements SaveFileContent {
 
     public void clear() {
         rivals.load(null);
+        knowledge.load(null);
         expedition.leave();
         completions.clear();
         realms.clear();
@@ -60,6 +62,8 @@ public class CampaignState implements SaveFileContent {
     public void setRandom(Random random) {
         this.random = random;
     }
+
+    public OpponentKnowledge knowledge() { return knowledge; }
 
     public RivalRegistry rivals() {
         return rivals;
@@ -308,8 +312,10 @@ public class CampaignState implements SaveFileContent {
                 promoted = true;
             }
             rival.playerLosses++;
-            for (PaperCard card : cardsLost)
+            for (PaperCard card : cardsLost) {
                 rival.addTaken(card);
+                knowledge.observe(rival.id, card);
+            }
             CampaignLog.event(promoted ? "rival_created" : "rival_took_cards")
                     .with("rival", rival.name).with("rivalId", rival.id).with("base", rival.baseEnemyName)
                     .withCards("cards", cardsLost).with("record", rival.record()).write();
@@ -348,7 +354,10 @@ public class CampaignState implements SaveFileContent {
         if (rival == null) return null;
         if (playerWon) rival.playerWins++;
         else rival.playerLosses++;
-        for (OwnedCard copy : result.lost) rival.addTaken(copy);
+        for (OwnedCard copy : result.lost) {
+            rival.addTaken(copy);
+            knowledge.observe(rival.id, copy.card);
+        }
         // Only actual IDs that came back are reclaimed, regardless of match victory.
         for (OwnedCard copy : result.won)
             if (rival.removeTaken(copy))
@@ -373,6 +382,7 @@ public class CampaignState implements SaveFileContent {
         if (data.containsKey("ownership")) ownership.load(data.readSubData("ownership"));
         if (data.containsKey("rivals"))
             rivals.load(data.readSubData("rivals"));
+        if (data.containsKey("knowledge")) knowledge.load(data.readSubData("knowledge"));
         if (data.containsKey("expedition"))
             expedition.load(data.readSubData("expedition"));
         if (data.containsKey("realms")) {
@@ -399,6 +409,7 @@ public class CampaignState implements SaveFileContent {
         data.store("configVersion", configVersion);
         data.store("ownership", ownership.save());
         data.store("rivals", rivals.save());
+        data.store("knowledge", knowledge.save());
         data.store("expedition", expedition.save());
         SaveFileData savedRealms = new SaveFileData();
         for (Map.Entry<String, RealmProgress> entry : realms.entrySet())

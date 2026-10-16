@@ -77,6 +77,23 @@ public final class AnteService {
         return new AnteStake(AnteStake.Kind.NORMAL, player, opponent);
     }
 
+    /** Raise the ante before rolling a normal stake: two player copies for one known deck printing. */
+    public static AnteStake targetedStake(Deck playerDeck, Deck opponentDeck, PaperCard target,
+                                          OpponentKnowledge knowledge, String opponentId,
+                                          CampaignConfig.AnteRules rules, Random random) {
+        if (!knowledge.targets(opponentId, opponentDeck).contains(target))
+            throw new IllegalArgumentException("That exact printing is not known in this opponent's active deck");
+        List<PaperCard> eligible = eligiblePlayerCards(playerDeck, rules);
+        if (eligible.size() < 2) throw new IllegalArgumentException("Targeted ante requires two eligible cards");
+        return new AnteStake(AnteStake.Kind.TARGETED, pickRandom(eligible, 2, random), List.of(target));
+    }
+
+    public static void validateTargetedStake(AnteStake stake, Deck opponentDeck, OpponentKnowledge knowledge, String opponentId) {
+        if (stake.kind != AnteStake.Kind.TARGETED || stake.playerCards.size() != 2 || stake.opponentCards.size() != 1
+                || !knowledge.targets(opponentId, opponentDeck).contains(stake.opponentCards.get(0)))
+            throw new IllegalArgumentException("Targeted ante is no longer valid for this encounter");
+    }
+
     /**
      * Reclamation ante: the player risks {@code reclamationRiskCount} random eligible copies against
      * one specific card the opponent previously won from them.

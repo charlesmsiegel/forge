@@ -100,6 +100,7 @@ public class DuelScene extends ForgeScene {
     /** Shandalar Reborn: cards at stake in this duel (null = no campaign ante). */
     private AnteStake campaignStake;
     private boolean campaignAnteActive;
+    private volatile forge.adventure.campaign.PublicCardObserver campaignObserver;
 
     private EnemySprite campaignStakeEnemy;
 
@@ -205,8 +206,14 @@ public class DuelScene extends ForgeScene {
                         anteWonCards, anteLostCards, campaignStake)
                     : CampaignState.instance().onPhysicalMatchEnd(enemy.campaignRivalId, enemy.getData(), winner,
                         physicalAnte, campaignStake);
-            if (rivalId != null)
+            if (rivalId != null) {
                 enemy.campaignRivalId = rivalId;
+                if (campaignObserver != null) {
+                    campaignObserver.snapshot();
+                    for (PaperCard seen : campaignObserver.observations())
+                        CampaignState.instance().knowledge().observe(rivalId, seen);
+                }
+            }
             CampaignLog.event("match")
                     .with("enemy", enemyName)
                     .with("enemyTemplate", enemy.getData().name)
@@ -222,6 +229,7 @@ public class DuelScene extends ForgeScene {
                     .write();
         }
         campaignStake = null;
+        campaignObserver = null;
         boolean showMessages = enemy.getData().boss || (enemy.getData().copyPlayerDeck && Current.player().isUsingCustomDeck());
         Current.player().clearBlessing();
 
@@ -477,6 +485,9 @@ public class DuelScene extends ForgeScene {
         if (!campaignAnteActive || campaignStakeEnemy != enemy)
             campaignStake = null; // a pre-set stake only applies to the enemy it was rolled for
         campaignStakeEnemy = null;
+        Deck preparedCampaignDeck = enemy.campaignEncounter().take();
+        if (!campaignAnteActive) preparedCampaignDeck = null;
+        campaignObserver = null;
 
         List<RegisteredPlayer> players = new ArrayList<>();
 
@@ -574,7 +585,8 @@ public class DuelScene extends ForgeScene {
                 deck = eventData.nextOpponent.getDeck();
             } else {
                 boolean useGeneticAI = Config.instance().getConfigData().enableGeneticAI && (Current.player().isUsingCustomDeck() || Current.player().isHardorInsaneDifficulty());
-                deck = currentEnemy.copyPlayerDeck ? this.playerDeck : currentEnemy.generateDeck(Current.player().isFantasyMode(), useGeneticAI);
+                deck = i == 0 && preparedCampaignDeck != null ? preparedCampaignDeck
+                        : currentEnemy.copyPlayerDeck ? this.playerDeck : currentEnemy.generateDeck(Current.player().isFantasyMode(), useGeneticAI);
             }
             if (deck == null) {
                 isDeckMissing = true;
@@ -588,6 +600,8 @@ public class DuelScene extends ForgeScene {
             if (campaignAnteActive && i == 0) {
                 if (campaignStake == null)
                     campaignStake = AnteService.normalStake(playerDeck, deck, campaign.ante, MyRandom.getRandom());
+                if (campaignStake.kind == AnteStake.Kind.TARGETED)
+                    AnteService.validateTargetedStake(campaignStake, deck, CampaignState.instance().knowledge(), enemy.campaignRivalId);
                 campaignStake = AnteService.preparePhysicalAnte(advPlayer, humanPlayer, aiPlayer, campaignStake, MyRandom.getRandom());
                 humanPlayer.setAnteCards(campaignStake.playerCards);
                 aiPlayer.setAnteCards(campaignStake.opponentCards);
@@ -663,6 +677,13 @@ public class DuelScene extends ForgeScene {
         rules.setWarnAboutAICards(false);
 
         //hostedMatch.setEndGameHook(() -> DuelScene.this.GameEnd());
+        hostedMatch.setGameCreatedHook(campaignAnteActive ? observedGame -> {
+            for (Player observer : observedGame.getPlayers())
+                if (observer.getRegisteredPlayer() == humanPlayer) {
+                    campaignObserver = new forge.adventure.campaign.PublicCardObserver(observedGame, observer);
+                    break;
+                }
+        } : null);
         hostedMatch.startMatch(rules, appliedVariants, players, guiMap, bossBattle ? MusicPlaylist.BOSS : MusicPlaylist.MATCH);
         MatchController.instance.setGameView(hostedMatch.getGameView());
         boolean showMessages = enemy.getData().boss || (enemy.getData().copyPlayerDeck && Current.player().isUsingCustomDeck());

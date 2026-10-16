@@ -93,6 +93,8 @@ public class EnemySprite extends CharacterSprite implements Steerable<Vector2> {
     /** Historical chapter boss metadata; separate from the legacy standalone completion. */
     public String completesRealm;
     public String completesChapter;
+    private final forge.adventure.campaign.PreparedCampaignEncounter campaignEncounter = new forge.adventure.campaign.PreparedCampaignEncounter();
+    public forge.adventure.campaign.PreparedCampaignEncounter campaignEncounter() { return campaignEncounter; }
     private ProgressableGraphPath<NavigationVertex> navPath;
     public Vector2 fleeTarget;
 
