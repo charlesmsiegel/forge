@@ -28,6 +28,7 @@ public class CampaignState implements SaveFileContent {
 
     private static CampaignState current = new CampaignState();
 
+    private CardUniverse universe;
     private final CampaignProgress progression = new CampaignProgress();
     private final OpponentKnowledge knowledge = new OpponentKnowledge();
     private final RivalRegistry rivals = new RivalRegistry();
@@ -46,9 +47,12 @@ public class CampaignState implements SaveFileContent {
     /** Replace the live state (new game, load, tests). */
     public static void setInstance(CampaignState state) {
         current = state == null ? new CampaignState() : state;
+        forge.adventure.data.RewardData.invalidateCardPool();
     }
 
     public void clear() {
+        universe = null;
+        forge.adventure.data.RewardData.invalidateCardPool();
         rivals.load(null);
         knowledge.load(null);
         progression.load(null);
@@ -63,6 +67,34 @@ public class CampaignState implements SaveFileContent {
     /** Deterministic randomness for tests. */
     public void setRandom(Random random) {
         this.random = random;
+    }
+
+    public CardUniverse universeFor(CampaignConfig config) {
+        return universe != null && universe.belongsTo(config) ? universe : null;
+    }
+
+    public void initializeUniverse(CampaignConfig config, forge.adventure.data.ConfigData plane) {
+        if (!config.isActive() || universeFor(config) != null) return;
+        universe = CardUniverse.capture(config, plane);
+        forge.adventure.data.RewardData.invalidateCardPool();
+    }
+
+    public void requireCampaignEdition(String edition) {
+        CardUniverse snapshot = universeFor(CampaignConfig.instance());
+        if (snapshot != null) snapshot.requireEdition(edition);
+    }
+
+    /** Ordinary generated products obey the frozen universe; authored bespoke rewards are separate. */
+    public void filterGeneratedPack(Deck pack) {
+        CardUniverse snapshot = universeFor(CampaignConfig.instance());
+        if (snapshot == null) return;
+        List<Map.Entry<PaperCard, Integer>> remove = new ArrayList<>();
+        int allowed = 0;
+        for (Map.Entry<PaperCard, Integer> entry : pack.getMain())
+            if (!snapshot.allowsPrinting(entry.getKey())) remove.add(Map.entry(entry.getKey(), entry.getValue()));
+            else allowed += entry.getValue();
+        if (allowed == 0) throw new IllegalArgumentException("No campaign-legal cards in generated product");
+        for (Map.Entry<PaperCard, Integer> entry : remove) pack.getMain().remove(entry.getKey(), entry.getValue());
     }
 
     public CampaignProgress progression() { return progression; }
@@ -147,6 +179,8 @@ public class CampaignState implements SaveFileContent {
     }
 
     public void enterExpedition(String regionId, AdventurePlayer player, String rootPoiId) {
+        if (regionId.equals(CampaignConfig.instance().stronghold.region))
+            for (String edition : CampaignConfig.instance().stronghold.editions) requireCampaignEdition(edition);
         initializeOwnership(player);
         expedition.enter(regionId, player.getSelectedDeck());
         expedition.bindCopies(ownership.copies());
@@ -213,9 +247,11 @@ public class CampaignState implements SaveFileContent {
         CampaignConfig.instance().validateRealmContent(realm);
         CampaignProgress.validateRules(CampaignConfig.instance().progression);
         for (HistoricalRealm.Chapter chapter : realm.chapters) {
-            for (String edition : chapter.editions)
+            for (String edition : chapter.editions) {
+                requireCampaignEdition(edition);
                 if (forge.StaticData.instance().getCardEdition(edition) == null)
                     throw new IllegalArgumentException("Unknown historical edition " + edition);
+            }
             RegionCompletion.boosterTemplate(chapter.boosterEdition);
         }
         RealmProgress progress = realmProgress(realmId);
@@ -412,6 +448,7 @@ public class CampaignState implements SaveFileContent {
         clear();
         if (data == null)
             return;
+        if (data.containsKey("universe")) { universe = new CardUniverse(); universe.load(data.readSubData("universe")); }
         if (data.containsKey("campaignId")) campaignId = data.readString("campaignId");
         if (data.containsKey("configVersion")) configVersion = data.readInt("configVersion");
         if (data.containsKey("ownership")) ownership.load(data.readSubData("ownership"));
@@ -441,6 +478,7 @@ public class CampaignState implements SaveFileContent {
     public SaveFileData save() {
         SaveFileData data = new SaveFileData();
         data.store("version", SAVE_VERSION);
+        if (universe != null) data.store("universe", universe.save());
         data.store("campaignId", campaignId);
         data.store("configVersion", configVersion);
         data.store("ownership", ownership.save());

@@ -69,7 +69,8 @@ public final class CampaignTrades {
         List<PaperCard> outputs = new ArrayList<>();
         for (PaperCard card : StaticData.instance().getCommonCards().getAllCards())
             if (matches(card, recipe.outputEditions, recipe.outputRarity, recipe.outputColor)
-                    && !card.getRules().isUnsupported() && !CampaignConfig.instance().cards.isBanned(card.getName())) outputs.add(card);
+                    && (state.universeFor(CampaignConfig.instance()) == null || state.universeFor(CampaignConfig.instance()).allowsPrinting(card))
+                    && !card.getRules().isUnsupported() && !CampaignConfig.instance().isCardBanned(card.getName())) outputs.add(card);
         if (outputs.isEmpty()) throw new IllegalArgumentException("No eligible output for this exchange");
         outputs.sort(java.util.Comparator.naturalOrder());
         PaperCard reward = outputs.get(random.nextInt(outputs.size()));

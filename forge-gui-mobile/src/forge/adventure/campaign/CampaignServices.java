@@ -35,7 +35,7 @@ public final class CampaignServices {
         String name = copy.card.getName();
         if (name.length() > 26) name = name.substring(0, 23) + "...";
         return name + " (" + copy.card.getEdition() + " #" + copy.card.getCollectorNumber()
-                + (copy.card.isFoil() ? ", foil" : "") + ") [" + copy.id.substring(Math.max(0, copy.id.length() - 8)) + "]";
+                + (copy.card.isFoil() ? ", foil" : "") + ") copy " + copy.id.substring(Math.max(0, copy.id.length() - 8));
     }
 
     private static void protection(MapStage stage, int page) {
@@ -47,7 +47,7 @@ public final class CampaignServices {
         int selected = Math.max(0, Math.min(page, Math.max(0, (copies.size() - 1) / 4)));
         List<String> labels = new ArrayList<>(); List<Runnable> actions = new ArrayList<>();
         for (OwnedCard copy : copies.subList(selected * 4, Math.min(copies.size(), selected * 4 + 4))) {
-            labels.add((state.progression().isProtected(copy.id) ? "[Protected] " : "") + shortCopy(copy));
+            labels.add((state.progression().isProtected(copy.id) ? "Protected: " : "") + shortCopy(copy));
             actions.add(() -> protectionChoice(stage, copy, selected));
         }
         pages(labels, actions, selected, copies.size(), p -> protection(stage, p));
@@ -72,7 +72,7 @@ public final class CampaignServices {
 
     private static void restricted(MapStage stage, int page) {
         List<String> names = CampaignState.instance().ownedCopies(Current.player()).stream().map(copy -> copy.card.getName())
-                .filter(CampaignConfig.instance().cards::isRestricted).distinct().sorted().toList();
+                .filter(CampaignConfig.instance()::isCardRestricted).distinct().sorted().toList();
         int selected = Math.max(0, Math.min(page, Math.max(0, (names.size() - 1) / 4)));
         List<String> labels = new ArrayList<>(); List<Runnable> actions = new ArrayList<>();
         for (String name : names.subList(selected * 4, Math.min(names.size(), selected * 4 + 4))) {

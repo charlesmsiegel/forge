@@ -91,13 +91,14 @@ public class WorldSave {
                  ObjectInputStream oos = new ObjectInputStream(inf)) {
                 currentSave.header = (WorldSaveHeader) oos.readObject();
                 SaveFileData mainData = (SaveFileData) oos.readObject();
+                CampaignState.instance().load(mainData.containsKey("campaign") ? mainData.readSubData("campaign") : null);
+                CampaignState.instance().initializeUniverse(CampaignConfig.instance(), Config.instance().getPlaneConfigData());
                 currentSave.player.load(mainData.readSubData("player"));
                 GamePlayerUtil.getGuiPlayer().setName(currentSave.player.getName());
                 try {
                     currentSave.world.load(mainData.readSubData("world"));
                     currentSave.pointOfInterestChanges.load(mainData.readSubData("pointOfInterestChanges"));
                     WorldStage.getInstance().load(mainData.readSubData("worldStage"));
-                    CampaignState.instance().load(mainData.containsKey("campaign") ? mainData.readSubData("campaign") : null);
                     CampaignState.instance().initializeOwnership(currentSave.player);
                     if (mainData.containsKey("mapResume")) {
                         MapResumeState resume = new MapResumeState();
@@ -158,9 +159,10 @@ public class WorldSave {
 
     public static WorldSave generateNewWorld(String name, boolean male, int race, int avatarIndex, ColorSet startingColorIdentity, DifficultyData diff, AdventureModes mode, int customDeckIndex, CardEdition starterEdition, long seed) {
         Forge.getLocalizer().loadAdventureBundle(Config.instance().getPlanePath(Config.instance().getSettingData().plane) + "languages/");
+        CampaignState.setInstance(new CampaignState());
+        CampaignState.instance().initializeUniverse(CampaignConfig.instance(), Config.instance().getPlaneConfigData());
         currentSave.world.generateNew(seed);
         currentSave.pointOfInterestChanges.clear();
-        CampaignState.setInstance(new CampaignState());
         currentSave.pendingMapResume = null;
         boolean chaos = mode == AdventureModes.Chaos;
         boolean custom = mode == AdventureModes.Custom;

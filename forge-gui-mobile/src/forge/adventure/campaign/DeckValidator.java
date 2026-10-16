@@ -48,23 +48,28 @@ public final class DeckValidator {
             String name = e.getKey();
             int count = e.getValue();
             PaperCard sample = firstByName(all, name);
-            if (config.cards.isBanned(name)) {
+            if (config.isCardBanned(name)) {
                 problems.add(name + " is banned in this campaign.");
+                continue;
+            }
+            CardUniverse universe = CampaignState.instance().universeFor(config);
+            if (universe != null && !universe.isLegal(sample)) {
+                problems.add(name + " is outside this campaign's card universe.");
                 continue;
             }
             if (sample != null && sample.getRules().getType().isBasicLand())
                 continue; // Copy rules follow the card type, not the foil/ante exemption.
             CampaignProgress progress = config.isActive() ? CampaignState.instance().progression() : new CampaignProgress();
-            int limit = progress.copyLimit(name, config.cards.isRestricted(name) ? config.player.restrictedCopyLimit
+            int limit = progress.copyLimit(name, config.isCardRestricted(name) ? config.player.restrictedCopyLimit
                     : progress.ordinaryLimit(config.player.ordinaryCopyLimit));
-            if (progress.isMasterCollector() && !config.cards.isRestricted(name)) {
+            if (progress.isMasterCollector() && !config.isCardRestricted(name)) {
                 for (Map.Entry<PaperCard, Integer> printing : all)
                     if (printing.getKey().getName().equals(name) && printing.getValue() > limit)
                         problems.add(name + " (" + printing.getKey().getEdition() + "): " + printing.getValue() + " copies, limit " + limit + " per printing.");
                 continue;
             }
             if (count > limit)
-                problems.add(name + ": " + count + " copies, limit " + limit + (config.cards.isRestricted(name) ? " (restricted)." : "."));
+                problems.add(name + ": " + count + " copies, limit " + limit + (config.isCardRestricted(name) ? " (restricted)." : "."));
         }
 
         if (available != null) {

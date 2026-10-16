@@ -210,5 +210,11 @@
       ],
       "outputRarity": "Rare"
     }
-  ]
+  ],
+  "universe": {
+    "preset": "All Magic",
+    "allowedEditions": [],
+    "restoreAnteCards": true,
+    "includeUnreleased": false
+  }
 }

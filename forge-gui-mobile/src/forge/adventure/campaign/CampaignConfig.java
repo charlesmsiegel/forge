@@ -22,6 +22,7 @@ public class CampaignConfig implements Serializable {
     public String campaignId = "";
     public PlayerRules player = new PlayerRules();
     public CardRules cards = new CardRules();
+    public UniverseRules universe = new UniverseRules();
     public AnteRules ante = new AnteRules();
     public EconomyRules economy = new EconomyRules();
     public StrongholdRules stronghold = new StrongholdRules();
@@ -51,6 +52,25 @@ public class CampaignConfig implements Serializable {
             if (bannedSet == null) bannedSet = new HashSet<>(Arrays.asList(bannedCards));
             return bannedSet.contains(cardName);
         }
+    }
+
+    public static class UniverseRules implements Serializable {
+        public String preset = "All Magic";
+        public String[] allowedEditions = new String[0];
+        public String[] additionalCards = new String[0];
+        public String[] unbannedCards = new String[0];
+        public String[] unrestrictedCards = new String[0];
+        public boolean restoreAnteCards = true;
+        public boolean includeUnreleased;
+    }
+
+    public boolean isCardBanned(String name) {
+        CardUniverse snapshot = CampaignState.instance().universeFor(this);
+        return snapshot == null ? cards.isBanned(name) : snapshot.isBanned(name);
+    }
+    public boolean isCardRestricted(String name) {
+        CardUniverse snapshot = CampaignState.instance().universeFor(this);
+        return snapshot == null ? cards.isRestricted(name) : snapshot.isRestricted(name);
     }
 
     public static class AnteRules implements Serializable {

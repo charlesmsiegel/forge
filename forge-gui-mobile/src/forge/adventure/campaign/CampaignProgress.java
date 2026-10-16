@@ -77,7 +77,7 @@ public final class CampaignProgress implements SaveFileContent {
     }
 
     public void chooseRestrictedCopy(String cardName, CampaignConfig config, CardPool owned) {
-        if (restrictedChoiceTokens < 1 || !config.cards.isRestricted(cardName) || owned.countByName(cardName) < 1
+        if (restrictedChoiceTokens < 1 || !config.isCardRestricted(cardName) || owned.countByName(cardName) < 1
                 || restrictedChoices.contains(cardName))
             throw new IllegalArgumentException("Choose an owned restricted card using an earned choice token");
         restrictedChoices.add(cardName);

@@ -714,7 +714,8 @@ public class CardUtil {
             }
         } else {
             for (int i = 0; i < count; i++)
-                ret.add(FModel.getMagicDb().getCommonCards().getCard(landName));
+                ret.add(forge.adventure.campaign.CampaignState.instance().universeFor(forge.adventure.campaign.CampaignConfig.instance()) == null
+                        ? FModel.getMagicDb().getCommonCards().getCard(landName) : getCardByName(landName));
         }
 
         return ret;
@@ -830,14 +831,19 @@ public class CardUtil {
     }
 
     public static Deck generateBoosterPackAsDeck(CardEdition edition) {
+        forge.adventure.campaign.CampaignState.instance().requireCampaignEdition(edition.getCode());
         Deck d = new Deck("Booster pack");
         d.setComment(edition.getCode());
         d.getMain().add(BoosterPack.fromSet(edition).getCards());
+        forge.adventure.campaign.CampaignState.instance().filterGeneratedPack(d);
         return d;
     }
 
     public static Deck generateRandomBoosterPackAsDeck(final Predicate<CardEdition> editionFilter) {
-        Predicate<CardEdition> filter = CardEdition.Predicates.CAN_MAKE_BOOSTER.and(editionFilter);
+        Predicate<CardEdition> filter = CardEdition.Predicates.CAN_MAKE_BOOSTER.and(editionFilter).and(edition -> {
+            forge.adventure.campaign.CardUniverse universe = forge.adventure.campaign.CampaignState.instance().universeFor(forge.adventure.campaign.CampaignConfig.instance());
+            return universe == null || universe.allowsEdition(edition.getCode());
+        });
         Iterable<CardEdition> possibleEditions = IterableUtil.filter(FModel.getMagicDb().getEditions(), filter);
 
         if (!possibleEditions.iterator().hasNext()) {
@@ -855,6 +861,15 @@ public class CardUtil {
     }
 
     public static PaperCard getCardByName(String cardName) {
+        forge.adventure.campaign.CardUniverse universe = forge.adventure.campaign.CampaignState.instance()
+                .universeFor(forge.adventure.campaign.CampaignConfig.instance());
+        if (universe != null) {
+            List<PaperCard> allowed = FModel.getMagicDb().getCommonCards().getAllCardsNoAlt(cardName).stream()
+                    .filter(universe::allowsPrinting)
+                    .filter(card -> !Config.instance().getSettingData().excludeAlchemyVariants || !PaperCardPredicates.IS_REBALANCED.test(card))
+                    .collect(Collectors.toList());
+            return allowed.isEmpty() ? null : allowed.get(Current.world().getRandom().nextInt(allowed.size()));
+        }
         List<PaperCard> validCards;
         ConfigData configData = Config.instance().getConfigData();
         if (Config.instance().getSettingData().useAllCardVariants) {
@@ -894,6 +909,12 @@ public class CardUtil {
     }
 
     public static PaperCard getCardByNameAndEdition(String cardName, String edition) {
+        forge.adventure.campaign.CardUniverse universe = forge.adventure.campaign.CampaignState.instance()
+                .universeFor(forge.adventure.campaign.CampaignConfig.instance());
+        if (universe != null) {
+            PaperCard preferred = FModel.getMagicDb().getCommonCards().getCard(cardName, edition);
+            return preferred != null && universe.allowsPrinting(preferred) ? preferred : getCardByName(cardName);
+        }
         ConfigData configData = Config.instance().getConfigData();
         if (configData.allowedEditions != null && configData.allowedEditions.length > 0) {
             if (!Arrays.asList(configData.allowedEditions).contains(edition)) {
@@ -924,8 +945,9 @@ public class CardUtil {
         ConfigData configData = Config.instance().getConfigData();
         if (configData.allowedEditions != null && configData.allowedEditions.length > 0) {
             Set<String> allowed = new HashSet<>(Arrays.asList(configData.allowedEditions));
+            if (configData.restrictedEditions != null) allowed.removeAll(Arrays.asList(configData.restrictedEditions));
             if (allCardVariants) {
-                return FModel.getMagicDb().getCommonCards().getAllCards().stream()
+                return campaignPool(FModel.getMagicDb().getCommonCards().getAllCards()).stream()
                     .filter(card -> allowed.contains(card.getEdition()))
                     .collect(Collectors.toList());
             }
@@ -944,11 +966,17 @@ public class CardUtil {
                     }
                 }
             }
-            return filtered;
+            return campaignPool(filtered);
         }
-        return allCardVariants
+        return campaignPool(allCardVariants
             ? FModel.getMagicDb().getCommonCards().getAllCards()
-            : FModel.getMagicDb().getCommonCards().getUniqueCards();
+            : FModel.getMagicDb().getCommonCards().getUniqueCards());
+    }
+
+    private static Collection<PaperCard> campaignPool(Collection<PaperCard> cards) {
+        forge.adventure.campaign.CardUniverse universe = forge.adventure.campaign.CampaignState.instance()
+                .universeFor(forge.adventure.campaign.CampaignConfig.instance());
+        return universe == null ? cards : cards.stream().filter(universe::allowsPrinting).collect(Collectors.toList());
     }
 
     /**

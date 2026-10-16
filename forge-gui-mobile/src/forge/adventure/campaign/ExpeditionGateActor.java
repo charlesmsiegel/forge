@@ -62,8 +62,10 @@ public class ExpeditionGateActor extends PortalActor {
                         + "unavailable until you return. Cards you win or buy inside are yours to keep.",
                 "Enter", () -> {
                     String rootId = TileMapScene.instance().rootPoint == null ? "" : TileMapScene.instance().rootPoint.getID();
-                    campaign.enterExpedition(region, Current.player(), rootId);
-                    teleport();
+                    try {
+                        campaign.enterExpedition(region, Current.player(), rootId);
+                        teleport();
+                    } catch (IllegalArgumentException | IllegalStateException e) { unavailable(stage, e.getMessage()); }
                 },
                 "Not now", stage::resetPosition);
     }
