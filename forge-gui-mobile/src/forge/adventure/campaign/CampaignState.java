@@ -177,6 +177,7 @@ public class CampaignState implements SaveFileContent {
     public HistoricalRealm.Chapter enterRealm(String realmId, String selection, AdventurePlayer player, String rootPoiId) {
         if (expedition.isActive()) throw new IllegalStateException("Return home before starting another expedition");
         HistoricalRealm realm = CampaignConfig.instance().realm(realmId);
+        CampaignConfig.instance().validateRealmContent(realm);
         for (HistoricalRealm.Chapter chapter : realm.chapters) {
             for (String edition : chapter.editions)
                 if (forge.StaticData.instance().getCardEdition(edition) == null)

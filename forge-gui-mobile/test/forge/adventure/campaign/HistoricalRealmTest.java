@@ -25,6 +25,9 @@ public class HistoricalRealmTest extends AdventureTestBase {
         config = CampaignConfig.load(PLANE_DIR + "campaign.json");
         realm = RealmProgressTest.realm();
         realm.chapters[1].legacyRegion = "stronghold";
+        realm.chapters[1].entryMap = "maps/map/stronghold_1.tmx";
+        realm.chapters[1].maps = new String[]{realm.chapters[1].entryMap};
+        for (HistoricalRealm.Chapter chapter : realm.chapters) chapter.entryObject = 38;
         config.realms = new HistoricalRealm[]{realm};
         CampaignConfig.setInstance(config);
         state = new CampaignState();
@@ -161,6 +164,20 @@ public class HistoricalRealmTest extends AdventureTestBase {
         assertEquals(player.getCards().countAll(), owned);
         state.enterRealm("rath", null, player, root);
         assertEquals(state.activeRealmChapter().id, "stronghold");
+    }
+
+    @Test
+    public void missingMapAndEntryObjectRejectBeforeActivatingAvailability() {
+        realm.chapters[0].entryMap = "maps/map/missing-realm-map.tmx";
+        realm.chapters[0].maps = new String[]{realm.chapters[0].entryMap};
+        assertThrows(IllegalArgumentException.class, () -> state.enterRealm("rath", null, player, ""));
+        assertFalse(state.expedition().isActive());
+        assertFalse(state.realmProgress("rath").isActive());
+        realm.chapters[0].entryMap = "maps/map/tempest.tmx";
+        realm.chapters[0].maps = new String[]{realm.chapters[0].entryMap};
+        realm.chapters[0].entryObject = 123456;
+        assertThrows(IllegalArgumentException.class, () -> state.enterRealm("rath", null, player, ""));
+        assertFalse(state.expedition().isActive());
     }
 
     @Test

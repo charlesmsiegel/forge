@@ -2,6 +2,7 @@ package forge.adventure.campaign;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.XmlReader;
 import forge.adventure.util.Config;
 
 import java.io.Serializable;
@@ -103,6 +104,34 @@ public class CampaignConfig implements Serializable {
         return result;
     }
 
+    /** Reject broken content before narrowing inventory or changing a checkpoint. */
+    public void validateRealmContent(HistoricalRealm realm) {
+        for (HistoricalRealm.Chapter chapter : realm.chapters) {
+            for (String map : chapter.maps)
+                if (!contentFile(map).exists()) throw new IllegalArgumentException("Missing historical map " + map);
+            if (chapter.entryObject > 0) {
+                try {
+                    XmlReader.Element root = new XmlReader().parse(contentFile(chapter.entryMap));
+                    boolean found = false;
+                    for (XmlReader.Element object : root.getChildrenByNameRecursively("object"))
+                        if (object.getIntAttribute("id", 0) == chapter.entryObject) {
+                            String type = object.getAttribute("type", "");
+                            String template = object.getAttribute("template", "");
+                            found = type.equals("entry") || type.equals("portal") || type.equals("expeditionGate")
+                                    || template.endsWith("/entry_up.tx") || template.endsWith("/portal.tx");
+                        }
+                    if (!found) throw new IllegalArgumentException("Missing chapter entry object " + chapter.entryObject + " in " + chapter.entryMap);
+                } catch (com.badlogic.gdx.utils.SerializationException e) {
+                    throw new IllegalArgumentException("Cannot read historical map " + chapter.entryMap, e);
+                }
+            }
+        }
+    }
+
+    private FileHandle contentFile(String path) {
+        return planeDirectory == null ? new FileHandle(Config.instance().getFilePath(path)) : new FileHandle(planeDirectory).child(path);
+    }
+
     public boolean hasRealm(String id) {
         for (HistoricalRealm realm : realms) if (realm.id.equals(id)) return true;
         return false;
@@ -111,6 +140,8 @@ public class CampaignConfig implements Serializable {
     public boolean isActive() {
         return campaignId != null && !campaignId.isEmpty();
     }
+
+    private transient String planeDirectory;
 
     private static CampaignConfig current;
 
@@ -133,7 +164,9 @@ public class CampaignConfig implements Serializable {
         try {
             Json json = new Json();
             json.setIgnoreUnknownFields(true);
-            return json.fromJson(CampaignConfig.class, file);
+            CampaignConfig config = json.fromJson(CampaignConfig.class, file);
+            config.planeDirectory = file.parent().path();
+            return config;
         } catch (Exception e) {
             System.err.println("Failed to read campaign config " + path + ": " + e);
             return new CampaignConfig();
