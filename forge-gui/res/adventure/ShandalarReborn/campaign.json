@@ -86,5 +86,62 @@
       "Sevenfingers",
       "the Collector"
     ]
-  }
+  },
+  "realms": [
+    {
+      "id": "rath",
+      "name": "The Rath Cycle \u2014 Tempest Block",
+      "chapters": [
+        {
+          "id": "tempest",
+          "name": "Tempest",
+          "editions": [
+            "TMP"
+          ],
+          "entryMap": "maps/map/tempest.tmx",
+          "entryObject": 38,
+          "maps": [
+            "maps/map/tempest.tmx"
+          ],
+          "boosterEdition": "TMP",
+          "legacyRegion": "",
+          "firstClearBoxBoosterCount": 36,
+          "repeatClearBoosterCount": 6
+        },
+        {
+          "id": "stronghold",
+          "name": "Stronghold",
+          "editions": [
+            "STH"
+          ],
+          "entryMap": "maps/map/stronghold_1.tmx",
+          "entryObject": 38,
+          "maps": [
+            "maps/map/stronghold_1.tmx",
+            "maps/map/stronghold_2.tmx"
+          ],
+          "boosterEdition": "STH",
+          "legacyRegion": "stronghold",
+          "firstClearBoxBoosterCount": 36,
+          "repeatClearBoosterCount": 6
+        },
+        {
+          "id": "exodus",
+          "name": "Exodus",
+          "editions": [
+            "EXO"
+          ],
+          "entryMap": "maps/map/exodus.tmx",
+          "entryObject": 38,
+          "maps": [
+            "maps/map/exodus.tmx"
+          ],
+          "boosterEdition": "EXO",
+          "legacyRegion": "",
+          "firstClearBoxBoosterCount": 36,
+          "repeatClearBoosterCount": 6
+        }
+      ]
+    }
+  ]
 }
