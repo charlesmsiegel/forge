@@ -24,13 +24,14 @@ import java.util.Random;
  * optional on load so older saves keep working.
  */
 public class CampaignState implements SaveFileContent {
-    public static final int SAVE_VERSION = 2;
+    public static final int SAVE_VERSION = 3;
 
     private static CampaignState current = new CampaignState();
 
     private final RivalRegistry rivals = new RivalRegistry();
     private final ExpeditionState expedition = new ExpeditionState();
     private final Map<String, Integer> completions = new HashMap<>();
+    private final Map<String, RealmProgress> realms = new HashMap<>();
     private final CardIdentityLedger ownership = new CardIdentityLedger();
     private String campaignId = "";
     private int configVersion;
@@ -49,6 +50,7 @@ public class CampaignState implements SaveFileContent {
         rivals.load(null);
         expedition.leave();
         completions.clear();
+        realms.clear();
         ownership.clear();
         campaignId = "";
         configVersion = 0;
@@ -128,6 +130,8 @@ public class CampaignState implements SaveFileContent {
                 .with("elapsedMillis", expedition.elapsedMillis())
                 .with("acquired", expedition.getAcquired().countAll()).write();
         resetRegionMaps(expedition.getRegionId(), expedition.getRootPoiId());
+        RealmProgress progress = realms.get(expedition.getRegionId());
+        if (progress != null) progress.leave();
         expedition.leave();
     }
 
@@ -153,9 +157,85 @@ public class CampaignState implements SaveFileContent {
 
     private static String[] regionMaps(String regionId) {
         CampaignConfig config = CampaignConfig.instance();
+        if (config.hasRealm(regionId)) {
+            List<String> maps = new ArrayList<>();
+            for (HistoricalRealm.Chapter chapter : config.realm(regionId).chapters)
+                java.util.Collections.addAll(maps, chapter.maps);
+            return maps.toArray(new String[0]);
+        }
         if (regionId.equals(config.stronghold.region))
             return config.stronghold.maps;
         return new String[0];
+    }
+
+    public RealmProgress realmProgress(String realmId) {
+        CampaignConfig.instance().realm(realmId);
+        return realms.computeIfAbsent(realmId, key -> new RealmProgress());
+    }
+
+    /** Entry never replaces an active carried pool. Product definitions are checked before mutation. */
+    public HistoricalRealm.Chapter enterRealm(String realmId, String selection, AdventurePlayer player, String rootPoiId) {
+        if (expedition.isActive()) throw new IllegalStateException("Return home before starting another expedition");
+        HistoricalRealm realm = CampaignConfig.instance().realm(realmId);
+        for (HistoricalRealm.Chapter chapter : realm.chapters) {
+            for (String edition : chapter.editions)
+                if (forge.StaticData.instance().getCardEdition(edition) == null)
+                    throw new IllegalArgumentException("Unknown historical edition " + edition);
+            RegionCompletion.boosterTemplate(chapter.boosterEdition);
+        }
+        RealmProgress progress = realmProgress(realmId);
+        progress.start(realm, selection);
+        resetRegionMaps(realmId, rootPoiId);
+        enterExpedition(realmId, player, rootPoiId);
+        DungeonLife.onEnter(player);
+        CampaignLog.event("realm_enter").with("realm", realmId)
+                .with("chapter", progress.currentChapter(realm).id).with("singleChapter", progress.isSingleChapter()).write();
+        return progress.currentChapter(realm);
+    }
+
+    public HistoricalRealm.Chapter activeRealmChapter() {
+        if (!expedition.isActive()) return null;
+        String id = expedition.getRegionId();
+        RealmProgress progress = realms.get(id);
+        if (progress == null || !progress.isActive()) return null; // Legacy standalone expedition.
+        return progress.currentChapter(CampaignConfig.instance().realm(id));
+    }
+
+    public HistoricalRealm.Chapter advanceRealm(String realmId) {
+        if (!expedition.isActive() || !realmId.equals(expedition.getRegionId()))
+            throw new IllegalStateException("This realm is not the active expedition");
+        HistoricalRealm realm = CampaignConfig.instance().realm(realmId);
+        RealmProgress progress = realmProgress(realmId);
+        progress.advance(realm);
+        CampaignLog.event("realm_checkpoint").with("realm", realmId)
+                .with("chapter", progress.currentChapter(realm).id).write();
+        return progress.currentChapter(realm);
+    }
+
+    /** Legacy region id shares one lifetime jackpot with its block chapter. */
+    public String chapterRewardKey(String realmId, String chapterId) {
+        HistoricalRealm.Chapter chapter = CampaignConfig.instance().realm(realmId).chapter(chapterId);
+        return chapter.legacyRegion == null || chapter.legacyRegion.isEmpty()
+                ? realmId + ":" + chapterId : chapter.legacyRegion;
+    }
+
+    public List<Deck> onChapterCompleted(String realmId, String chapterId, AdventurePlayer player) {
+        if (!expedition.isActive() || !realmId.equals(expedition.getRegionId())) return new ArrayList<>();
+        HistoricalRealm realm = CampaignConfig.instance().realm(realmId);
+        RealmProgress progress = realmProgress(realmId);
+        if (!progress.canComplete(realm, chapterId)) return new ArrayList<>();
+        HistoricalRealm.Chapter chapter = realm.chapter(chapterId);
+        String key = chapterRewardKey(realmId, chapterId);
+        int count = completions(key) + 1;
+        // Generate every pack before committing progression: a missing product cannot consume a clear.
+        List<Deck> packs = RegionCompletion.createBoosters(chapter.boosterEdition,
+                count == 1 ? chapter.firstClearBoxBoosterCount : chapter.repeatClearBoosterCount, count == 1 ? "Box" : null);
+        progress.complete(realm, chapterId);
+        completions.put(key, count);
+        for (Deck pack : packs) player.addBooster(pack);
+        CampaignLog.event("chapter_completed").with("realm", realmId).with("chapter", chapterId)
+                .with("completion", count).with("packs", packs.size()).with("elapsedMillis", expedition.elapsedMillis()).write();
+        return packs;
     }
 
     public int completions(String regionId) {
@@ -170,8 +250,10 @@ public class CampaignState implements SaveFileContent {
      * @return the packs granted
      */
     public List<Deck> onRegionCompleted(String regionId, AdventurePlayer player) {
+        HistoricalRealm.Chapter activeChapter = activeRealmChapter();
+        if (activeChapter != null && regionId.equals(activeChapter.legacyRegion))
+            return onChapterCompleted(expedition.getRegionId(), activeChapter.id, player);
         int count = completions(regionId) + 1;
-        completions.put(regionId, count);
         CampaignConfig config = CampaignConfig.instance();
         List<Deck> packs = new ArrayList<>();
         if (regionId.equals(config.stronghold.region)) {
@@ -179,6 +261,7 @@ public class CampaignState implements SaveFileContent {
             int packCount = first ? config.stronghold.firstClearBoxBoosterCount : config.stronghold.repeatClearBoosterCount;
             packs = RegionCompletion.createBoosters(config.stronghold.boosterEdition, packCount, first ? "Box" : null);
         }
+        completions.put(regionId, count);
         for (Deck pack : packs)
             player.addBooster(pack);
         CampaignLog.event("region_completed").with("region", regionId).with("completion", count)
@@ -291,6 +374,14 @@ public class CampaignState implements SaveFileContent {
             rivals.load(data.readSubData("rivals"));
         if (data.containsKey("expedition"))
             expedition.load(data.readSubData("expedition"));
+        if (data.containsKey("realms")) {
+            SaveFileData savedRealms = data.readSubData("realms");
+            for (String id : savedRealms.keySet()) {
+                RealmProgress progress = new RealmProgress();
+                progress.load(savedRealms.readSubData(id));
+                realms.put(id, progress); // Keep unknown ids: never reinterpret another realm's progress.
+            }
+        }
         if (data.containsKey("completionKeys")) {
             String[] keys = (String[]) data.readObject("completionKeys");
             Integer[] values = (Integer[]) data.readObject("completionValues");
@@ -308,6 +399,10 @@ public class CampaignState implements SaveFileContent {
         data.store("ownership", ownership.save());
         data.store("rivals", rivals.save());
         data.store("expedition", expedition.save());
+        SaveFileData savedRealms = new SaveFileData();
+        for (Map.Entry<String, RealmProgress> entry : realms.entrySet())
+            savedRealms.store(entry.getKey(), entry.getValue().save());
+        data.store("realms", savedRealms);
         data.storeObject("completionKeys", completions.keySet().toArray(new String[0]));
         data.storeObject("completionValues", completions.values().toArray(new Integer[0]));
         return data;

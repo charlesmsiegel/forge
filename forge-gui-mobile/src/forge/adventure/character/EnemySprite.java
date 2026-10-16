@@ -90,6 +90,9 @@ public class EnemySprite extends CharacterSprite implements Steerable<Vector2> {
     public String campaignRivalId;
     /** Shandalar Reborn: defeating this enemy completes the named region (Tiled property completesRegion). */
     public String completesRegion;
+    /** Historical chapter boss metadata; separate from the legacy standalone completion. */
+    public String completesRealm;
+    public String completesChapter;
     private ProgressableGraphPath<NavigationVertex> navPath;
     public Vector2 fleeTarget;
 

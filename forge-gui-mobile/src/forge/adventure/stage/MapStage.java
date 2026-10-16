@@ -24,6 +24,7 @@ import com.github.tommyettinger.textra.TypingAdapter;
 import com.github.tommyettinger.textra.TypingLabel;
 import forge.Forge;
 import forge.adventure.campaign.CampaignState;
+import forge.adventure.campaign.CampaignConfig;
 import forge.adventure.campaign.ExpeditionGateActor;
 import forge.adventure.campaign.DeckRepairGate;
 import forge.adventure.campaign.DungeonLife;
@@ -320,8 +321,10 @@ public class MapStage extends GameStage {
             canFailDungeon = false;
         }
         if (MP.get("preventEscape") != null) preventEscape = (boolean) MP.get("preventEscape");
-        persistentLifeMap = MP.get("persistentLife") instanceof Boolean && (Boolean) MP.get("persistentLife");
-        if (persistentLifeMap && sourceMap.isEmpty()) //entering the dungeon from the world map
+        boolean inHistoricalRealm = CampaignState.instance().expedition().isActive()
+                && CampaignConfig.instance().hasRealm(CampaignState.instance().expedition().getRegionId());
+        persistentLifeMap = inHistoricalRealm || (MP.get("persistentLife") instanceof Boolean && (Boolean) MP.get("persistentLife"));
+        if (persistentLifeMap && !inHistoricalRealm && sourceMap.isEmpty()) //entering the dungeon from the world map
             DungeonLife.onEnter(Current.player());
 
         if (MP.get("music") != null && !MP.get("music").toString().isEmpty()) {
@@ -542,6 +545,10 @@ public class MapStage extends GameStage {
                         addMapActor(obj, portal);
                         break;
                     case "expeditionGate": { //Shandalar Reborn: enter/retreat portal of a historical region.
+                        // Reused Stronghold maps expose block continuation only during that block run.
+                        if ("advance".equals(prop.get("mode")) && (prop.get("region") == null
+                                || !CampaignState.instance().expedition().isActive()
+                                || !prop.get("region").equals(CampaignState.instance().expedition().getRegionId()))) break;
                         float gx = Float.parseFloat(prop.get("x").toString());
                         float gy = Float.parseFloat(prop.get("y").toString());
                         float gw = Float.parseFloat(prop.get("width").toString());
@@ -615,6 +622,8 @@ public class MapStage extends GameStage {
                             if (dialogObject != null && !dialogObject.toString().isEmpty()) {
                                 mob.completesRegion = dialogObject.toString();
                             }
+                            if (prop.get("completesRealm") != null) mob.completesRealm = prop.get("completesRealm").toString();
+                            if (prop.get("completesChapter") != null) mob.completesChapter = prop.get("completesChapter").toString();
                             if (prop.containsKey("threatRange")) //Check for threat range.
                             {
                                 mob.threatRange = Float.parseFloat(prop.get("threatRange").toString());
@@ -1115,14 +1124,32 @@ public class MapStage extends GameStage {
     protected void getReward() {
         isLoadingMatch = false;
         Array<Reward> rewards = currentMob.getRewards();
-        if (currentMob.completesRegion != null && !currentMob.completesRegion.isEmpty()) {
-            java.util.List<forge.deck.Deck> packs = CampaignState.instance().onRegionCompleted(currentMob.completesRegion, Current.player());
-            int completion = CampaignState.instance().completions(currentMob.completesRegion);
-            pendingCampaignMessage = "[GOLD]" + Character.toUpperCase(currentMob.completesRegion.charAt(0)) + currentMob.completesRegion.substring(1)
-                    + " completed![WHITE] (clear #" + completion + ")\n"
-                    + (packs.isEmpty() ? "" : packs.size() + " unopened " + packs.get(0).getComment()
-                    + " booster" + (packs.size() == 1 ? "" : "s") + " added to your inventory. Open them one at a time from the Inventory screen.\n")
-                    + "Use the exit portal or the map exit to return to Shandalar; this region resets when you leave.";
+        CampaignState campaign = CampaignState.instance();
+        forge.adventure.campaign.HistoricalRealm.Chapter activeChapter = null;
+        try {
+            activeChapter = campaign.activeRealmChapter();
+            if (activeChapter != null && ((activeChapter.id.equals(currentMob.completesChapter)
+                    && campaign.expedition().getRegionId().equals(currentMob.completesRealm))
+                    || (!activeChapter.legacyRegion.isEmpty() && activeChapter.legacyRegion.equals(currentMob.completesRegion)))) {
+                java.util.List<forge.deck.Deck> packs = campaign.onChapterCompleted(campaign.expedition().getRegionId(), activeChapter.id, Current.player());
+                forge.adventure.campaign.RealmProgress progress = campaign.realmProgress(campaign.expedition().getRegionId());
+                pendingCampaignMessage = "[GOLD]" + activeChapter.name + " completed![WHITE]\n"
+                        + packs.size() + " unopened " + activeChapter.boosterEdition + " boosters added to your inventory.\n"
+                        + (progress.isRunComplete() ? "The expedition is complete. Use the portal to return to Shandalar."
+                        : "The next set checkpoint is secured. Use the portal to continue, or return home and resume there later.");
+            } else if (activeChapter == null && currentMob.completesRegion != null && !currentMob.completesRegion.isEmpty()) {
+                java.util.List<forge.deck.Deck> packs = campaign.onRegionCompleted(currentMob.completesRegion, Current.player());
+                int completion = campaign.completions(currentMob.completesRegion);
+                pendingCampaignMessage = "[GOLD]" + Character.toUpperCase(currentMob.completesRegion.charAt(0)) + currentMob.completesRegion.substring(1)
+                        + " completed![WHITE] (clear #" + completion + ")\n"
+                        + (packs.isEmpty() ? "" : packs.size() + " unopened " + packs.get(0).getComment()
+                        + " boosters added to your inventory. Open them one at a time from the Inventory screen.\n")
+                        + "Use the exit portal or the map exit to return to Shandalar; this region resets when you leave.";
+            }
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            pendingCampaignMessage = "Chapter reward could not be granted: " + e.getMessage()
+                    + "\nNo completion was recorded. Return home and retry after correcting the realm configuration.";
+            System.err.println(pendingCampaignMessage);
         }
         RewardScene.instance().loadRewards(rewards, RewardScene.Type.Loot, null);
         Forge.switchScene(RewardScene.instance());

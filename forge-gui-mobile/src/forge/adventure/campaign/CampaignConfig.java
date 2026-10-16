@@ -24,6 +24,7 @@ public class CampaignConfig implements Serializable {
     public AnteRules ante = new AnteRules();
     public EconomyRules economy = new EconomyRules();
     public StrongholdRules stronghold = new StrongholdRules();
+    public HistoricalRealm[] realms = new HistoricalRealm[0];
     public DungeonRules dungeon = new DungeonRules();
     public RivalRules rivals = new RivalRules();
 
@@ -83,6 +84,28 @@ public class CampaignConfig implements Serializable {
     public static class DungeonRules implements Serializable {
         /** Tiled map property that marks a map as a persistent-life dungeon. */
         public String persistentLifeMapKeyword = "persistentLife";
+    }
+
+    /** Resolve a stable realm id and reject ambiguous/invalid routing before entry. */
+    public HistoricalRealm realm(String id) {
+        Set<String> ids = new HashSet<>();
+        Set<String> maps = new HashSet<>();
+        HistoricalRealm result = null;
+        for (HistoricalRealm realm : realms) {
+            realm.validate();
+            if (!ids.add(realm.id)) throw new IllegalArgumentException("Duplicate realm " + realm.id);
+            for (HistoricalRealm.Chapter chapter : realm.chapters)
+                for (String map : chapter.maps)
+                    if (!maps.add(map)) throw new IllegalArgumentException("Map belongs to multiple realms: " + map);
+            if (realm.id.equals(id)) result = realm;
+        }
+        if (result == null) throw new IllegalArgumentException("Unknown historical realm '" + id + "'");
+        return result;
+    }
+
+    public boolean hasRealm(String id) {
+        for (HistoricalRealm realm : realms) if (realm.id.equals(id)) return true;
+        return false;
     }
 
     public boolean isActive() {
