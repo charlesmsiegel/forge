@@ -91,7 +91,7 @@
   <object id="75" template="../../../common/maps/obj/waypoint.tx" x="170.126" y="171.184" />
   <object id="76" template="../../../common/maps/obj/waypoint.tx" x="164.303" y="83.3126" />
   <object id="77" template="../../../common/maps/obj/waypoint.tx" x="134.395" y="226.236" />
-  <object id="900" template="../../../common/maps/obj/portal.tx" type="expeditionGate" x="275" y="38">
+  <object id="900" template="../../../common/maps/obj/portal.tx" type="expeditionGate" x="240" y="80">
    <properties>
     <property name="mode" value="advance" />
     <property name="region" value="rath" />
