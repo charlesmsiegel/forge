@@ -27,7 +27,7 @@ public final class CardOwnership {
      */
     public static boolean removeOne(AdventurePlayer player, PaperCard card) {
         if (CampaignConfig.instance().isActive()) {
-            for (OwnedCard copy : CampaignState.instance().availableCopies(player))
+            for (OwnedCard copy : CampaignState.instance().voluntaryRemovalCopies(player))
                 if (copy.card.equals(card)) return removeCopy(player, copy);
             return false;
         }

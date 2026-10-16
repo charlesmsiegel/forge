@@ -712,6 +712,12 @@ public class MapStage extends GameStage {
                     case "spellsmith":
                         addMapActor(obj, new OnCollide(() -> Forge.switchScene(SpellSmithScene.instance())));
                         break;
+                    case "campaignServices":
+                        if (!CampaignConfig.instance().isActive()) break;
+                        if (obj instanceof TiledMapTileMapObject serviceObject)
+                            addMapActor(obj, new TextureSprite(serviceObject.getTextureRegion()));
+                        addMapActor(obj, new OnCollide(() -> forge.adventure.campaign.CampaignServices.show(this)));
+                        break;
                     case "shardtrader":
                         MapActor shardTraderActor = new OnCollide(() -> Forge.switchScene(ShardTraderScene.instance()));
                         addMapActor(obj, shardTraderActor);
@@ -1137,6 +1143,14 @@ public class MapStage extends GameStage {
                         + packs.size() + " unopened " + activeChapter.boosterEdition + " boosters added to your inventory.\n"
                         + (progress.isRunComplete() ? "The expedition is complete. Use the portal to return to Shandalar."
                         : "The next set checkpoint is secured. Use the portal to continue, or return home and resume there later.");
+                if (progress.isRunComplete() && !progress.isSingleChapter()) {
+                    forge.adventure.campaign.CampaignProgress earned = campaign.progression();
+                    pendingCampaignMessage += "\nFull block clear #" + earned.fullClears(campaign.expedition().getRegionId())
+                            + ". Ordinary copy limit: " + earned.ordinaryLimit(CampaignConfig.instance().player.ordinaryCopyLimit)
+                            + "; protection slots: " + earned.protectionSlots() + ". Visit the Collector in town to manage protection."
+                            + (earned.restrictedChoiceTokens() > 0 ? " An extra restricted-copy choice is available." : "")
+                            + (earned.isMasterCollector() ? " Master Collector is unlocked." : "");
+                }
             } else if (activeChapter == null && currentMob.completesRegion != null && !currentMob.completesRegion.isEmpty()) {
                 java.util.List<forge.deck.Deck> packs = campaign.onRegionCompleted(currentMob.completesRegion, Current.player());
                 int completion = campaign.completions(currentMob.completesRegion);

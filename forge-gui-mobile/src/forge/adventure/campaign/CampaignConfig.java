@@ -25,6 +25,8 @@ public class CampaignConfig implements Serializable {
     public AnteRules ante = new AnteRules();
     public EconomyRules economy = new EconomyRules();
     public StrongholdRules stronghold = new StrongholdRules();
+    public TradeRecipe[] trades = new TradeRecipe[0];
+    public ProgressionRules progression = new ProgressionRules();
     public HistoricalRealm[] realms = new HistoricalRealm[0];
     public DungeonRules dungeon = new DungeonRules();
     public RivalRules rivals = new RivalRules();
@@ -74,6 +76,35 @@ public class CampaignConfig implements Serializable {
         public String boosterEdition = "STH";
         public int firstClearBoxBoosterCount = 36;
         public int repeatClearBoosterCount = 6;
+    }
+
+    public static class TradeRecipe implements Serializable {
+        public String id = "";
+        public String name = "";
+        public int requiredCount = 20;
+        public String[] inputEditions = new String[0];
+        public String inputRarity = "Common";
+        public String inputColor = "";
+        public String[] outputEditions = new String[0];
+        public String outputRarity = "Rare";
+        public String outputColor = "";
+    }
+
+    public static class ProgressionRules implements Serializable {
+        public Milestone[] milestones = new Milestone[0];
+    }
+
+    public static class Milestone implements Serializable {
+        public String id = "";
+        public String realm = "";
+        public int fullClears = 1;
+        public int ordinaryCopyLimit;
+        public int maxLifeBonus;
+        public int protectionSlots;
+        public int restrictedChoiceTokens;
+        public boolean masterCollector;
+        public String exemptCard = "";
+        public int exemptCopyLimit;
     }
 
     public static class RivalRules implements Serializable {

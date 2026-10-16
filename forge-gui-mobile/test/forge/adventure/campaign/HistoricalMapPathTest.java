@@ -31,6 +31,7 @@ public class HistoricalMapPathTest extends AdventureTestBase {
         CampaignConfig config = CampaignConfig.load(PLANE_DIR + "campaign.json");
         Set<String> paths = new HashSet<>();
         paths.add("maps/map/stronghold_gate.tmx");
+        paths.add("maps/map/sr_town.tmx");
         for (HistoricalRealm realm : config.realms)
             for (HistoricalRealm.Chapter chapter : realm.chapters) java.util.Collections.addAll(paths, chapter.maps);
         for (String path : paths) checkMap(new File(PLANE_DIR + path));
@@ -84,7 +85,7 @@ public class HistoricalMapPathTest extends AdventureTestBase {
             Element object = (Element) objects.item(i);
             int cell = (int) ((number(object, "y") - 8) / 16) * width + (int) ((number(object, "x") + 8) / 16);
             if (object.getAttribute("id").equals("38") || (start < 0 && object.getAttribute("template").endsWith("/portal.tx"))) start = cell;
-            if (object.getAttribute("type").equals("expeditionGate")) gates.add(cell);
+            if (object.getAttribute("type").equals("expeditionGate") || object.getAttribute("type").equals("campaignServices")) gates.add(cell);
         }
         assertTrue(start >= 0 && start < blocked.length, file + " has no entrance");
         Set<Integer> reached = new HashSet<>();

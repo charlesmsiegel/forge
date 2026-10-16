@@ -319,6 +319,17 @@ public class AdventureDeckEditor extends FDeckEditor {
     }
 
 
+    private static void confirmCampaignSale(AdventurePlayer player, PaperCard card, Integer amount, java.util.function.IntConsumer sold) {
+        if (amount == null || amount < 1) { sold.accept(0); return; }
+        if (!forge.adventure.campaign.CampaignState.instance().saleTouchesProtection(player, card, amount)) {
+            sold.accept(player.sellCard(card, amount));
+            return;
+        }
+        FOptionPane.showConfirmDialog("This sale includes a protected physical copy of " + card.getName()
+                        + ". Its protection slot will be freed. Sell it?", "Protected card", "Sell", "Cancel", false,
+                confirmed -> { if (confirmed) sold.accept(player.sellCard(card, amount)); });
+    }
+
     private static class StoreCatalogPage extends CatalogPage {
         protected StoreCatalogPage() {
             super(new AdventureCardManager(), ItemManagerConfig.ADVENTURE_STORE_POOL, Forge.getLocalizer().getMessage("lblInventory"), CATALOG_ICON);
@@ -344,8 +355,7 @@ public class AdventureDeckEditor extends FDeckEditor {
             String prompt = card + " - " + label + " " + localizer.getMessage("lblHowMany");
 
             FMenuItem sellItem = new FMenuItem(label, SIDEBOARD_ICON, new MoveQuantityPrompt(prompt, sellable, result -> {
-                int sold = Current.player().sellCard(card, result);
-                removeCard(card, sold);
+                confirmCampaignSale(Current.player(), card, result, sold -> removeCard(card, sold));
             }));
             if (cardIsFavorite(card))
                 sellItem.setTextColor(255, 0, 0);
@@ -392,7 +402,9 @@ public class AdventureDeckEditor extends FDeckEditor {
             if (toSell.isEmpty())
                 return;
 
-            FOptionPane.showConfirmDialog(Forge.getLocalizer().getMessage("lblSellAllConfirm", toSell.countAll(), value), Forge.getLocalizer().getMessage("lblSellCurrentFilters"), Forge.getLocalizer().getMessage("lblSell"), Forge.getLocalizer().getMessage("lblCancel"), false, result -> {
+            String protectedWarning = forge.adventure.campaign.CampaignState.instance().saleTouchesProtection(Current.player(), toSell)
+                    ? "This sale includes protected physical copies and will free their slots.\n" : "";
+            FOptionPane.showConfirmDialog(protectedWarning + Forge.getLocalizer().getMessage("lblSellAllConfirm", toSell.countAll(), value), Forge.getLocalizer().getMessage("lblSellCurrentFilters"), Forge.getLocalizer().getMessage("lblSell"), Forge.getLocalizer().getMessage("lblCancel"), false, result -> {
                 if (result) {
                     Current.player().doBulkSell(toSell);
                     refresh();
@@ -480,8 +492,7 @@ public class AdventureDeckEditor extends FDeckEditor {
             if (card.hasNoSellValue()) {
                 String prompt = String.format("%s - %s %s", card, localizer.getMessage("lblRemove"), lblHowMany);
                 FMenuItem removeItem = new FMenuItem(localizer.getMessage("lblRemove"), FSkinImage.HDDELETE, new MoveQuantityPrompt(prompt, safeToSellCount, amount -> {
-                    int sold = Current.player().sellCard(card, amount);
-                    removeCard(card, sold);
+                    confirmCampaignSale(Current.player(), card, amount, sold -> removeCard(card, sold));
                 }));
                 menu.addItem(removeItem);
                 return;
@@ -612,8 +623,7 @@ public class AdventureDeckEditor extends FDeckEditor {
                 String prompt = card + " - " + label + " " + localizer.getMessage("lblHowMany");
 
                 menu.addItem(new FMenuItem(label, SIDEBOARD_ICON, new MoveQuantityPrompt(prompt, sellable, result -> {
-                    int sold = player.sellCard(card, result);
-                    removeCard(card, sold);
+                    confirmCampaignSale(player, card, result, sold -> removeCard(card, sold));
                 })
                 ));
             }
@@ -634,8 +644,7 @@ public class AdventureDeckEditor extends FDeckEditor {
         @Override
         protected void onCardActivated(PaperCard card) {
             if (isShop()) {
-                Current.player().sellCard(card, 1);
-                removeCard(card, 1);
+                confirmCampaignSale(Current.player(), card, 1, sold -> removeCard(card, sold));
             }
             //Move to deck? Back to catalog? Unclear.
         }

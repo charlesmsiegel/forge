@@ -54,7 +54,15 @@ public final class DeckValidator {
             }
             if (sample != null && sample.getRules().getType().isBasicLand())
                 continue; // Copy rules follow the card type, not the foil/ante exemption.
-            int limit = config.cards.isRestricted(name) ? config.player.restrictedCopyLimit : config.player.ordinaryCopyLimit;
+            CampaignProgress progress = config.isActive() ? CampaignState.instance().progression() : new CampaignProgress();
+            int limit = progress.copyLimit(name, config.cards.isRestricted(name) ? config.player.restrictedCopyLimit
+                    : progress.ordinaryLimit(config.player.ordinaryCopyLimit));
+            if (progress.isMasterCollector() && !config.cards.isRestricted(name)) {
+                for (Map.Entry<PaperCard, Integer> printing : all)
+                    if (printing.getKey().getName().equals(name) && printing.getValue() > limit)
+                        problems.add(name + " (" + printing.getKey().getEdition() + "): " + printing.getValue() + " copies, limit " + limit + " per printing.");
+                continue;
+            }
             if (count > limit)
                 problems.add(name + ": " + count + " copies, limit " + limit + (config.cards.isRestricted(name) ? " (restricted)." : "."));
         }

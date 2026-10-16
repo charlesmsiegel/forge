@@ -138,7 +138,7 @@ public final class RivalEncounter {
     private static void confirmTarget(MapStage stage, EnemySprite mob, Rival rival, Deck deck, PaperCard target) {
         final AnteStake stake;
         try {
-            stake = AnteService.targetedStake(Current.player().getSelectedDeck(), deck, target,
+            stake = AnteService.targetedStake(Current.player(), deck, target,
                     CampaignState.instance().knowledge(), rival.id, CampaignConfig.instance().ante, MyRandom.getRandom());
         } catch (IllegalArgumentException e) {
             stage.showOptionsDialog(e.getMessage(), List.of("Back"), List.of(() -> start(stage, mob)));
@@ -184,7 +184,7 @@ public final class RivalEncounter {
 
     private static void confirmStake(MapStage stage, EnemySprite mob, Rival rival, OwnedCard card) {
         CampaignConfig.AnteRules rules = CampaignConfig.instance().ante;
-        AnteStake stake = AnteService.reclamationStake(Current.player().getSelectedDeck(), card, rules, MyRandom.getRandom());
+        AnteStake stake = AnteService.reclamationStake(Current.player(), card, rules, MyRandom.getRandom());
         if (stake.playerCards.size() < rules.reclamationRiskCount) {
             stage.showOptionsDialog("You need at least " + rules.reclamationRiskCount
                             + " eligible (non-basic) cards in your deck and sideboard to challenge for a card.",

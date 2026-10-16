@@ -141,6 +141,7 @@ public class HistoricalRealmTest extends AdventureTestBase {
         loaded.enterRealm("rath", "stronghold", player, "");
         assertEquals(loaded.onChapterCompleted("rath", "stronghold", player).size(), 6);
         assertTrue(loaded.realmProgress("rath").isRunComplete());
+        assertEquals(loaded.progression().fullClears("rath"), 1, "single chapter replay is not another full block clear");
         assertThrows(IllegalStateException.class, () -> loaded.advanceRealm("rath"));
         loaded.leaveExpedition("exit");
         loaded.enterRealm("rath", "*", player, "");
@@ -178,6 +179,20 @@ public class HistoricalRealmTest extends AdventureTestBase {
         realm.chapters[0].entryObject = 123456;
         assertThrows(IllegalArgumentException.class, () -> state.enterRealm("rath", null, player, ""));
         assertFalse(state.expedition().isActive());
+    }
+
+    @Test
+    public void invalidMilestoneCannotConsumeFinalChapterVictory() {
+        state.enterRealm("rath", null, player, "");
+        state.onChapterCompleted("rath", "tempest", player); state.advanceRealm("rath");
+        state.onChapterCompleted("rath", "stronghold", player); state.advanceRealm("rath");
+        var broken = new CampaignConfig.Milestone();
+        config.progression.milestones = new CampaignConfig.Milestone[]{broken};
+        int packs = player.getBoostersOwned().size;
+        assertThrows(IllegalArgumentException.class, () -> state.onChapterCompleted("rath", "exodus", player));
+        assertTrue(state.realmProgress("rath").canComplete(realm, "exodus"));
+        assertEquals(player.getBoostersOwned().size, packs);
+        assertEquals(state.completions("rath:exodus"), 0);
     }
 
     @Test

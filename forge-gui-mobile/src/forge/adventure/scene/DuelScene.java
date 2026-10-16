@@ -599,7 +599,7 @@ public class DuelScene extends ForgeScene {
             RegisteredPlayer aiPlayer = RegisteredPlayer.forVariants(playerCount, appliedVariants, deck, null, false, null, null);
             if (campaignAnteActive && i == 0) {
                 if (campaignStake == null)
-                    campaignStake = AnteService.normalStake(playerDeck, deck, campaign.ante, MyRandom.getRandom());
+                    campaignStake = AnteService.normalStake(advPlayer, deck, campaign.ante, MyRandom.getRandom());
                 if (campaignStake.kind == AnteStake.Kind.TARGETED)
                     AnteService.validateTargetedStake(campaignStake, deck, CampaignState.instance().knowledge(), enemy.campaignRivalId);
                 campaignStake = AnteService.preparePhysicalAnte(advPlayer, humanPlayer, aiPlayer, campaignStake, MyRandom.getRandom());
@@ -731,6 +731,9 @@ public class DuelScene extends ForgeScene {
     private static final String PLACEHOLDER_CONTRAPTION = "Automatic Fidget Spinner";
 
     private void applyAdventureDeckRules(DeckFormat format) {
+        // Campaign Constructed decks passed the ownership/earned-ability gate. Do not silently
+        // remove earned extra copies (including Master Collector printings) at duel startup.
+        if (CampaignConfig.instance().isActive() && eventData == null && !isArena && !chaosBattle) return;
         if(FModel.getPreferences().getPrefBoolean(ForgePreferences.FPref.DEV_MODE_ENABLED)
                 && !FModel.getPreferences().getPrefBoolean(ForgePreferences.FPref.ENFORCE_DECK_LEGALITY))
             return;

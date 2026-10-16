@@ -28,6 +28,7 @@ public class CampaignState implements SaveFileContent {
 
     private static CampaignState current = new CampaignState();
 
+    private final CampaignProgress progression = new CampaignProgress();
     private final OpponentKnowledge knowledge = new OpponentKnowledge();
     private final RivalRegistry rivals = new RivalRegistry();
     private final ExpeditionState expedition = new ExpeditionState();
@@ -50,6 +51,7 @@ public class CampaignState implements SaveFileContent {
     public void clear() {
         rivals.load(null);
         knowledge.load(null);
+        progression.load(null);
         expedition.leave();
         completions.clear();
         realms.clear();
@@ -62,6 +64,8 @@ public class CampaignState implements SaveFileContent {
     public void setRandom(Random random) {
         this.random = random;
     }
+
+    public CampaignProgress progression() { return progression; }
 
     public OpponentKnowledge knowledge() { return knowledge; }
 
@@ -103,13 +107,38 @@ public class CampaignState implements SaveFileContent {
         return expedition.availableCopies(ownedCopies(player));
     }
 
+    public boolean saleTouchesProtection(AdventurePlayer player, PaperCard printing, int count) {
+        int total = 0, unprotected = 0;
+        for (OwnedCard copy : availableCopies(player)) if (copy.card.equals(printing)) {
+            total++;
+            if (!progression.isProtected(copy.id)) unprotected++;
+        }
+        return Math.min(count, total) > unprotected;
+    }
+
+    public boolean saleTouchesProtection(AdventurePlayer player, forge.util.ItemPool<PaperCard> cards) {
+        for (Map.Entry<PaperCard, Integer> entry : cards)
+            if (saleTouchesProtection(player, entry.getKey(), entry.getValue())) return true;
+        return false;
+    }
+
+    /** Printing-based voluntary removal spends unprotected copies before protected copies. */
+    public List<OwnedCard> voluntaryRemovalCopies(AdventurePlayer player) {
+        List<OwnedCard> copies = new ArrayList<>(availableCopies(player));
+        copies.sort(java.util.Comparator.comparing(copy -> progression.isProtected(copy.id)));
+        return copies;
+    }
+
     void receiveCopy(OwnedCard copy) {
         ownership.add(copy);
         expedition.onAcquired(copy);
     }
 
     void loseCopy(OwnedCard copy) {
-        if (ownership.remove(copy)) expedition.onLost(copy);
+        if (ownership.remove(copy)) {
+            expedition.onLost(copy);
+            progression.unprotect(copy.id);
+        }
     }
 
     /** Leave home with the active deck + sideboard as the only usable cards. */
@@ -182,6 +211,7 @@ public class CampaignState implements SaveFileContent {
         if (expedition.isActive()) throw new IllegalStateException("Return home before starting another expedition");
         HistoricalRealm realm = CampaignConfig.instance().realm(realmId);
         CampaignConfig.instance().validateRealmContent(realm);
+        CampaignProgress.validateRules(CampaignConfig.instance().progression);
         for (HistoricalRealm.Chapter chapter : realm.chapters) {
             for (String edition : chapter.editions)
                 if (forge.StaticData.instance().getCardEdition(edition) == null)
@@ -232,10 +262,13 @@ public class CampaignState implements SaveFileContent {
         HistoricalRealm.Chapter chapter = realm.chapter(chapterId);
         String key = chapterRewardKey(realmId, chapterId);
         int count = completions(key) + 1;
-        // Generate every pack before committing progression: a missing product cannot consume a clear.
+        // Resolve both configuration and product failures before any chapter guard or milestone changes.
+        CampaignProgress.validateRules(CampaignConfig.instance().progression);
         List<Deck> packs = RegionCompletion.createBoosters(chapter.boosterEdition,
                 count == 1 ? chapter.firstClearBoxBoosterCount : chapter.repeatClearBoosterCount, count == 1 ? "Box" : null);
         progress.complete(realm, chapterId);
+        if (progress.isRunComplete() && !progress.isSingleChapter())
+            progression.onFullClear(realmId, player, CampaignConfig.instance().progression);
         completions.put(key, count);
         for (Deck pack : packs) player.addBooster(pack);
         CampaignLog.event("chapter_completed").with("realm", realmId).with("chapter", chapterId)
@@ -284,7 +317,9 @@ public class CampaignState implements SaveFileContent {
     /** Called whenever copies leave the permanent collection (ante losses, sales). */
     public void onCardsLost(PaperCard card, int amount) {
         if (!CampaignConfig.instance().isActive()) return;
-        for (OwnedCard copy : expedition.availableCopies(ownership.copies())) {
+        List<OwnedCard> removable = expedition.availableCopies(ownership.copies());
+        removable.sort(java.util.Comparator.comparing(copy -> progression.isProtected(copy.id)));
+        for (OwnedCard copy : removable) {
             if (amount == 0) break;
             if (copy.card.equals(card)) { loseCopy(copy); amount--; }
         }
@@ -383,6 +418,7 @@ public class CampaignState implements SaveFileContent {
         if (data.containsKey("rivals"))
             rivals.load(data.readSubData("rivals"));
         if (data.containsKey("knowledge")) knowledge.load(data.readSubData("knowledge"));
+        if (data.containsKey("progression")) progression.load(data.readSubData("progression"));
         if (data.containsKey("expedition"))
             expedition.load(data.readSubData("expedition"));
         if (data.containsKey("realms")) {
@@ -410,6 +446,7 @@ public class CampaignState implements SaveFileContent {
         data.store("ownership", ownership.save());
         data.store("rivals", rivals.save());
         data.store("knowledge", knowledge.save());
+        data.store("progression", progression.save());
         data.store("expedition", expedition.save());
         SaveFileData savedRealms = new SaveFileData();
         for (Map.Entry<String, RealmProgress> entry : realms.entrySet())

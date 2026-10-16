@@ -143,5 +143,72 @@
         }
       ]
     }
+  ],
+  "progression": {
+    "milestones": [
+      {
+        "id": "rath-first-clear",
+        "realm": "rath",
+        "fullClears": 1,
+        "ordinaryCopyLimit": 4,
+        "maxLifeBonus": 2,
+        "protectionSlots": 1
+      },
+      {
+        "id": "rath-second-clear",
+        "realm": "rath",
+        "fullClears": 2,
+        "protectionSlots": 2,
+        "restrictedChoiceTokens": 1
+      },
+      {
+        "id": "rath-master-collector",
+        "realm": "rath",
+        "fullClears": 3,
+        "protectionSlots": 3,
+        "masterCollector": true
+      }
+    ]
+  },
+  "trades": [
+    {
+      "id": "tempest-common-rare",
+      "name": "Tempest Collector: 20 commons for a rare",
+      "requiredCount": 20,
+      "inputEditions": [
+        "TMP"
+      ],
+      "inputRarity": "Common",
+      "outputEditions": [
+        "TMP"
+      ],
+      "outputRarity": "Rare"
+    },
+    {
+      "id": "stronghold-common-rare",
+      "name": "Stronghold Collector: 20 commons for a rare",
+      "requiredCount": 20,
+      "inputEditions": [
+        "STH"
+      ],
+      "inputRarity": "Common",
+      "outputEditions": [
+        "STH"
+      ],
+      "outputRarity": "Rare"
+    },
+    {
+      "id": "exodus-common-rare",
+      "name": "Exodus Collector: 20 commons for a rare",
+      "requiredCount": 20,
+      "inputEditions": [
+        "EXO"
+      ],
+      "inputRarity": "Common",
+      "outputEditions": [
+        "EXO"
+      ],
+      "outputRarity": "Rare"
+    }
   ]
 }
