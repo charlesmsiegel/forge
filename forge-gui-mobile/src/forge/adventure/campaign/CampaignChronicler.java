@@ -44,28 +44,28 @@ public final class CampaignChronicler {
         var config = CampaignConfig.instance(); var deeds = CampaignState.instance().deeds();
         var entries = java.util.Arrays.stream(config.story.encounters)
                 .filter(entry -> !entry.poi.isBlank() || CampaignStory.canChallenge(config, entry.id, deeds)).toList();
-        int current = Math.max(0, Math.min(page, Math.max(0, (entries.size() - 1) / 3)));
+        int current = Math.max(0, Math.min(page, Math.max(0, (entries.size() - 1) / 2)));
         List<String> labels = new ArrayList<>(); List<Runnable> actions = new ArrayList<>();
-        for (var entry : entries.subList(current * 3, Math.min(entries.size(), current * 3 + 3))) {
+        for (var entry : entries.subList(current * 2, Math.min(entries.size(), current * 2 + 2))) {
             labels.add(entry.name + (deeds.has("encounter." + entry.id) ? " — defeated" : ""));
             actions.add(() -> CampaignStoryEncounter.travel(stage, entry.id));
         }
         if (current > 0) { labels.add("Previous"); actions.add(() -> story(stage, current - 1)); }
-        if ((current + 1) * 3 < entries.size()) { labels.add("Next"); actions.add(() -> story(stage, current + 1)); }
+        if ((current + 1) * 2 < entries.size()) { labels.add("Next"); actions.add(() -> story(stage, current + 1)); }
         labels.add("Back"); actions.add(() -> show(stage));
         stage.showOptionsDialog("[GOLD]" + CampaignStory.title(deeds) + "[WHITE]\nFive guardians hold the paths to the seal. Legendary figures may grant an audience before accepting a challenge.", labels, actions);
     }
     private static void landmarks(MapStage stage, int page) {
         var manifest = CampaignState.instance().seededLegends();
         List<SeededLegends.Entry> entries = manifest.entries();
-        int current = Math.max(0, Math.min(page, Math.max(0, (entries.size() - 1) / 3)));
+        int current = Math.max(0, Math.min(page, Math.max(0, (entries.size() - 1) / 2)));
         List<String> labels = new ArrayList<>(); List<Runnable> actions = new ArrayList<>();
-        for (SeededLegends.Entry entry : entries.subList(current * 3, Math.min(entries.size(), current * 3 + 3))) {
+        for (SeededLegends.Entry entry : entries.subList(current * 2, Math.min(entries.size(), current * 2 + 2))) {
             labels.add(entry.card().getName() + (manifest.isClaimed(entry.slot()) ? " — mastered" : ""));
             actions.add(() -> travel(stage, entry));
         }
         if (current > 0) { labels.add("Previous"); actions.add(() -> landmarks(stage, current - 1)); }
-        if ((current + 1) * 3 < entries.size()) { labels.add("Next"); actions.add(() -> landmarks(stage, current + 1)); }
+        if ((current + 1) * 2 < entries.size()) { labels.add("Next"); actions.add(() -> landmarks(stage, current + 1)); }
         labels.add("Back"); actions.add(() -> show(stage));
         stage.showOptionsDialog(entries.isEmpty() ? "No eligible legendary landmarks were selected in this campaign's card universe."
                 : "These are actual places and opponents. Defeat the guardian to receive its named physical card once. Linked Urza lands each have their own trial.", labels, actions);

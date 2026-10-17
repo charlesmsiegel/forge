@@ -675,6 +675,7 @@ public class GameHUD extends Stage {
     }
 
     private boolean expeditionShown = false;
+    private float expeditionRefresh;
 
     private void updateExpeditionLabel() {
         boolean active = forge.adventure.campaign.CampaignState.instance().expedition().isActive();
@@ -682,7 +683,11 @@ public class GameHUD extends Stage {
             return;
         if (active) {
             String region = forge.adventure.campaign.CampaignState.instance().expedition().getRegionId();
-            String text = "[RED]EXPEDITION: " + region.toUpperCase() + "[WHITE] only carried cards usable";
+            var state = forge.adventure.campaign.CampaignState.instance();
+            int available = state.availableCopies(Current.player()).size();
+            int home = Math.max(0, state.ownedCopies(Current.player()).size() - available);
+            String text = "[GOLD]EXPEDITION: " + region.toUpperCase() + "[WHITE]\n"
+                    + available + " usable • " + home + " at home";
             // TypingLabel exposes a StringBuilder; String.equals would restart every frame.
             if (!text.contentEquals(expeditionLabel.getOriginalText())) {
                 expeditionLabel.restart(text);
@@ -696,7 +701,8 @@ public class GameHUD extends Stage {
 
     @Override
     public void act(float delta) {
-        updateExpeditionLabel();
+        expeditionRefresh -= delta;
+        if (expeditionRefresh <= 0) { updateExpeditionLabel(); expeditionRefresh = 0.5f; }
         super.act(delta);
 
         updateBGM();

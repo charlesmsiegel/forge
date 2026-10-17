@@ -29,10 +29,10 @@
  <properties>
   <property name="persistentLife" type="bool" value="true" />
   <property name="respawnEnemies" type="bool" value="false" />
-  <property name="campaignLayoutRevision" value="authored-v1:6efbb622945815c8" />
+  <property name="campaignLayoutRevision" value="authored-v1:99e00a9956df241d" />
  </properties>
  <objectgroup id="900" name="Campaign places">
-  <object id="38" template="../../../common/maps/obj/portal.tx" x="240" y="400" type="expeditionGate">
+  <object id="38" template="../../../common/maps/obj/portal.tx" x="296" y="400" type="expeditionGate">
    <properties>
     <property name="teleport" value="" />
     <property name="direction" value="up" />

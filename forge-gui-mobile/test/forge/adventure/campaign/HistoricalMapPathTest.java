@@ -122,6 +122,49 @@ public class HistoricalMapPathTest extends AdventureTestBase {
         for (int gate : gates) assertTrue(reached.contains(gate), file.getName() + " has an unreachable expedition portal at tile " + gate % width + "," + gate / width);
     }
 
+    @Test
+    public void authoredEntrancesClearActualHeroCollider() throws Exception {
+        var config=CampaignConfig.load(PLANE_DIR+"campaign.json");
+        Set<String> maps=new HashSet<>();
+        for(var encounter:config.story.encounters)maps.add(encounter.map);
+        for(var realm:config.realms)for(var chapter:realm.chapters)java.util.Collections.addAll(maps,chapter.maps);
+        for(String path:maps) {
+            File file=new File(PLANE_DIR+path);Element root=xml(file);
+            boolean authored=false;var props=root.getElementsByTagName("property");
+            for(int i=0;i<props.getLength();i++)if(((Element)props.item(i)).getAttribute("name").equals("campaignLayoutRevision"))authored=true;
+            if(!authored)continue;
+            Element entry=null;var objects=root.getElementsByTagName("object");
+            for(int i=0;i<objects.getLength();i++)if(((Element)objects.item(i)).getAttribute("id").equals("38"))entry=(Element)objects.item(i);
+            assertNotNull(entry,path);
+            // EntryActor.up and CharacterSprite's 16px hero collider, expressed in Tiled coordinates.
+            float px=number(entry,"x")+4,py=number(entry,"y")-16-6.4f;
+            int width=Integer.parseInt(root.getAttribute("width"));
+            TreeMap<Integer,Element> sets=new TreeMap<>();var nodes=root.getElementsByTagName("tileset");
+            for(int i=0;i<nodes.getLength();i++){var node=(Element)nodes.item(i);sets.put(Integer.parseInt(node.getAttribute("firstgid")),xml(new File(file.getParentFile(),node.getAttribute("source"))));}
+            var layers=root.getElementsByTagName("layer");
+            for(int l=0;l<layers.getLength();l++){
+                var data=(Element)((Element)layers.item(l)).getElementsByTagName("data").item(0);
+                try(var in=new InflaterInputStream(new ByteArrayInputStream(Base64.getMimeDecoder().decode(data.getTextContent())))){
+                    var ids=ByteBuffer.wrap(in.readAllBytes()).order(ByteOrder.LITTLE_ENDIAN);
+                    for(int cell=0;ids.hasRemaining();cell++){
+                        int gid=ids.getInt()&0x1fffffff;float tx=(cell%width)*16,ty=(cell/width)*16;
+                        if(gid==0||tx+16<=px||tx>=px+10||ty+16<=py||ty>=py+6.4f)continue;
+                        var set=sets.floorEntry(gid);var tiles=set.getValue().getElementsByTagName("tile");
+                        for(int t=0;t<tiles.getLength();t++){
+                            var tile=(Element)tiles.item(t);if(Integer.parseInt(tile.getAttribute("id"))!=gid-set.getKey())continue;
+                            var collisions=tile.getElementsByTagName("object");
+                            for(int c=0;c<collisions.getLength();c++){
+                                var box=(Element)collisions.item(c);float x=tx+number(box,"x"),y=ty+number(box,"y");
+                                assertFalse(px<x+number(box,"width")&&px+10>x&&py<y+number(box,"height")&&py+6.4f>y,
+                                        path+" spawns hero inside tile collision at "+tx+","+ty);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private static float number(Element element, String attribute) {
         return element.hasAttribute(attribute) ? Float.parseFloat(element.getAttribute(attribute)) : 0;
     }
