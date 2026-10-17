@@ -188,6 +188,7 @@ public class TileMapScene extends HudScene {
                 stage.getPlayerSprite().getX(), stage.getPlayerSprite().getY(),
                 currentMap().snapshotEnemyPositions());
         saved.rivalIds.putAll(currentMap().snapshotRivalIds());
+        saved.layoutRevision = currentMap().getLayoutRevision();
         return saved;
     }
 
@@ -215,9 +216,15 @@ public class TileMapScene extends HudScene {
         AdventureQuestController.instance().mostRecentPOI = point;
         // A nonempty source suppresses dungeon-entry healing in MapStage.loadMap.
         oldMap = saved.mapPath;
-        load(saved.mapPath, 0);
-        currentMap().restoreEnemyPositions(saved.enemies, saved.rivalIds);
-        stage.getPlayerSprite().setPosition(saved.playerX, saved.playerY);
+        load(saved.mapPath, 38);
+        if (saved.matchesLayout(currentMap().getLayoutRevision())) {
+            currentMap().restoreEnemyPositions(saved.enemies, saved.rivalIds);
+            stage.getPlayerSprite().setPosition(saved.playerX, saved.playerY);
+        } else {
+            // Retain saved rival identities at the newly authored spawn positions.
+            currentMap().restoreEnemyPositions(currentMap().snapshotEnemyPositions(), saved.rivalIds);
+        }
+        // Changed authored geometry uses the safe entrance, preserving life and map changes.
         stage.getPlayerSprite().stop();
         Current.player().setLife(life);
         resumingSave = true;
