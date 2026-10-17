@@ -1,6 +1,5 @@
 package forge.adventure.campaign;
 
-import com.badlogic.gdx.utils.Json;
 import forge.StaticData;
 import forge.card.ColorSet;
 import forge.deck.Deck;
@@ -11,7 +10,7 @@ import java.util.*;
 public final class CampaignSetup {
     private CampaignSetup() { }
     public static CampaignConfig withPreset(CampaignConfig source, String preset) {
-        Json json = new Json(); CampaignConfig copy = json.fromJson(CampaignConfig.class, json.toJson(source));
+        CampaignConfig copy = source.copy();
         if (preset != null && !preset.isBlank()) { copy.universe.preset = preset; copy.universe.allowedEditions = new String[0]; }
         return copy;
     }

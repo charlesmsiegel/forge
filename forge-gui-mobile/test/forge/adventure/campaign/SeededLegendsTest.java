@@ -3,7 +3,6 @@ package forge.adventure.campaign;
 import forge.adventure.data.ConfigData;
 import forge.adventure.player.AdventurePlayer;
 import org.testng.annotations.Test;
-import java.util.List;
 import java.util.HashSet;
 import static org.testng.Assert.*;
 
