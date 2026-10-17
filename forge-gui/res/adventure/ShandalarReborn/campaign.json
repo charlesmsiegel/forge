@@ -142,6 +142,78 @@
           "repeatClearBoosterCount": 6
         }
       ]
+    },
+    {
+      "id": "fallen-empires",
+      "name": "Sarpadia \u2014 Fallen Empires",
+      "chapters": [
+        {
+          "id": "fallen-empires",
+          "name": "Fallen Empires",
+          "editions": [
+            "FEM"
+          ],
+          "entryMap": "maps/map/fallen-empires.tmx",
+          "entryObject": 38,
+          "maps": [
+            "maps/map/fallen-empires.tmx"
+          ],
+          "boosterEdition": "FEM",
+          "firstClearBoxBoosterCount": 60,
+          "repeatClearBoosterCount": 6
+        }
+      ]
+    },
+    {
+      "id": "mirrodin",
+      "name": "Mirrodin Block \u2014 The Metal Plane",
+      "chapters": [
+        {
+          "id": "mirrodin",
+          "name": "Mirrodin",
+          "editions": [
+            "MRD"
+          ],
+          "entryMap": "maps/map/mirrodin.tmx",
+          "entryObject": 38,
+          "maps": [
+            "maps/map/mirrodin.tmx"
+          ],
+          "boosterEdition": "MRD",
+          "firstClearBoxBoosterCount": 36,
+          "repeatClearBoosterCount": 6
+        },
+        {
+          "id": "darksteel",
+          "name": "Darksteel",
+          "editions": [
+            "DST"
+          ],
+          "entryMap": "maps/map/darksteel.tmx",
+          "entryObject": 38,
+          "maps": [
+            "maps/map/darksteel.tmx"
+          ],
+          "boosterEdition": "DST",
+          "firstClearBoxBoosterCount": 36,
+          "repeatClearBoosterCount": 6
+        },
+        {
+          "id": "fifth-dawn",
+          "name": "Fifth Dawn",
+          "editions": [
+            "5DN"
+          ],
+          "entryMap": "maps/map/fifth-dawn.tmx",
+          "entryObject": 38,
+          "maps": [
+            "maps/map/fifth-dawn.tmx"
+          ],
+          "boosterEdition": "5DN",
+          "firstClearBoxBoosterCount": 36,
+          "repeatClearBoosterCount": 6
+        }
+      ]
     }
   ],
   "progression": {
@@ -167,6 +239,36 @@
         "fullClears": 3,
         "protectionSlots": 3,
         "masterCollector": true
+      },
+      {
+        "id": "fallen-empires-first-clear",
+        "realm": "fallen-empires",
+        "fullClears": 1,
+        "maxLifeBonus": 2,
+        "protectionSlots": 2,
+        "ordinaryCopyLimit": 4
+      },
+      {
+        "id": "fallen-empires-second-clear",
+        "realm": "fallen-empires",
+        "fullClears": 2,
+        "protectionSlots": 3,
+        "restrictedChoiceTokens": 1
+      },
+      {
+        "id": "mirrodin-first-clear",
+        "realm": "mirrodin",
+        "fullClears": 1,
+        "maxLifeBonus": 2,
+        "protectionSlots": 2,
+        "ordinaryCopyLimit": 4
+      },
+      {
+        "id": "mirrodin-second-clear",
+        "realm": "mirrodin",
+        "fullClears": 2,
+        "protectionSlots": 3,
+        "restrictedChoiceTokens": 1
       }
     ]
   },
@@ -209,6 +311,58 @@
         "EXO"
       ],
       "outputRarity": "Rare"
+    },
+    {
+      "id": "fallen-empires-surplus",
+      "name": "Fallen Empires Collector: 20 commons for a rare",
+      "requiredCount": 20,
+      "inputEditions": [
+        "FEM"
+      ],
+      "inputRarity": "Common",
+      "outputEditions": [
+        "FEM"
+      ],
+      "outputRarity": "Rare"
+    },
+    {
+      "id": "mirrodin-surplus",
+      "name": "Mirrodin Collector: 20 commons for a rare",
+      "requiredCount": 20,
+      "inputEditions": [
+        "MRD"
+      ],
+      "inputRarity": "Common",
+      "outputEditions": [
+        "MRD"
+      ],
+      "outputRarity": "Rare"
+    },
+    {
+      "id": "darksteel-surplus",
+      "name": "Darksteel Collector: 20 commons for a rare",
+      "requiredCount": 20,
+      "inputEditions": [
+        "DST"
+      ],
+      "inputRarity": "Common",
+      "outputEditions": [
+        "DST"
+      ],
+      "outputRarity": "Rare"
+    },
+    {
+      "id": "fifth-dawn-surplus",
+      "name": "Fifth Dawn Collector: 20 commons for a rare",
+      "requiredCount": 20,
+      "inputEditions": [
+        "5DN"
+      ],
+      "inputRarity": "Common",
+      "outputEditions": [
+        "5DN"
+      ],
+      "outputRarity": "Rare"
     }
   ],
   "universe": {
@@ -222,6 +376,18 @@
       "id": "rath-limited",
       "name": "Rath Limited League",
       "block": "Tempest",
+      "phantom": false
+    },
+    {
+      "id": "fallen-empires-limited",
+      "name": "Fallen Empires Limited League",
+      "block": "Fallen Empires",
+      "phantom": false
+    },
+    {
+      "id": "mirrodin-limited",
+      "name": "Mirrodin Limited League",
+      "block": "Mirrodin",
       "phantom": false
     }
   ],

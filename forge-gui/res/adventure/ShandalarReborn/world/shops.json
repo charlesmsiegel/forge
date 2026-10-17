@@ -7867,5 +7867,153 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Fallen Empires Trader",
+    "description": "Fallen Empires Expedition Quartermaster",
+    "spriteAtlas": "maps/tileset/buildings.atlas",
+    "sprite": "RotatingShop",
+    "overlaySprite": "Overlay6Black",
+    "rewards": [
+      {
+        "type": "card",
+        "count": 8,
+        "editions": [
+          "FEM"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      },
+      {
+        "type": "card",
+        "count": 2,
+        "editions": [
+          "FEM"
+        ],
+        "rarity": [
+          "Rare"
+        ]
+      },
+      {
+        "type": "cardPackShop",
+        "count": 2,
+        "editions": [
+          "FEM"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Mirrodin Trader",
+    "description": "Mirrodin Expedition Quartermaster",
+    "spriteAtlas": "maps/tileset/buildings.atlas",
+    "sprite": "RotatingShop",
+    "overlaySprite": "Overlay6Black",
+    "rewards": [
+      {
+        "type": "card",
+        "count": 8,
+        "editions": [
+          "MRD"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      },
+      {
+        "type": "card",
+        "count": 2,
+        "editions": [
+          "MRD"
+        ],
+        "rarity": [
+          "Rare"
+        ]
+      },
+      {
+        "type": "cardPackShop",
+        "count": 2,
+        "editions": [
+          "MRD"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Darksteel Trader",
+    "description": "Darksteel Expedition Quartermaster",
+    "spriteAtlas": "maps/tileset/buildings.atlas",
+    "sprite": "RotatingShop",
+    "overlaySprite": "Overlay6Black",
+    "rewards": [
+      {
+        "type": "card",
+        "count": 8,
+        "editions": [
+          "DST"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      },
+      {
+        "type": "card",
+        "count": 2,
+        "editions": [
+          "DST"
+        ],
+        "rarity": [
+          "Rare"
+        ]
+      },
+      {
+        "type": "cardPackShop",
+        "count": 2,
+        "editions": [
+          "DST"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Fifth Dawn Trader",
+    "description": "Fifth Dawn Expedition Quartermaster",
+    "spriteAtlas": "maps/tileset/buildings.atlas",
+    "sprite": "RotatingShop",
+    "overlaySprite": "Overlay6Black",
+    "rewards": [
+      {
+        "type": "card",
+        "count": 8,
+        "editions": [
+          "5DN"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      },
+      {
+        "type": "card",
+        "count": 2,
+        "editions": [
+          "5DN"
+        ],
+        "rarity": [
+          "Rare"
+        ]
+      },
+      {
+        "type": "cardPackShop",
+        "count": 2,
+        "editions": [
+          "5DN"
+        ]
+      }
+    ]
   }
 ]
