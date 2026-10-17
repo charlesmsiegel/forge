@@ -993,8 +993,10 @@ public class AdventureDeckEditor extends FDeckEditor {
     private void resolveClose(final Consumer<Boolean> canCloseCallback, boolean result) {
         if (result) {
             Current.player().newCards.clear();
-            if (isDrafting())
+            if (isDrafting()) {
                 getCurrentEvent().eventStatus = AdventureEventController.EventStatus.Abandoned;
+                forge.adventure.campaign.CampaignLimited.claimPool(getCurrentEvent(), Current.player());
+            }
         }
         if (canCloseCallback != null)
             canCloseCallback.accept(result);

@@ -216,5 +216,13 @@
     "allowedEditions": [],
     "restoreAnteCards": true,
     "includeUnreleased": false
-  }
+  },
+  "limitedOrganizers": [
+    {
+      "id": "rath-limited",
+      "name": "Rath Limited League",
+      "block": "Tempest",
+      "phantom": false
+    }
+  ]
 }

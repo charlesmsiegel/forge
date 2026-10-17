@@ -26,6 +26,7 @@ public class CampaignConfig implements Serializable {
     public AnteRules ante = new AnteRules();
     public EconomyRules economy = new EconomyRules();
     public StrongholdRules stronghold = new StrongholdRules();
+    public LimitedOrganizer[] limitedOrganizers = new LimitedOrganizer[0];
     public TradeRecipe[] trades = new TradeRecipe[0];
     public ProgressionRules progression = new ProgressionRules();
     public HistoricalRealm[] realms = new HistoricalRealm[0];
@@ -96,6 +97,25 @@ public class CampaignConfig implements Serializable {
         public String boosterEdition = "STH";
         public int firstClearBoxBoosterCount = 36;
         public int repeatClearBoosterCount = 6;
+    }
+
+    public static class LimitedOrganizer implements Serializable {
+        public String id = "";
+        public String name = "";
+        public String block = "";
+        public boolean phantom;
+    }
+
+    public LimitedOrganizer limitedOrganizer(String id) {
+        LimitedOrganizer selected = null;
+        Set<String> ids = new HashSet<>();
+        for (LimitedOrganizer organizer : limitedOrganizers) {
+            if (organizer.id == null || organizer.id.isBlank() || !ids.add(organizer.id))
+                throw new IllegalArgumentException("Invalid or duplicate Limited organizer");
+            if (organizer.id.equals(id)) selected = organizer;
+        }
+        if (selected == null) throw new IllegalArgumentException("Unknown Limited organizer " + id);
+        return selected;
     }
 
     public static class TradeRecipe implements Serializable {

@@ -79,6 +79,7 @@ public final class CardUniverse implements SaveFileContent {
     private static void add(Set<String> set, String[] values) { if (values != null) Collections.addAll(set, values); }
     public boolean belongsTo(CampaignConfig config) { return config.isActive() && campaignId.equals(config.campaignId); }
     public boolean allowsEdition(String code) { return editions.contains(code) && !generationExcludedEditions.contains(code); }
+    public boolean allowsGeneratedName(String name) { return names.contains(name) && !generationBans.contains(name); }
     public boolean isBanned(String name) { return banned.contains(name); }
     public Set<String> restrictedNames() { return Collections.unmodifiableSet(restricted); }
     public boolean isRestricted(String name) { return restricted.contains(name); }

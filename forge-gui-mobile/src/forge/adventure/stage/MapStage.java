@@ -712,6 +712,13 @@ public class MapStage extends GameStage {
                     case "spellsmith":
                         addMapActor(obj, new OnCollide(() -> Forge.switchScene(SpellSmithScene.instance())));
                         break;
+                    case "campaignLimited":
+                        if (!CampaignConfig.instance().isActive()) break;
+                        if (obj instanceof TiledMapTileMapObject limitedObject)
+                            addMapActor(obj, new TextureSprite(limitedObject.getTextureRegion()));
+                        String organizerId = prop.get("organizer") == null ? "" : prop.get("organizer").toString();
+                        addMapActor(obj, new OnCollide(() -> forge.adventure.campaign.CampaignLimitedOrganizer.show(this, organizerId, currentMap, id)));
+                        break;
                     case "campaignServices":
                         if (!CampaignConfig.instance().isActive()) break;
                         if (obj instanceof TiledMapTileMapObject serviceObject)

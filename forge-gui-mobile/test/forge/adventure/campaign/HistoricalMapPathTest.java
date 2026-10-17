@@ -85,7 +85,7 @@ public class HistoricalMapPathTest extends AdventureTestBase {
             Element object = (Element) objects.item(i);
             int cell = (int) ((number(object, "y") - 8) / 16) * width + (int) ((number(object, "x") + 8) / 16);
             if (object.getAttribute("id").equals("38") || (start < 0 && object.getAttribute("template").endsWith("/portal.tx"))) start = cell;
-            if (object.getAttribute("type").equals("expeditionGate") || object.getAttribute("type").equals("campaignServices")) gates.add(cell);
+            if (object.getAttribute("type").equals("expeditionGate") || object.getAttribute("type").equals("campaignServices") || object.getAttribute("type").equals("campaignLimited")) gates.add(cell);
         }
         assertTrue(start >= 0 && start < blocked.length, file + " has no entrance");
         Set<Integer> reached = new HashSet<>();
