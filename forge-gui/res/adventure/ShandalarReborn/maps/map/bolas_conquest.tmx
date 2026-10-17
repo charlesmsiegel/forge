@@ -1,45 +1,43 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="902">
- <properties>
-  <property name="persistentLife" type="bool" value="true" />
-  <property name="respawnEnemies" type="bool" value="true" />
- </properties>
- <editorsettings>
-  <export target="wastetown..tmx" format="tmx" />
- </editorsettings>
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="60" height="40" tilewidth="16" tileheight="16" infinite="0" nextlayerid="901" nextobjectid="3000">
  <tileset firstgid="1" source="../../../common/maps/tileset/main.tsx" />
  <tileset firstgid="10113" source="../../../common/maps/tileset/buildings.tsx" />
- <tileset firstgid="11905" source="../../../common/maps/tileset/dungeon.tsx" />
- <layer id="1" name="Background" width="30" height="17">
+ <tileset firstgid="11905" source="../../../common/maps/tileset/dungeon/dungeon_2.tsx" />
+ <layer id="1" name="Background" width="60" height="40">
   <data encoding="base64" compression="zlib">
-   eJwL42RgCBvFo5jOOA4NYxPDpoaadpKCB8peSuweCHuHol+pEbcgQOv0S4p/aZFnR/HwwQDYMMBE
+   eJztwzEJAAAMA7C+8w/VWw37E0gvqaqqqqqqqqqqqu8DFRHS7A==
   </data>
  </layer>
- <layer id="2" name="Ground" width="30" height="17">
+ <layer id="2" name="Walls" width="60" height="40">
   <data encoding="base64" compression="zlib">
-   eJzVk00OgjAQhbuE9hgeQjFsReMNPJrxZ2sEryOoW6N4DDuhL5axSlrcOMkLpNX3zWuHLBYi81AeCVEYHSK//4b609pNP1HXuM3Of9DLjPkXjMn3sM978c3qYnTVUgpxVkKspP899GFeNHOkNdbaaZ9H4Pl+yoNMLia4c88zvmvto+95SIlyr4M76TlTqJR5E9fFBDdkvsC152RoPNf6vdTPSr33gv3KnIXPWdNcgUdZFnHT/1G9eCha28hGpXm39324lDU1POjkmKWuCplnyrGVbTYpUd28kKyY59qRGfc2sNiUqTa/t78B36ycj7vDvdn+3Bv9kkKZ3Iv7Ezvk++yrafy/3CdWVrhX
+   eJztmW0OgyAMhvlrhifYdh0PsZ1l7lz7uttMNhJtQFssSps2eX+QUMczKS9I1zjXDTp53eqaqfYejwTea+vc06d1aaf9YJs7b9y3BO950FwcQT/Y5s4b992D9/H/z18+3tbGmxtSeW8H5/pB90O8rY1XW/1+/O99pfROjJuah6370rzUeZAaC+f6UJIX44ex9RnroYEXW/eleW19Nt5aebG1GKsvSbw574ry+zmR4l3ysbGXaeBdo8ALPQMTFP/PCfh8DC88O6Z4JQSGd2kuBN6e4OUhKP6fE/D5nLxBEup3zkOW5r5EXk7/xaz1qfNLad5azkdb8ebkSua189E+vNiah9+vqOsD535SwvcNzv3kFvcLFB9dk2f3C9vy2v0CLqTuN7juFyih4X6hlv0G9p4g9INt7rxa/LcGGa9uGa9uBc4vNVqY7w==
   </data>
  </layer>
- <layer id="3" name="Foreground" width="30" height="17">
-  <data encoding="base64" compression="zlib">
-   eJxjYBgFyOAnFrHdNgwMe2zoY/8fJPZvoJ1/0OyNQWI/5qTMrs1QehsO+eUcDAwrgHglB4T9nBPCjqbMWgyzQUAUSQ7krzVA8WdA+gUQrwKyn3LidicpANlsmH+wybtxQtSgy1MCXDkh5oKwO5a480KS96AwbsWR2CA/PUHyN3K4w+wFhTFIzVMK7MWlF1eYemEJYzHyrccKYGEOS0PI7qE0fvGlR5AdqzkwwwRmN6XxSw54TGH8wgAszGBlAgxsodzoUUAnAAB51T3h
-  </data>
- </layer>
- <layer id="6" name="Clutter" width="30" height="17">
+ <layer id="3" name="Clutter" width="60" height="40">
   <properties>
    <property name="spriteLayer" type="bool" value="true" />
   </properties>
   <data encoding="base64" compression="zlib">
-   eJxjYBgFhMAeWwaGvbYDY/ffAbJ3FIyCoQaMgXnFBIhN6ZxnioH2lQBx6WheHQVDBAAA29EGlA==
+   eJzt1zEKgzAUxvG4OdjBQfACnbxPrTh5Ec/jJbr0FL2JRTuUDkKGQEt89pn4/8GDDCZ88UkwxgDyhsJde3cv3RUr3/3S37iF2t+PS25MbdU1104EAG6N0PkktQ4g6VH9XthWe9JO8F9dqp1Azjn5/swt2z4H4sL5DISD+wJwLK01njzm9wf771801jjEd/DSDrBTo3aAlWaPOcv3+xRNAgDQ8AalaD+G
   </data>
  </layer>
- <objectgroup id="4" name="Objects">
-  <object id="38" template="../../../common/maps/obj/entry_up.tx" x="217.032" y="271.777">
+ <layer id="8" name="Clutter" width="60" height="40">
+  <data encoding="base64" compression="zlib">
+   eJzt2EEKgCAQQFEPYOuu1bru0qqDdIl2dS+hTYS0qbBCambiP5BBERyVcaFzQL6ulM7Apu3chup8HLBoFlp3rZveHxv1BAAAAAAA4NzkYxy9bB5faYoY60I2D7ynVXa3Gv4htZ1JjvBw3Lr93V31/yK1r3Bjjlap98DyvgAAaQv38hQy
+  </data>
+ </layer>
+ <properties>
+  <property name="persistentLife" type="bool" value="true" />
+  <property name="respawnEnemies" type="bool" value="true" />
+  <property name="campaignLayoutRevision" value="authored-v1:94a39814eb9c8cce" />
+ </properties>
+ <objectgroup id="900" name="Campaign places">
+  <object id="38" template="../../../common/maps/obj/entry_up.tx" x="480" y="560">
    <properties>
     <property name="teleport" value="" />
    </properties>
   </object>
-  <object id="900" template="../../../common/maps/obj/enemy.tx" x="250" y="208" type="enemy">
+  <object id="900" template="../../../common/maps/obj/enemy.tx" x="816" y="48" type="enemy">
    <properties>
     <property name="enemy" value="Master Black Wizard" />
     <property name="storyEncounter" value="bolas-conquest" />
@@ -47,11 +45,26 @@
     <property name="speed" value="0" />
    </properties>
   </object>
-  <object id="901" template="../../../common/maps/obj/enemy.tx" x="111.633" y="145.511" type="enemy">
+  <object id="901" template="../../../common/maps/obj/enemy.tx" x="48" y="240" type="enemy">
    <properties>
     <property name="enemy" value="Adept Black Wizard" />
     <property name="threatRange" value="0" />
     <property name="speed" value="0" />
+   </properties>
+  </object>
+  <object id="1800" template="../../../common/maps/obj/enemy.tx" type="enemy" x="336" y="48">
+   <properties>
+    <property name="enemy" value="Adept Black Wizard" />
+    <property name="threatRange" value="32" />
+    <property name="speed" value="10" />
+   </properties>
+  </object>
+  <object id="1900" template="../../../common/maps/obj/dialog.tx" type="dialog" x="832" y="480">
+   <properties>
+    <property name="type" value="dialog" />
+    <property name="hidden" value="false" />
+    <property name="campaignLore" value="bolas-conquest" />
+    <property name="dialog" value="{&quot;text&quot;: &quot;Bolas: The Sovereign Throne\nThe inner court contains still more tributes to its owner. Bolas has reserved his most self-aggrandizing deck for the planeswalker audacious enough to pursue him here.&quot;, &quot;options&quot;: [{&quot;name&quot;: &quot;Leave&quot;}]}" />
    </properties>
   </object>
  </objectgroup>

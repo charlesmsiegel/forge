@@ -1,50 +1,72 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="902">
- <properties>
-  <property name="persistentLife" type="bool" value="true" />
-  <property name="respawnEnemies" type="bool" value="true" />
- </properties>
- <editorsettings>
-  <export target="wastetown..tmx" format="tmx" />
- </editorsettings>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="16" tileheight="16" infinite="0" nextlayerid="901" nextobjectid="3000">
  <tileset firstgid="1" source="../../../common/maps/tileset/main.tsx" />
  <tileset firstgid="10113" source="../../../common/maps/tileset/buildings.tsx" />
- <tileset firstgid="11905" source="../../../common/maps/tileset/dungeon.tsx" />
- <layer id="1" name="Background" width="30" height="17">
+ <tileset firstgid="11905" source="../../../common/maps/tileset/dungeon/dungeon_bis.tsx" />
+ <tileset firstgid="28289" source="../../../Innistrad/maps/tileset/Inn_Dungeon.tsx" />
+ <tileset firstgid="32769" source="../../../Innistrad/maps/tileset/INN_dungen_crawler_tileset.tsx" />
+ <layer id="1" name="Background" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJwL42RgCBvFo5jOOA4NYxPDpoaadpKCB8peSuweCHuHol+pEbcgQOv0S4p/aZFnR/HwwQDYMMBE
+   eJx7VM7A8GgI4WmcEEwve7DhUXtH7aW2/fSwE91eetlJD6xUMfBuGMWjeBSP4lE8ikGY1DpptA6jHk5TZGBIB+IMxVF7ScEA1IuTkw==
   </data>
  </layer>
- <layer id="2" name="Ground" width="30" height="17">
+ <layer id="2" name="Ground" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJzVk00OgjAQhbuE9hgeQjFsReMNPJrxZ2sEryOoW6N4DDuhL5axSlrcOMkLpNX3zWuHLBYi81AeCVEYHSK//4b609pNP1HXuM3Of9DLjPkXjMn3sM978c3qYnTVUgpxVkKspP899GFeNHOkNdbaaZ9H4Pl+yoNMLia4c88zvmvto+95SIlyr4M76TlTqJR5E9fFBDdkvsC152RoPNf6vdTPSr33gv3KnIXPWdNcgUdZFnHT/1G9eCha28hGpXm39324lDU1POjkmKWuCplnyrGVbTYpUd28kKyY59qRGfc2sNiUqTa/t78B36ycj7vDvdn+3Bv9kkKZ3Iv7Ezvk++yrafy/3CdWVrhX
+   eJxz5mNgcB7Fo3gUj2IKsRsQPwHixzjoJwTkXcm01wWI0UENL6YYLnEnCu09ocDAcJIEfEqBOvamKTIwpJOAMxRH7R21d9TeUXsHxl4WJQYGVjR8VgFixxkFTDk2JerYiw2kofkNGxi1lzi8AlinLsWBke3FpWY5L3n2EgoLkL3k+mmk2gsAydQ7lQ==
   </data>
  </layer>
- <layer id="3" name="Foreground" width="30" height="17">
+ <layer id="3" name="Foreground" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFyOAnFrHdNgwMe2zoY/8fJPZvoJ1/0OyNQWI/5qTMrs1QehsO+eUcDAwrgHglB4T9nBPCjqbMWgyzQUAUSQ7krzVA8WdA+gUQrwKyn3LidicpANlsmH+wybtxQtSgy1MCXDkh5oKwO5a480KS96AwbsWR2CA/PUHyN3K4w+wFhTFIzVMK7MWlF1eYemEJYzHyrccKYGEOS0PI7qE0fvGlR5AdqzkwwwRmN6XxSw54TGH8wgAszGBlAgxsodzoUUAnAAB51T3h
+   eJxjYBgFo2AUjAL6g+LVDAwlq+lv72egnV8GwF5qAv4uBgaBLvrb2w+0cwIWe+t46e8WdIAcJvR0D64wGS6AvwEYrg30sw8Wd/1AOyfQ0V5sAFs6+mvMwPDPmP5uqTUBuseE/vaOglFALlgGzT9LBkH9MAoIAwDOFxbZ
   </data>
  </layer>
- <layer id="6" name="Clutter" width="30" height="17">
+ <layer id="5" name="AboveSprites" width="30" height="30">
   <properties>
    <property name="spriteLayer" type="bool" value="true" />
   </properties>
   <data encoding="base64" compression="zlib">
-   eJxjYBgFhMAeWwaGvbYDY/ffAbJ3FIyCoQaMgXnFBIhN6ZxnioH2lQBx6WheHQVDBAAA29EGlA==
+   eJztwQEBAAAAgiD/r25IQAEAAPBoDhAAAQ==
   </data>
  </layer>
- <objectgroup id="4" name="Objects">
-  <object id="38" template="../../../common/maps/obj/entry_up.tx" x="217.032" y="271.777">
+ <properties>
+  <property name="persistentLife" type="bool" value="true" />
+  <property name="respawnEnemies" type="bool" value="true" />
+  <property name="campaignLayoutRevision" value="authored-v1:df08f25eb35aa970" />
+ </properties>
+ <objectgroup id="900" name="Campaign places">
+  <object id="38" template="../../../common/maps/obj/entry_up.tx" x="224" y="480">
    <properties>
     <property name="teleport" value="" />
    </properties>
   </object>
-  <object id="900" template="../../../common/maps/obj/enemy.tx" x="250" y="208" type="enemy">
+  <object id="900" template="../../../common/maps/obj/enemy.tx" x="96" y="160" type="enemy">
    <properties>
     <property name="enemy" value="Master Black Wizard" />
     <property name="storyEncounter" value="guardian-black" />
     <property name="threatRange" value="0" />
     <property name="speed" value="0" />
+   </properties>
+  </object>
+  <object id="1800" template="../../../common/maps/obj/enemy.tx" type="enemy" x="336" y="256">
+   <properties>
+    <property name="enemy" value="Adept Black Wizard" />
+    <property name="threatRange" value="32" />
+    <property name="speed" value="10" />
+   </properties>
+  </object>
+  <object id="1801" template="../../../common/maps/obj/enemy.tx" type="enemy" x="80" y="384">
+   <properties>
+    <property name="enemy" value="Adept Black Wizard" />
+    <property name="threatRange" value="32" />
+    <property name="speed" value="10" />
+   </properties>
+  </object>
+  <object id="1900" template="../../../common/maps/obj/dialog.tx" type="dialog" x="176" y="288">
+   <properties>
+    <property name="type" value="dialog" />
+    <property name="hidden" value="false" />
+    <property name="campaignLore" value="guardian-black" />
+    <property name="dialog" value="{&quot;text&quot;: &quot;The Court of Debts\nVeyra calls the seal a debt owed by the living to the dead. Her sentries collect their stakes through ordinary ante; there is no bargain that replaces victory.&quot;, &quot;options&quot;: [{&quot;name&quot;: &quot;Leave&quot;}]}" />
    </properties>
   </object>
  </objectgroup>

@@ -496,11 +496,11 @@
     "encounters": [
       {
         "id": "guardian-white",
-        "name": "White Castle Guardian",
+        "name": "White Castle Guardian \u2014 Seren",
         "enemy": "Master White Wizard",
         "map": "maps/map/castle_white.tmx",
         "poi": "CastleWhite",
-        "audience": "The white guardian bars the way to the seal. Prove your mastery in a duel.",
+        "audience": "These halls shelter the people who cannot defend themselves. Seren will not surrender the white bond until you prove that opening the plane is worth the risk.\nShow me the Magic that will defend Shandalar when its walls are gone.",
         "refusal": "The castle trial is unavailable.",
         "requires": [],
         "grants": [
@@ -569,11 +569,11 @@
       },
       {
         "id": "guardian-blue",
-        "name": "Blue Castle Guardian",
+        "name": "Blue Castle Guardian \u2014 Ilyon",
         "enemy": "Master Blue Wizard",
         "map": "maps/map/castle_blue.tmx",
         "poi": "CastleBlue",
-        "audience": "The blue guardian bars the way to the seal. Prove your mastery in a duel.",
+        "audience": "Ilyon has catalogued every failed attempt to cross the seal. The archive preserves their lessons, and its guardian demands more than a confident theory.\nShow me the Magic that will defend Shandalar when its walls are gone.",
         "refusal": "The castle trial is unavailable.",
         "requires": [],
         "grants": [
@@ -642,11 +642,11 @@
       },
       {
         "id": "guardian-black",
-        "name": "Black Castle Guardian",
+        "name": "Black Castle Guardian \u2014 Veyra",
         "enemy": "Master Black Wizard",
         "map": "maps/map/castle_black.tmx",
         "poi": "CastleBlack",
-        "audience": "The black guardian bars the way to the seal. Prove your mastery in a duel.",
+        "audience": "Veyra calls the seal a debt owed by the living to the dead. Her sentries collect their stakes through ordinary ante; there is no bargain that replaces victory.\nShow me the Magic that will defend Shandalar when its walls are gone.",
         "refusal": "The castle trial is unavailable.",
         "requires": [],
         "grants": [
@@ -715,11 +715,11 @@
       },
       {
         "id": "guardian-red",
-        "name": "Red Castle Guardian",
+        "name": "Red Castle Guardian \u2014 Rhaz",
         "enemy": "Master Red Wizard",
         "map": "maps/map/castle_red.tmx",
         "poi": "CastleRed",
-        "audience": "The red guardian bars the way to the seal. Prove your mastery in a duel.",
+        "audience": "Rhaz tends a fire that has never felt a wind from another plane. Defeat the herald and the red bond can finally burn through its own cage.\nShow me the Magic that will defend Shandalar when its walls are gone.",
         "refusal": "The castle trial is unavailable.",
         "requires": [],
         "grants": [
@@ -789,11 +789,11 @@
       },
       {
         "id": "guardian-green",
-        "name": "Green Castle Guardian",
+        "name": "Green Castle Guardian \u2014 Thalen",
         "enemy": "Master Green Wizard",
         "map": "maps/map/castle_green.tmx",
         "poi": "CastleGreen",
-        "audience": "The green guardian bars the way to the seal. Prove your mastery in a duel.",
+        "audience": "Thalen remembers when these roots reached beyond Shandalar. The green bond protects the living world, but protection has become confinement.\nShow me the Magic that will defend Shandalar when its walls are gone.",
         "refusal": "The castle trial is unavailable.",
         "requires": [],
         "grants": [
@@ -867,7 +867,7 @@
         "enemy": "Master Black Wizard",
         "map": "maps/map/seal_warden.tmx",
         "poi": "SealSanctum",
-        "audience": "Five powers bind this plane. Only their champion may confront the keeper of the seal.",
+        "audience": "Five bonds converge here. Their guardians can name a champion, but only defeating the Veiled Warden can break the seal and make that champion a planeswalker.\nI have kept this world still for long enough. If you would change its fate, defeat me.",
         "refusal": "Defeat all five color guardians first.",
         "requires": [
           "guardian.white",
