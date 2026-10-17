@@ -486,7 +486,8 @@ public class DuelScene extends ForgeScene {
             campaignStake = null; // a pre-set stake only applies to the enemy it was rolled for
         campaignStakeEnemy = null;
         Deck preparedCampaignDeck = enemy.campaignEncounter().take();
-        if (!campaignAnteActive) preparedCampaignDeck = null;
+        boolean campaignOpponentActive = campaign.isActive() && eventData == null && !isArena && !chaosBattle;
+        if (!campaignOpponentActive) preparedCampaignDeck = null;
         campaignObserver = null;
 
         List<RegisteredPlayer> players = new ArrayList<>();
@@ -586,7 +587,9 @@ public class DuelScene extends ForgeScene {
             } else {
                 boolean useGeneticAI = Config.instance().getConfigData().enableGeneticAI && (Current.player().isUsingCustomDeck() || Current.player().isHardorInsaneDifficulty());
                 deck = i == 0 && preparedCampaignDeck != null ? preparedCampaignDeck
-                        : currentEnemy.copyPlayerDeck ? this.playerDeck : currentEnemy.generateDeck(Current.player().isFantasyMode(), useGeneticAI);
+                        : currentEnemy.copyPlayerDeck ? this.playerDeck : i == 0 && campaignOpponentActive
+                            ? forge.adventure.campaign.CampaignOpponentDecks.generate(enemy, () -> enemy.getData().generateDeck(Current.player().isFantasyMode(), useGeneticAI))
+                            : currentEnemy.generateDeck(Current.player().isFantasyMode(), useGeneticAI);
             }
             if (deck == null) {
                 isDeckMissing = true;

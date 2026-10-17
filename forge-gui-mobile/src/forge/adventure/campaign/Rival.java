@@ -5,6 +5,8 @@ import forge.adventure.util.SaveFileContent;
 import forge.adventure.data.EnemyData;
 import forge.adventure.util.SaveFileData;
 import forge.deck.CardPool;
+import forge.deck.Deck;
+import java.util.Collection;
 import forge.item.PaperCard;
 
 import java.util.List;
@@ -21,6 +23,38 @@ public class Rival implements SaveFileContent {
     public int playerWins;
     public int playerLosses;
     public long createdAt;
+    private int savedUpgradeTier;
+    private long savedDeckSeed;
+    private final CardPool savedOpponentDeck = new CardPool();
+    private int savedDeckTier = -1;
+
+    public Deck opponentDeck(Deck template, CardUniverse universe, Collection<PaperCard> pool) {
+        int tier = upgradeTier();
+        if (savedDeckTier != tier || savedOpponentDeck.isEmpty()
+                || !savedOpponentDeck.toFlatList().stream().allMatch(universe::allowsPrinting)) {
+            Deck generated = EnemyDeckPolicy.adapt(template, universe, pool, deckSeed(), tier);
+            generated = EnemyDeckPolicy.withAcquired(generated, universe, getCardsTakenFromPlayer());
+            savedOpponentDeck.clear(); savedOpponentDeck.addAll(generated.getMain());
+            savedDeckTier = tier;
+        }
+        Deck result = new Deck(name); result.getMain().addAll(savedOpponentDeck); return result;
+    }
+
+    /** Three and six player victories unlock bounded, persistent template upgrades. */
+    public int upgradeTier() {
+        savedUpgradeTier = Math.max(0, Math.min(2, Math.max(savedUpgradeTier, playerWins / 3)));
+        return savedUpgradeTier;
+    }
+
+    public void advanceForWorld(WorldDeeds deeds) {
+        int floor = deeds.has("seal.broken") ? 2 : deeds.has("shandalar.champion") ? 1 : 0;
+        savedUpgradeTier = Math.max(upgradeTier(), floor);
+    }
+
+    public long deckSeed() {
+        if (savedDeckSeed == 0) savedDeckSeed = 0x5348414e44414c41L ^ id.hashCode();
+        return savedDeckSeed;
+    }
     private final CardPool cardsTakenFromPlayer = new CardPool();
     private final CardIdentityLedger takenCopies = new CardIdentityLedger();
 
@@ -30,12 +64,14 @@ public class Rival implements SaveFileContent {
     }
 
     public void addTaken(OwnedCard copy) {
+        savedDeckTier = -1;
         takenCopies.add(copy);
         cardsTakenFromPlayer.add(copy.card);
     }
 
     public boolean removeTaken(OwnedCard copy) {
         if (!takenCopies.remove(copy)) return false;
+        savedDeckTier = -1;
         cardsTakenFromPlayer.remove(copy.card);
         return true;
     }
@@ -89,6 +125,14 @@ public class Rival implements SaveFileContent {
 
     @Override
     public void load(SaveFileData data) {
+        savedOpponentDeck.clear();
+        savedDeckTier = data.containsKey("opponentDeckTier") ? data.readInt("opponentDeckTier") : -1;
+        if (data.containsKey("opponentDeck")) {
+            String[] lines = (String[]) data.readObject("opponentDeck");
+            if (lines != null) savedOpponentDeck.addAll(CardPool.fromCardList(Lists.newArrayList(lines)));
+        }
+        savedUpgradeTier = data.containsKey("upgradeTier") ? data.readInt("upgradeTier") : 0;
+        savedDeckSeed = data.containsKey("deckSeed") ? data.readLong("deckSeed") : 0;
         id = data.readString("id");
         name = data.readString("name");
         baseEnemyName = data.readString("baseEnemyName");
@@ -109,6 +153,11 @@ public class Rival implements SaveFileContent {
     @Override
     public SaveFileData save() {
         SaveFileData data = new SaveFileData();
+        data.store("opponentDeckTier", savedDeckTier);
+        String recipe = savedOpponentDeck.toCardList("\n");
+        data.storeObject("opponentDeck", recipe.isEmpty() ? new String[0] : recipe.split("\n"));
+        data.store("upgradeTier", upgradeTier());
+        data.store("deckSeed", deckSeed());
         data.store("id", id);
         data.store("name", name);
         data.store("baseEnemyName", baseEnemyName);
