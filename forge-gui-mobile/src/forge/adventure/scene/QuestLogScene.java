@@ -103,6 +103,11 @@ public class QuestLogScene extends UIScene {
         backToList();
 
         scrollContainer.clear();
+        if (forge.adventure.campaign.CampaignConfig.instance().isActive()) {
+            var journal = Controls.newTextButton("Campaign journal", () -> Forge.switchScene(new CampaignJournalScene(this)));
+            scrollContainer.add(journal).colspan(2).fillX().padBottom(8); scrollContainer.row();
+            addToSelectable(journal);
+        }
 
         for (AdventureQuestData quest : Current.player().getQuests()) {
             String headerCode = quest.isTracked ? "{GRADIENT=CYAN;BLUE;1;1}•{ENDGRADIENT}[BLACK]" : "[BLACK]";

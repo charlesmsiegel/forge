@@ -56,6 +56,7 @@ public class NewGameScene extends MenuScene {
     private final ImageButton modeHelp;
     private DialogData modeSummary;
     private final Random rand = new Random();
+    private String campaignPreset;
     private String originalEditionLabelText;
     private Array<String> originalEditionNames;
 
@@ -63,6 +64,7 @@ public class NewGameScene extends MenuScene {
 
     private NewGameScene() {
         super(Forge.isLandscapeMode() ? "ui/new_game.json" : "ui/new_game_portrait.json");
+        if (forge.adventure.campaign.CampaignConfig.instance().isActive() && ui.findActor("campaignFormat") != null) ui.onButtonPress("campaignFormat", this::chooseCampaignFormat);
         gender = ui.findActor("gender");
         selectedName = ui.findActor("nameField");
         generateName();
@@ -322,6 +324,27 @@ public class NewGameScene extends MenuScene {
         return editionIds.length > 0 ? editionIds[0] : null;
     }
 
+    private void chooseCampaignFormat() {
+        var dialog = new com.badlogic.gdx.scenes.scene2d.ui.Dialog("Campaign card universe", Controls.getSkin());
+        var explanation = Controls.newTypingLabel("Choose the format captured at campaign creation. Its legal sets, bans and restrictions are frozen for this save. Your starter is adjusted to be legal. Plane default preserves configured set overrides.");
+        explanation.skipToTheEnd(); explanation.setWrap(true);
+        dialog.getContentTable().add(explanation).width(Forge.isLandscapeMode() ? 310 : 220).colspan(2).pad(8);
+        String[] choices = {"Plane default", "All Magic", "Modern", "Pioneer", "Legacy", "Vintage", "Standard"};
+        for (int i = 0; i < choices.length; i++) {
+            if (i % 2 == 0) dialog.getContentTable().row();
+            String choice = choices[i];
+            dialog.getContentTable().add(Controls.newTextButton(choice, () -> {
+                campaignPreset = choice.equals("Plane default") ? null : choice;
+                com.github.tommyettinger.textra.TextraButton button = ui.findActor("campaignFormat");
+                button.setText(campaignPreset == null ? "Universe: Default" : "Universe: " + campaignPreset);
+                removeDialog();
+            })).width(Forge.isLandscapeMode() ? 150 : 108).height(22).pad(2);
+        }
+        dialog.getButtonTable().defaults().height(22);
+        dialog.button(Controls.newTextButton("Back", this::removeDialog));
+        showDialog(dialog);
+    }
+
     boolean started = false;
 
     public boolean start() {
@@ -334,6 +357,7 @@ public class NewGameScene extends MenuScene {
         Runnable runnable = () -> {
             started = false;
             //FModel.getPreferences().setPref(ForgePreferences.FPref.UI_ENABLE_MUSIC, false);
+            try {
             WorldSave.generateNewWorld(selectedName.getText(),
                     gender.getCurrentIndex() == 0,
                     race.getCurrentIndex(),
@@ -341,7 +365,7 @@ public class NewGameScene extends MenuScene {
                     getStartingColor(),
                     Config.instance().getConfigData().difficulties[difficulty.getCurrentIndex()],
                     modes.get(mode.getCurrentIndex()), colorId.getCurrentIndex(),
-                    getStartingEdition(), 0);
+                    getStartingEdition(), 0, campaignPreset);
             GamePlayerUtil.getGuiPlayer().setName(selectedName.getText());
             SoundSystem.instance.changeBackgroundTrack();
             WorldStage.getInstance().enterSpawnPOI();
@@ -349,6 +373,10 @@ public class NewGameScene extends MenuScene {
                 AdventurePlayer.current().addQuest("28", true); //Temporary link to Shandalar main questline
             }
             Forge.switchScene(GameScene.instance());
+            } catch (IllegalArgumentException | IllegalStateException e) {
+                Forge.switchScene(NewGameScene.this);
+                showDialog(createGenericDialog("Campaign could not start", e.getMessage(), "Back", null, this::removeDialog, null));
+            }
         };
         Forge.setTransitionScreen(new TransitionScreen(runnable, null, false, true, Forge.getLocalizer().getMessage("lblGeneratingWorld")));
         return true;
@@ -389,7 +417,7 @@ public class NewGameScene extends MenuScene {
                     getStartingColor(),
                     Config.instance().getConfigData().difficulties[difficulty.getCurrentIndex()],
                     modes.get(mode.getCurrentIndex()), colorId.getCurrentIndex(),
-                    getStartingEdition(), 0);
+                    getStartingEdition(), 0, campaignPreset);
             GamePlayerUtil.getGuiPlayer().setName(selectedName.getText());
             Forge.switchScene(GameScene.instance());
         }

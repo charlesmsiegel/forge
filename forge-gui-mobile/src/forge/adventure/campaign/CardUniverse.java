@@ -77,6 +77,8 @@ public final class CardUniverse implements SaveFileContent {
     }
 
     private static void add(Set<String> set, String[] values) { if (values != null) Collections.addAll(set, values); }
+    public Set<String> legalNames() { return Collections.unmodifiableSet(names); }
+    public String summary() { return preset + "\nCaptured: " + capturedOn + "\nEditions: " + editions.size() + "\nLegal card names: " + names.stream().filter(name -> !banned.contains(name)).count() + "\nBanned names: " + banned.size() + "\nRestricted names: " + restricted.size(); }
     public boolean belongsTo(CampaignConfig config) { return config.isActive() && campaignId.equals(config.campaignId); }
     public boolean allowsEdition(String code) { return editions.contains(code) && !generationExcludedEditions.contains(code); }
     public boolean allowsGeneratedName(String name) { return names.contains(name) && !generationBans.contains(name); }

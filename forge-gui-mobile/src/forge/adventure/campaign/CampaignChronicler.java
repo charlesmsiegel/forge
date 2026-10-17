@@ -62,7 +62,7 @@ public final class CampaignChronicler {
                 "Explore", () -> TileMapScene.instance().loadNext(target, 38), "Stay here", () -> landmarks(stage, 0));
     }
     private static void deeds(MapStage stage, int page) {
-        List<String> flags = new ArrayList<>(CampaignState.instance().deeds().flags());
+        List<String> flags = CampaignJournal.accomplishments(CampaignConfig.instance(), CampaignState.instance());
         int current = Math.max(0, Math.min(page, Math.max(0, (flags.size() - 1) / 4)));
         String text = flags.isEmpty() ? "Your great deeds are still ahead of you." : String.join("\n", flags.subList(current * 4, Math.min(flags.size(), current * 4 + 4)));
         List<String> labels = new ArrayList<>(); List<Runnable> actions = new ArrayList<>();

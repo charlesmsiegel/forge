@@ -249,6 +249,12 @@ public class CampaignState implements SaveFileContent {
         return new String[0];
     }
 
+    public RealmProgress realmProgressSnapshot(String realmId) {
+        RealmProgress copy = new RealmProgress();
+        if (realms.containsKey(realmId)) copy.load(realms.get(realmId).save());
+        return copy;
+    }
+
     public RealmProgress realmProgress(String realmId) {
         CampaignConfig.instance().realm(realmId);
         return realms.computeIfAbsent(realmId, key -> new RealmProgress());
