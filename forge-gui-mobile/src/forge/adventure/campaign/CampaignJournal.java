@@ -30,6 +30,10 @@ public final class CampaignJournal {
             RealmProgress progress = state.realmProgressSnapshot(realm.id);
             realms.append("\n\n").append(realm.name).append("\nCheckpoint: ").append(realm.chapter(progress.checkpoint(realm)).name)
                     .append("\nFull clears: ").append(state.progression().fullClears(realm.id));
+            var snapshot = state.universeFor(config);
+            boolean available = snapshot == null || java.util.Arrays.stream(realm.chapters)
+                    .flatMap(chapter -> java.util.Arrays.stream(chapter.editions)).allMatch(snapshot::allowsEdition);
+            if (!available) realms.append("\nUnavailable in this campaign's card universe.");
         }
         if (state.expedition().isActive()) realms.append("\n\nExpedition underway. Only carried cards are available. Return home to bank your acquisitions.");
         else realms.append("\n\nAt home. Your full collection is available.");

@@ -11,8 +11,15 @@ public final class CampaignChronicler {
     private CampaignChronicler() { }
     public static void show(MapStage stage) {
         stage.showOptionsDialog("[GOLD]Chronicler of Shandalar[WHITE]\nYour deeds are remembered. Old paths lead to the legendary places bound to this world's seed.",
-                List.of("Legendary landmarks", "Guardians and legends", "Recorded deeds", "Leave"),
-                List.of(() -> landmarks(stage, 0), () -> story(stage, 0), () -> deeds(stage, 0), stage::resetPosition));
+                List.of("Historical gateways", "Legendary landmarks", "Guardians and legends", "Recorded deeds", "Leave"),
+                List.of(() -> crossroads(stage), () -> landmarks(stage, 0), () -> story(stage, 0), () -> deeds(stage, 0), stage::resetPosition));
+    }
+    private static void crossroads(MapStage stage) {
+        if (CampaignState.instance().expedition().isActive()) {
+            stage.showChoiceDialog("Return home before choosing another expedition.", "Back", () -> show(stage), null, null); return;
+        }
+        stage.showChoiceDialog("Visit the Historical Crossroads? Choose Sarpadia, Rath or Mirrodin there. Each gateway checks this campaign's frozen card universe before entry.",
+                "Visit crossroads", () -> TileMapScene.instance().loadNext("maps/map/realm_crossroads.tmx", 38), "Stay here", () -> show(stage));
     }
     private static void story(MapStage stage, int page) {
         var config = CampaignConfig.instance(); var deeds = CampaignState.instance().deeds();

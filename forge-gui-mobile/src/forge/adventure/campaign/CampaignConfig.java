@@ -259,6 +259,14 @@ public class CampaignConfig implements Serializable {
 
     private transient String planeDirectory;
 
+    /** Independent settings copy that retains the source plane's content location. */
+    public CampaignConfig copy() {
+        Json json = new Json();
+        CampaignConfig result = json.fromJson(CampaignConfig.class, json.toJson(this));
+        result.planeDirectory = planeDirectory;
+        return result;
+    }
+
     private static CampaignConfig current;
 
     /** Configuration of the currently selected plane (cached). */
