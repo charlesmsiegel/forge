@@ -15,6 +15,7 @@ public final class CampaignOpponentDecks {
     public static boolean prepare(forge.adventure.stage.GameStage stage, EnemySprite enemy) {
         if (!CampaignConfig.instance().isActive()) return true;
         try {
+            CampaignConfig.instance().validateBalance();
             enemy.campaignEncounter().deck(() -> {
                 boolean genetic = forge.adventure.util.Config.instance().getConfigData().enableGeneticAI
                         && (forge.adventure.util.Current.player().isUsingCustomDeck()
@@ -50,11 +51,12 @@ public final class CampaignOpponentDecks {
         Rival rival = CampaignState.instance().rivals().byId(enemy.campaignRivalId);
         WorldDeeds deeds = CampaignState.instance().deeds();
         if (rival != null) rival.advanceForWorld(deeds);
-        int tier = rival == null ? (deeds.has("seal.broken") ? 2 : deeds.has("shandalar.champion") ? 1 : 0) : rival.upgradeTier();
+        int tier = rival == null ? (deeds.has("seal.broken") ? config.rivals.sealTier : deeds.has("shandalar.champion") ? config.rivals.championTier : 0) : rival.upgradeTier();
+        tier = Math.max(tier, config.difficulty.ordinaryTierFloor);
         long seed = rival == null ? enemy.getData().name.hashCode() : rival.deckSeed();
         Collection<PaperCard> pool = tier == 0 && template.getMain().toFlatList().stream().allMatch(c -> universe.allowsPrinting(c) && !c.getRules().isUnsupported())
                 ? template.getMain().toFlatList() : pool(universe);
-        return rival == null ? EnemyDeckPolicy.adapt(template, universe, pool, seed, tier)
+        return rival == null ? EnemyDeckPolicy.adapt(template, universe, pool, seed, tier, config.rivals.rarityUpgradeSlotsPerTier)
                 : rival.opponentDeck(template, universe, pool);
     }
 

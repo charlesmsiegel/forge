@@ -53,7 +53,7 @@ public class RewardScene extends UIScene {
     private String packName;
     private int unopenedPacks;
     private float originalCardsHeight, originalDoneX, originalDoneWidth;
-    private boolean loadingPack;
+    private boolean loadingPack, rewardsSettled;
 
     /** Presentation context only: settlement still uses the normal Loot path. */
     public void loadPack(Deck deck, int unopened) {
@@ -218,6 +218,8 @@ public class RewardScene extends UIScene {
     }
 
     void clearGenerated() {
+        if (rewardsSettled) return;
+        rewardsSettled = true;
         for (Actor actor : new Array.ArrayIterator<>(generated)) {
             if (!(actor instanceof RewardActor rewardActor)) {
                 continue;
@@ -374,7 +376,7 @@ public class RewardScene extends UIScene {
 
     public void loadRewards(Array<Reward> newRewards, Type type, ShopActor shopActor) {
         // Merge Gold and Shards rewards into single entries
-        int totalGold = 0;
+        long totalGold = 0;
         int totalShards = 0;
         Array<Reward> others = new Array<>();
         for (Reward r : new Array.ArrayIterator<>(newRewards)) {
@@ -392,7 +394,7 @@ public class RewardScene extends UIScene {
         }
         newRewards.clear();
         if (totalGold > 0) {
-            newRewards.add(new Reward(Reward.Type.Gold, totalGold));
+            newRewards.add(new Reward(Reward.Type.Gold, (int)Math.min(Integer.MAX_VALUE, totalGold)));
         }
         if (totalShards > 0) {
             newRewards.add(new Reward(Reward.Type.Shards, totalShards));
@@ -401,6 +403,7 @@ public class RewardScene extends UIScene {
             newRewards.add(r);
         }
 
+        rewardsSettled = false;
         packSummary = null;
         packLabel.setVisible(false);
         shown = false;
@@ -684,6 +687,8 @@ public class RewardScene extends UIScene {
             price = CardUtil.getRewardPrice(actor.getReward());
             price *= Current.player().goldModifier();
             price *= shopModifier;
+            if (CampaignConfig.instance().isActive())
+                price = forge.adventure.campaign.CampaignPrices.purchase(reward, Current.player().goldModifier() * shopModifier, CampaignConfig.instance().economy);
             setText("[+GoldCoin] " + price);
             updateOwned();
             addListener(new ClickListener() {

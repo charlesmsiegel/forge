@@ -628,7 +628,7 @@ public class DuelScene extends ForgeScene {
             enemyPlayer.setAvatarIndex(enemyAvatarKey + i);
             aiPlayer.setPlayer(enemyPlayer);
             aiPlayer.setTeamNumber(currentEnemy.teamNumber);
-            aiPlayer.setStartingLife(eventData != null ? eventData.eventRules.startingLife : Math.round((float) currentEnemy.life * advPlayer.getDifficulty().enemyLifeFactor));
+            aiPlayer.setStartingLife(eventData != null ? eventData.eventRules.startingLife : forge.adventure.campaign.CampaignBalance.enemyLife(currentEnemy.life, advPlayer.getDifficulty().enemyLifeFactor, campaign));
 
             Array<EffectData> equipmentEffects = new Array<>();
             if (eventData != null && eventData.eventRules.allowsItems) {
@@ -947,6 +947,8 @@ public class DuelScene extends ForgeScene {
     }
 
     private String selectAI(String ai) { //Decide opponent AI.
+        var campaign = CampaignConfig.instance();
+        if (campaign.isActive() && eventData == null && !campaign.difficulty.aiProfile.isEmpty()) return campaign.difficulty.aiProfile;
         String AI = ""; //Use user settings if it's null.
         if (ai != null) {
             AI = switch (ai.toLowerCase()) { //We use this way to ensure capitalization is exact.

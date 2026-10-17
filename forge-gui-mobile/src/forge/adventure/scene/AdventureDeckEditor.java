@@ -321,13 +321,17 @@ public class AdventureDeckEditor extends FDeckEditor {
 
     private static void confirmCampaignSale(AdventurePlayer player, PaperCard card, Integer amount, java.util.function.IntConsumer sold) {
         if (amount == null || amount < 1) { sold.accept(0); return; }
+        Runnable sale = () -> {
+            try { sold.accept(player.sellCard(card, amount)); }
+            catch (IllegalArgumentException error) { FOptionPane.showErrorDialog(error.getMessage(), "Sale unavailable"); }
+        };
         if (!forge.adventure.campaign.CampaignState.instance().saleTouchesProtection(player, card, amount)) {
-            sold.accept(player.sellCard(card, amount));
+            sale.run();
             return;
         }
         FOptionPane.showConfirmDialog("This sale includes a protected physical copy of " + card.getName()
                         + ". Its protection slot will be freed. Sell it?", "Protected card", "Sell", "Cancel", false,
-                confirmed -> { if (confirmed) sold.accept(player.sellCard(card, amount)); });
+                confirmed -> { if (confirmed) sale.run(); });
     }
 
     private static class StoreCatalogPage extends CatalogPage {
@@ -388,7 +392,7 @@ public class AdventureDeckEditor extends FDeckEditor {
         }
 
         public void sellAllByFilter() {
-            int value = 0;
+            long value = 0;
 
             CardPool toSell = new CardPool();
 
@@ -396,7 +400,7 @@ public class AdventureDeckEditor extends FDeckEditor {
                 if (cardIsFavorite(entry.getKey()))
                     continue;
                 toSell.add(entry.getKey(), entry.getValue());
-                value += Current.player().cardSellPrice(entry.getKey()) * entry.getValue();
+                value += (long)Current.player().cardSellPrice(entry.getKey()) * entry.getValue();
             }
 
             if (toSell.isEmpty())
@@ -406,8 +410,8 @@ public class AdventureDeckEditor extends FDeckEditor {
                     ? "This sale includes protected physical copies and will free their slots.\n" : "";
             FOptionPane.showConfirmDialog(protectedWarning + Forge.getLocalizer().getMessage("lblSellAllConfirm", toSell.countAll(), value), Forge.getLocalizer().getMessage("lblSellCurrentFilters"), Forge.getLocalizer().getMessage("lblSell"), Forge.getLocalizer().getMessage("lblCancel"), false, result -> {
                 if (result) {
-                    Current.player().doBulkSell(toSell);
-                    refresh();
+                    try { Current.player().doBulkSell(toSell); refresh(); }
+                    catch (IllegalArgumentException error) { FOptionPane.showErrorDialog(error.getMessage(), "Sale unavailable"); }
                 }
             });
         }

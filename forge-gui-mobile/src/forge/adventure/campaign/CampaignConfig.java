@@ -45,6 +45,13 @@ public class CampaignConfig implements Serializable {
     public HistoricalRealm[] realms = new HistoricalRealm[0];
     public DungeonRules dungeon = new DungeonRules();
     public RivalRules rivals = new RivalRules();
+    public DifficultyRules difficulty = new DifficultyRules();
+    public static class DifficultyRules implements Serializable {
+        public float enemyLifeMultiplier = 1f;
+        public String aiProfile = "";
+        public int ordinaryTierFloor;
+    }
+    public void validateBalance() { CampaignBalance.validate(this); }
 
     public static class StoryRules implements Serializable {
         public String[] guardianFlags = new String[0];
@@ -113,6 +120,7 @@ public class CampaignConfig implements Serializable {
     }
 
     public static class EconomyRules implements Serializable {
+        public float goldRewardMultiplier = 1.0f;
         public float cardSellMultiplier = 0.5f;
         public float shopPriceMultiplier = 1.0f;
         public float boosterPriceMultiplier = 1.0f;
@@ -204,6 +212,9 @@ public class CampaignConfig implements Serializable {
     }
 
     public static class RivalRules implements Serializable {
+        public int winsPerTier = 3;
+        public int championTier = 1, sealTier = 2;
+        public int rarityUpgradeSlotsPerTier = 2;
         /** Given names and epithets combined into "Name, Epithet" for promoted rivals. */
         public String[] names = new String[]{"Krag", "Vesna", "Torvald", "Ilsa", "Mogrin", "Selene", "Bram", "Nadira"};
         public String[] epithets = new String[]{"Ember-Sneak", "the Cardsharp", "Ante-Taker", "the Vulture", "Deckbreaker", "the Grifter"};

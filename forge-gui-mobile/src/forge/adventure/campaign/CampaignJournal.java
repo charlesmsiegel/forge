@@ -56,6 +56,15 @@ public final class CampaignJournal {
         var universe = state.universeFor(config);
         result.add(new Section("Card universe", universe == null ? "No campaign snapshot available." : universe.summary()
                 + "\n\nThis universe is frozen for this campaign. Later format rotation and configuration changes do not replace it. Owned reprints follow card-name legality. Authored rewards may bypass ordinary generation exclusions, but never actual bans."));
+        result.add(new Section("Campaign balance", "Initial life: " + config.player.startingLife
+                + " (existing earned/saved life is retained)\nOpponent life multiplier: " + config.difficulty.enemyLifeMultiplier
+                + "\nAI profile: " + (config.difficulty.aiProfile.isEmpty() ? "Opponent/default profile" : config.difficulty.aiProfile)
+                + "\nOrdinary deck tier floor: " + config.difficulty.ordinaryTierFloor
+                + "\nRival wins per tier: " + config.rivals.winsPerTier + " • upgrade slots/tier: " + config.rivals.rarityUpgradeSlotsPerTier
+                + "\nGold loot multiplier: " + config.economy.goldRewardMultiplier
+                + "\nSale / card shop / pack multipliers: " + config.economy.cardSellMultiplier + " / " + config.economy.shopPriceMultiplier + " / " + config.economy.boosterPriceMultiplier
+                + "\nAnte: " + (config.ante.enabled ? config.ante.playerAnteCount + " vs " + config.ante.opponentAnteCount + "; reclamation risks " + config.ante.reclamationRiskCount : "Disabled")
+                + "\n\nPlane balance controls are independent. Historical and legendary recipes keep their identities. Purchases cost more than their immediate resale value after discounts. Exchange rewards cannot be sold or exchanged again, but remain usable in decks and ante."));
         List<String> deedsList = accomplishments(config, state);
         result.add(new Section("Remembered deeds", deedsList.isEmpty() ? "Your great deeds are still ahead of you." : String.join("\n\n", deedsList)));
         return List.copyOf(result);
