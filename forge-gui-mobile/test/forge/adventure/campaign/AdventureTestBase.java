@@ -38,6 +38,7 @@ public abstract class AdventureTestBase {
             preferences.setPref(FPref.UI_LANGUAGE, "en-US");
             return null;
         });
+        new forge.adventure.util.Config("ShandalarReborn");
         CampaignConfig.setInstance(CampaignConfig.load(PLANE_DIR + "campaign.json"));
         CampaignLog.setPath(System.getProperty("java.io.tmpdir") + "/shandalar-reborn-test-telemetry.jsonl");
         initialized = true;

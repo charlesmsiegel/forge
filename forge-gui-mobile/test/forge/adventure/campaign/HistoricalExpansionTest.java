@@ -10,6 +10,32 @@ import java.util.List;
 import static org.testng.Assert.*;
 
 public class HistoricalExpansionTest extends AdventureTestBase {
+    @Test public void presetCopyKeepsTheLoadedPlanesContentRoot() throws java.io.IOException {
+        var directory = java.nio.file.Files.createTempDirectory("campaign-content-root");
+        var map = directory.resolve("maps/preset-root-only.tmx");
+        var configFile = directory.resolve("campaign.json");
+        try {
+            java.nio.file.Files.createDirectories(map.getParent());
+            java.nio.file.Files.writeString(map, "<map/>");
+            java.nio.file.Files.writeString(configFile, "{}");
+            var source = CampaignConfig.load(configFile.toString());
+            var realm = new HistoricalRealm();
+            var chapter = new HistoricalRealm.Chapter();
+            chapter.maps = new String[]{"maps/preset-root-only.tmx"};
+            realm.chapters = new HistoricalRealm.Chapter[]{chapter};
+            String originalPreset = source.universe.preset;
+            var copy = CampaignSetup.withPreset(source, "Modern");
+            copy.validateRealmContent(realm);
+            java.nio.file.Files.delete(map);
+            assertThrows(IllegalArgumentException.class, () -> copy.validateRealmContent(realm));
+            assertEquals(source.universe.preset, originalPreset);
+        } finally {
+            java.nio.file.Files.deleteIfExists(map);
+            java.nio.file.Files.deleteIfExists(map.getParent());
+            java.nio.file.Files.deleteIfExists(configFile);
+            java.nio.file.Files.deleteIfExists(directory);
+        }
+    }
     @Test public void additionalRealmsHaveWorkingProductsMapsAndSetSpecificOpponents() {
         var config = CampaignConfig.load(PLANE_DIR + "campaign.json");
         assertEquals(config.realm("fallen-empires").chapters.length, 1);
