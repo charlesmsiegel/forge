@@ -417,7 +417,7 @@ public class DuelScene extends ForgeScene {
         final int playerCount = stake.playerCards.size();
 
         FDisplayObject cardDisplay = new FDisplayObject() {
-            private float cardWidth() { return getHeight() / FCardPanel.ASPECT_RATIO; }
+            private float cardWidth() { return Math.min(getHeight() / FCardPanel.ASPECT_RATIO, getWidth() / Math.max(1f, views.size() * 1.15f + 0.3f)); }
             private float gap() { return cardWidth() * 0.15f; }
             private float startX() {
                 float w = cardWidth(), gap = gap();
@@ -454,7 +454,8 @@ public class DuelScene extends ForgeScene {
 
         String message = (stake.kind == AnteStake.Kind.RECLAMATION ? "Reclamation ante." : "Ante duel.")
                 + "\nYou risk: " + describeAll(stake.playerCards)
-                + "\n" + enemy.getName() + " risks: " + describeAll(stake.opponentCards);
+                + "\n" + enemy.getName() + " risks: " + describeAll(stake.opponentCards)
+                + forge.adventure.campaign.CampaignPresentation.anteWarning(stake, CampaignState.instance().progression().protectedIds(), MapStage.getInstance().isPersistentLifeMap());
 
         FOptionPane popup = new FOptionPane(message, null, "Ante", null, cardDisplay,
                 ImmutableList.of(Forge.getLocalizer().getMessage("lblOK")), 0, result -> {
