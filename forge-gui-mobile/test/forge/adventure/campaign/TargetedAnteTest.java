@@ -1,6 +1,5 @@
 package forge.adventure.campaign;
 
-import forge.adventure.util.SaveFileData;
 import forge.deck.Deck;
 import forge.item.PaperCard;
 import org.testng.annotations.Test;
