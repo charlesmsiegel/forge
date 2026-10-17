@@ -107,6 +107,9 @@ public class QuestLogScene extends UIScene {
             var journal = Controls.newTextButton("Campaign journal", () -> Forge.switchScene(new CampaignJournalScene(this)));
             scrollContainer.add(journal).colspan(2).fillX().padBottom(8); scrollContainer.row();
             addToSelectable(journal);
+            var binder = Controls.newTextButton("Collection binder", () -> Forge.switchScene(new CampaignCollectionScene(this)));
+            scrollContainer.add(binder).colspan(2).fillX().padBottom(8); scrollContainer.row();
+            addToSelectable(binder);
         }
 
         for (AdventureQuestData quest : Current.player().getQuests()) {
