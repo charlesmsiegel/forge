@@ -363,6 +363,38 @@
         "5DN"
       ],
       "outputRarity": "Rare"
+    },
+    {
+      "id": "champion-reserve",
+      "name": "Champion's Tempest reserve",
+      "requires": [
+        "shandalar.champion"
+      ],
+      "requiredCount": 15,
+      "inputEditions": [
+        "TMP"
+      ],
+      "inputRarity": "Common",
+      "outputEditions": [
+        "TMP"
+      ],
+      "outputRarity": "Rare"
+    },
+    {
+      "id": "sarpadian-archive",
+      "name": "Sarpadian archive exchange",
+      "requires": [
+        "realm.fallen-empires.completed"
+      ],
+      "requiredCount": 15,
+      "inputEditions": [
+        "FEM"
+      ],
+      "inputRarity": "Common",
+      "outputEditions": [
+        "FEM"
+      ],
+      "outputRarity": "Rare"
     }
   ],
   "universe": {
@@ -1363,5 +1395,182 @@
         "bolasDuplicates": true
       }
     ]
-  }
+  },
+  "training": [
+    {
+      "id": "white",
+      "name": "White Wayfarer training",
+      "color": "White",
+      "map": "maps/map/training_white.tmx",
+      "lessons": [
+        {
+          "id": "white-combat",
+          "name": "Combat and first strike",
+          "enemy": "White Tutor \u2014 Combat and first strike",
+          "guidance": "Choose attacks and blocks before spending tricks. Creatures cannot normally attack on the turn they enter; first strike deals combat damage before creatures without it.",
+          "rewards": [
+            "Youthful Knight"
+          ]
+        },
+        {
+          "id": "white-removal",
+          "name": "Opening an attack",
+          "enemy": "White Tutor \u2014 Opening an attack",
+          "guidance": "Pacifism can neutralize a blocker without destroying it. Decide whether removing a threat or developing another creature matters more this turn.",
+          "rewards": [
+            "Pacifism"
+          ]
+        },
+        {
+          "id": "white-teamwork",
+          "name": "Many small threats",
+          "enemy": "White Tutor \u2014 Many small threats",
+          "guidance": "Several small creatures can attack from different angles. Count all blockers and remember that tokens are ordinary creatures in combat.",
+          "rewards": [
+            "Raise the Alarm"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "blue",
+      "name": "Blue Wayfarer training",
+      "color": "Blue",
+      "map": "maps/map/training_blue.tmx",
+      "lessons": [
+        {
+          "id": "blue-selection",
+          "name": "Planning your draws",
+          "enemy": "Blue Tutor \u2014 Planning your draws",
+          "guidance": "Sage Owl rearranges upcoming draws. Put needed lands or answers first; flying creatures can apply pressure while you plan.",
+          "rewards": [
+            "Sage Owl"
+          ]
+        },
+        {
+          "id": "blue-countermagic",
+          "name": "The stack",
+          "enemy": "Blue Tutor \u2014 The stack",
+          "guidance": "Counter a spell while it is on the stack. Once a creature resolves, Counterspell cannot remove it; leave two blue mana available when you need an answer.",
+          "rewards": [
+            "Counterspell"
+          ]
+        },
+        {
+          "id": "blue-advantage",
+          "name": "Card advantage",
+          "enemy": "Blue Tutor \u2014 Card advantage",
+          "guidance": "Drawing extra cards gives more choices over a long game. Balance spending mana on Divination with keeping an answer ready.",
+          "rewards": [
+            "Divination"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "black",
+      "name": "Black Wayfarer training",
+      "color": "Black",
+      "map": "maps/map/training_black.tmx",
+      "lessons": [
+        {
+          "id": "black-removal",
+          "name": "Trading resources",
+          "enemy": "Black Tutor \u2014 Trading resources",
+          "guidance": "Use removal on the threat that matters. Doom Blade cannot destroy a black creature, so read both the target and the spell.",
+          "rewards": [
+            "Doom Blade"
+          ]
+        },
+        {
+          "id": "black-graveyard",
+          "name": "A second life",
+          "enemy": "Black Tutor \u2014 A second life",
+          "guidance": "Dead creatures are still resources. Gravedigger and Raise Dead return a creature to hand, rather than directly to the battlefield.",
+          "rewards": [
+            "Raise Dead"
+          ]
+        },
+        {
+          "id": "black-life",
+          "name": "Life and cards",
+          "enemy": "Black Tutor \u2014 Life and cards",
+          "guidance": "Life can buy time or cards. Lifelink helps recover it, while Sign in Blood trades life for two fresh cards. Keep enough life to survive the next attack.",
+          "rewards": [
+            "Sign in Blood"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "red",
+      "name": "Red Wayfarer training",
+      "color": "Red",
+      "map": "maps/map/training_red.tmx",
+      "lessons": [
+        {
+          "id": "red-tempo",
+          "name": "Attack with purpose",
+          "enemy": "Red Tutor \u2014 Attack with purpose",
+          "guidance": "Haste turns a new creature into immediate pressure. Count the damage you can deal this turn and the damage you will face on the return attack.",
+          "rewards": [
+            "Raging Goblin"
+          ]
+        },
+        {
+          "id": "red-damage",
+          "name": "Damage and removal",
+          "enemy": "Red Tutor \u2014 Damage and removal",
+          "guidance": "Damage spells can remove blockers or finish an opponent. Flame Slash only targets creatures; damage on creatures normally clears at end of turn.",
+          "rewards": [
+            "Flame Slash"
+          ]
+        },
+        {
+          "id": "red-timing",
+          "name": "One decisive turn",
+          "enemy": "Red Tutor \u2014 One decisive turn",
+          "guidance": "Act of Treason borrows a creature for a turn and grants haste. Plan the attack first and remember that the creature returns afterward.",
+          "rewards": [
+            "Act of Treason"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "green",
+      "name": "Green Wayfarer training",
+      "color": "Green",
+      "map": "maps/map/training_green.tmx",
+      "lessons": [
+        {
+          "id": "green-mana",
+          "name": "Mana acceleration",
+          "enemy": "Green Tutor \u2014 Mana acceleration",
+          "guidance": "Llanowar Elves and Rampant Growth help cast larger spells earlier. A newly cast Elf normally cannot tap for mana until your next turn.",
+          "rewards": [
+            "Llanowar Elves"
+          ]
+        },
+        {
+          "id": "green-combat",
+          "name": "Combat tricks",
+          "enemy": "Green Tutor \u2014 Combat tricks",
+          "guidance": "Giant Growth can turn a block into a favorable trade. Wait until blocks are declared when possible, and consider the risk of opposing removal.",
+          "rewards": [
+            "Giant Growth"
+          ]
+        },
+        {
+          "id": "green-identity",
+          "name": "Color and development",
+          "enemy": "Green Tutor \u2014 Color and development",
+          "guidance": "Green develops mana and creatures. Rampant Growth finds a basic land tapped; choose a land that supports the colors your actual deck needs.",
+          "rewards": [
+            "Rampant Growth"
+          ]
+        }
+      ]
+    }
+  ]
 }

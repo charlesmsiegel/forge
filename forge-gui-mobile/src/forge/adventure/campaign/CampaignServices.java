@@ -92,6 +92,7 @@ public final class CampaignServices {
     private static void recipes(MapStage stage) {
         List<String> labels = new ArrayList<>(); List<Runnable> actions = new ArrayList<>();
         for (CampaignConfig.TradeRecipe recipe : CampaignConfig.instance().trades) {
+            if (!CampaignTrades.available(recipe, CampaignState.instance().deeds())) continue;
             labels.add(recipe.name); actions.add(() -> {
                 try { tradeInputs(stage, recipe, CampaignTrades.preview(recipe, Current.player()), 0); }
                 catch (IllegalArgumentException e) { message(stage, e.getMessage(), () -> recipes(stage)); }

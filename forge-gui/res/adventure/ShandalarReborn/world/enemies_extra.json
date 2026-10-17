@@ -1471,5 +1471,290 @@
       "Historical",
       "mirrodin"
     ]
+  },
+  {
+    "name": "White Tutor \u2014 Combat and first strike",
+    "sprite": "sprites/enemy/humanoid/human/wizard/white_wiz2.atlas",
+    "deck": [
+      "decks/training/white-combat.dck"
+    ],
+    "ai": "",
+    "boss": false,
+    "randomizeDeck": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 0,
+    "life": 12,
+    "rewards": [],
+    "colors": "W",
+    "questTags": [
+      "Training:white-combat"
+    ]
+  },
+  {
+    "name": "White Tutor \u2014 Opening an attack",
+    "sprite": "sprites/enemy/humanoid/human/wizard/white_wiz2.atlas",
+    "deck": [
+      "decks/training/white-removal.dck"
+    ],
+    "ai": "",
+    "boss": false,
+    "randomizeDeck": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 0,
+    "life": 12,
+    "rewards": [],
+    "colors": "W",
+    "questTags": [
+      "Training:white-removal"
+    ]
+  },
+  {
+    "name": "White Tutor \u2014 Many small threats",
+    "sprite": "sprites/enemy/humanoid/human/wizard/white_wiz2.atlas",
+    "deck": [
+      "decks/training/white-teamwork.dck"
+    ],
+    "ai": "",
+    "boss": false,
+    "randomizeDeck": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 0,
+    "life": 12,
+    "rewards": [],
+    "colors": "W",
+    "questTags": [
+      "Training:white-teamwork"
+    ]
+  },
+  {
+    "name": "Blue Tutor \u2014 Planning your draws",
+    "sprite": "sprites/enemy/humanoid/human/wizard/blue_wiz2.atlas",
+    "deck": [
+      "decks/training/blue-selection.dck"
+    ],
+    "ai": "",
+    "boss": false,
+    "randomizeDeck": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 0,
+    "life": 12,
+    "rewards": [],
+    "colors": "U",
+    "questTags": [
+      "Training:blue-selection"
+    ]
+  },
+  {
+    "name": "Blue Tutor \u2014 The stack",
+    "sprite": "sprites/enemy/humanoid/human/wizard/blue_wiz2.atlas",
+    "deck": [
+      "decks/training/blue-countermagic.dck"
+    ],
+    "ai": "",
+    "boss": false,
+    "randomizeDeck": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 0,
+    "life": 12,
+    "rewards": [],
+    "colors": "U",
+    "questTags": [
+      "Training:blue-countermagic"
+    ]
+  },
+  {
+    "name": "Blue Tutor \u2014 Card advantage",
+    "sprite": "sprites/enemy/humanoid/human/wizard/blue_wiz2.atlas",
+    "deck": [
+      "decks/training/blue-advantage.dck"
+    ],
+    "ai": "",
+    "boss": false,
+    "randomizeDeck": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 0,
+    "life": 12,
+    "rewards": [],
+    "colors": "U",
+    "questTags": [
+      "Training:blue-advantage"
+    ]
+  },
+  {
+    "name": "Black Tutor \u2014 Trading resources",
+    "sprite": "sprites/enemy/humanoid/human/wizard/black_wiz2.atlas",
+    "deck": [
+      "decks/training/black-removal.dck"
+    ],
+    "ai": "",
+    "boss": false,
+    "randomizeDeck": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 0,
+    "life": 12,
+    "rewards": [],
+    "colors": "B",
+    "questTags": [
+      "Training:black-removal"
+    ]
+  },
+  {
+    "name": "Black Tutor \u2014 A second life",
+    "sprite": "sprites/enemy/humanoid/human/wizard/black_wiz2.atlas",
+    "deck": [
+      "decks/training/black-graveyard.dck"
+    ],
+    "ai": "",
+    "boss": false,
+    "randomizeDeck": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 0,
+    "life": 12,
+    "rewards": [],
+    "colors": "B",
+    "questTags": [
+      "Training:black-graveyard"
+    ]
+  },
+  {
+    "name": "Black Tutor \u2014 Life and cards",
+    "sprite": "sprites/enemy/humanoid/human/wizard/black_wiz2.atlas",
+    "deck": [
+      "decks/training/black-life.dck"
+    ],
+    "ai": "",
+    "boss": false,
+    "randomizeDeck": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 0,
+    "life": 12,
+    "rewards": [],
+    "colors": "B",
+    "questTags": [
+      "Training:black-life"
+    ]
+  },
+  {
+    "name": "Red Tutor \u2014 Attack with purpose",
+    "sprite": "sprites/enemy/humanoid/human/wizard/red_wiz2.atlas",
+    "deck": [
+      "decks/training/red-tempo.dck"
+    ],
+    "ai": "",
+    "boss": false,
+    "randomizeDeck": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 0,
+    "life": 12,
+    "rewards": [],
+    "colors": "R",
+    "questTags": [
+      "Training:red-tempo"
+    ]
+  },
+  {
+    "name": "Red Tutor \u2014 Damage and removal",
+    "sprite": "sprites/enemy/humanoid/human/wizard/red_wiz2.atlas",
+    "deck": [
+      "decks/training/red-damage.dck"
+    ],
+    "ai": "",
+    "boss": false,
+    "randomizeDeck": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 0,
+    "life": 12,
+    "rewards": [],
+    "colors": "R",
+    "questTags": [
+      "Training:red-damage"
+    ]
+  },
+  {
+    "name": "Red Tutor \u2014 One decisive turn",
+    "sprite": "sprites/enemy/humanoid/human/wizard/red_wiz2.atlas",
+    "deck": [
+      "decks/training/red-timing.dck"
+    ],
+    "ai": "",
+    "boss": false,
+    "randomizeDeck": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 0,
+    "life": 12,
+    "rewards": [],
+    "colors": "R",
+    "questTags": [
+      "Training:red-timing"
+    ]
+  },
+  {
+    "name": "Green Tutor \u2014 Mana acceleration",
+    "sprite": "sprites/enemy/humanoid/human/wizard/green_wiz1.atlas",
+    "deck": [
+      "decks/training/green-mana.dck"
+    ],
+    "ai": "",
+    "boss": false,
+    "randomizeDeck": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 0,
+    "life": 12,
+    "rewards": [],
+    "colors": "G",
+    "questTags": [
+      "Training:green-mana"
+    ]
+  },
+  {
+    "name": "Green Tutor \u2014 Combat tricks",
+    "sprite": "sprites/enemy/humanoid/human/wizard/green_wiz1.atlas",
+    "deck": [
+      "decks/training/green-combat.dck"
+    ],
+    "ai": "",
+    "boss": false,
+    "randomizeDeck": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 0,
+    "life": 12,
+    "rewards": [],
+    "colors": "G",
+    "questTags": [
+      "Training:green-combat"
+    ]
+  },
+  {
+    "name": "Green Tutor \u2014 Color and development",
+    "sprite": "sprites/enemy/humanoid/human/wizard/green_wiz1.atlas",
+    "deck": [
+      "decks/training/green-identity.dck"
+    ],
+    "ai": "",
+    "boss": false,
+    "randomizeDeck": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 0,
+    "life": 12,
+    "rewards": [],
+    "colors": "G",
+    "questTags": [
+      "Training:green-identity"
+    ]
   }
 ]

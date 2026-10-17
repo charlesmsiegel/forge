@@ -14,6 +14,12 @@ public final class CampaignStoryEncounter {
     public static void show(MapStage stage, EnemySprite mob) {
         var config = CampaignConfig.instance(); var deeds = CampaignState.instance().deeds();
         var entry = CampaignStory.encounter(config, mob.campaignStoryEncounter);
+        String delivery = "";
+        try {
+            var reward = CampaignRecognition.deliver(entry.id, forge.adventure.util.Current.player(), deeds,
+                    CampaignState.instance().universeFor(config));
+            if (reward != null) delivery = "\n\nThe Academy accepts the Chronicler's letter. Received " + DuelScene.describeAll(List.of(reward)) + ".";
+        } catch (IllegalArgumentException error) { delivery = "\n\nCommission reward unavailable: " + error.getMessage(); }
         List<String> labels = new ArrayList<>(); List<Runnable> actions = new ArrayList<>();
         if (CampaignStory.canChallenge(config, entry.id, deeds)) {
             labels.add(deeds.has("encounter." + entry.id) ? "Duel again (normal ante)" : "Challenge (normal ante)");
@@ -24,7 +30,7 @@ public final class CampaignStoryEncounter {
             actions.add(() -> travel(stage, entry.pursuit));
         }
         labels.add("Leave"); actions.add(() -> { mob.freezeMovement(); stage.resetPosition(); });
-        stage.showOptionsDialog("[GOLD]" + entry.name + "[WHITE]\n" + CampaignStory.audience(config, entry.id, deeds), labels, actions);
+        stage.showOptionsDialog("[GOLD]" + entry.name + "[WHITE]\n" + CampaignStory.audience(config, entry.id, deeds) + delivery, labels, actions);
     }
     public static void travel(MapStage stage, String id) {
         var config = CampaignConfig.instance(); var deeds = CampaignState.instance().deeds();
