@@ -27,7 +27,7 @@ public final class CampaignTrades {
     }
 
     public static void validate(CampaignConfig.TradeRecipe recipe) {
-        if (recipe == null || recipe.id == null || recipe.id.isBlank() || recipe.requiredCount < 1
+        if (recipe == null || recipe.id == null || recipe.id.isBlank() || recipe.requiredCount < 2
                 || recipe.inputEditions == null || recipe.inputEditions.length == 0
                 || recipe.outputEditions == null || recipe.outputEditions.length == 0
                 || recipe.requires == null || Arrays.stream(recipe.requires).anyMatch(flag -> flag == null || flag.isBlank())
@@ -83,7 +83,7 @@ public final class CampaignTrades {
                     && !card.getRules().isUnsupported() && !CampaignConfig.instance().isCardBanned(card.getName())) outputs.add(card);
         if (outputs.isEmpty()) throw new IllegalArgumentException("No eligible output for this exchange");
         outputs.sort(java.util.Comparator.naturalOrder());
-        PaperCard reward = outputs.get(random.nextInt(outputs.size()));
+        PaperCard reward = outputs.get(random.nextInt(outputs.size())).getNoSellVersion();
         // All availability, filtering and product failures are resolved before removing a physical unit.
         for (OwnedCard copy : inputs)
             if (!CardOwnership.removeCopy(player, copy)) throw new IllegalStateException("Validated trade copy disappeared");

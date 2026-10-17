@@ -112,7 +112,7 @@ public final class CampaignServices {
             message.append(progress.isProtected(copy.id) ? "[RED]Protected: [WHITE]" : "").append(shortCopy(copy)).append('\n');
         List<String> labels = new ArrayList<>(); List<Runnable> actions = new ArrayList<>();
         if ((page + 1) * 4 >= inputs.size()) {
-            message.append("This may require deck repair.");
+            message.append("Reward cannot be sold or exchanged again; it remains usable in decks and ante. This may require deck repair.");
             if (touchesProtection) message.append(" Protected inputs will lose their protection and free their slots.");
             labels.add("Confirm exchange"); actions.add(() -> {
                 try {

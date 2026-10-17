@@ -16,7 +16,13 @@ public final class DungeonLife {
         return ("town".equals(rootType) || "capital".equals(rootType)) && !(activeCampaign && persistentMap);
     }
 
-    /** Entering a persistent-life dungeon from the world map: start at full life. */
+    /** Town/crossroads travel starts a dungeon too; connected dungeon maps do not reset life. */
+    public static boolean shouldResetAtEntry(boolean fromWorld, boolean previousPersistent, boolean persistent,
+                                              boolean historical, boolean campaign) {
+        return persistent && !historical && (fromWorld || (campaign && !previousPersistent));
+    }
+
+    /** Entering a persistent-life dungeon: start at full life. */
     public static void onEnter(AdventurePlayer player) {
         player.resetToMaxLife();
         CampaignLog.event("dungeon_enter").with("life", player.getLife()).with("maxLife", player.getMaxLife()).write();

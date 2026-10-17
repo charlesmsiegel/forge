@@ -10,12 +10,16 @@ public final class EnemyDeckPolicy {
     private EnemyDeckPolicy() { }
 
     public static Deck adapt(Deck skeleton, CardUniverse universe, Collection<PaperCard> pool, long seed, int tier) {
+        return adapt(skeleton, universe, pool, seed, tier, 2);
+    }
+    public static Deck adapt(Deck skeleton, CardUniverse universe, Collection<PaperCard> pool, long seed, int tier, int slotsPerTier) {
+        if (slotsPerTier < 0 || slotsPerTier > 20) throw new IllegalArgumentException("Invalid opponent rarity budget");
         if (skeleton == null || universe == null) throw new IllegalArgumentException("Opponent template and saved universe are required");
         if (skeleton.getMain().isEmpty()) throw new IllegalArgumentException("Opponent template has no cards; repair its configured deck before fighting");
         List<PaperCard> legal = pool.stream().filter(universe::allowsPrinting)
                 .filter(c -> !c.getRules().isUnsupported()).sorted().toList();
         Deck result = new Deck(skeleton.getName());
-        int upgrades = Math.max(0, Math.min(2, tier)) * 2;
+        int upgrades = Math.max(0, Math.min(2, tier)) * slotsPerTier;
         for (PaperCard source : skeleton.getMain().toFlatList()) {
             PaperCard selected = null;
             boolean valid = universe.allowsPrinting(source) && !source.getRules().isUnsupported() && room(result, source, universe);

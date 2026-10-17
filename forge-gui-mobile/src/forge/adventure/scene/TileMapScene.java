@@ -199,7 +199,7 @@ public class TileMapScene extends HudScene {
         autoheal = false;
         rootPoint = point;
         AdventureQuestController.instance().mostRecentPOI = point;
-        // A nonempty source suppresses dungeon-entry healing in MapStage.loadMap.
+        // Restore the saved life below even when map loading crosses a dungeon-entry boundary.
         oldMap = saved.mapPath;
         load(saved.mapPath, 38);
         if (saved.matchesLayout(currentMap().getLayoutRevision())) {
