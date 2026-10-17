@@ -11,8 +11,27 @@ public final class CampaignChronicler {
     private CampaignChronicler() { }
     public static void show(MapStage stage) {
         stage.showOptionsDialog("[GOLD]Chronicler of Shandalar[WHITE]\nYour deeds are remembered. Old paths lead to the legendary places bound to this world's seed.",
-                List.of("Historical gateways", "Legendary landmarks", "Guardians and legends", "Recorded deeds", "Leave"),
-                List.of(() -> crossroads(stage), () -> landmarks(stage, 0), () -> story(stage, 0), () -> deeds(stage, 0), stage::resetPosition));
+                List.of("Historical gateways", "Legendary landmarks", "Guardians and legends", "Training and town news", "Leave"),
+                List.of(() -> crossroads(stage), () -> landmarks(stage, 0), () -> story(stage, 0), () -> townNews(stage), stage::resetPosition));
+    }
+    private static void townNews(MapStage stage) {
+        stage.showOptionsDialog("[GOLD]Training and town news[WHITE]\nOptional lessons, rumors and the record of your deeds.",
+                List.of("Optional training", "Rumors and commissions", "Recorded deeds", "Back"),
+                List.of(() -> CampaignTrainingEncounter.paths(stage, 0), () -> rumors(stage), () -> deeds(stage, 0), () -> show(stage)));
+    }
+    private static void rumors(MapStage stage) {
+        var deeds = CampaignState.instance().deeds();
+        List<String> labels = new ArrayList<>(); List<Runnable> actions = new ArrayList<>();
+        if (CampaignRecognition.commissionAvailable(deeds)) {
+            labels.add("Accept Academy letter"); actions.add(() -> {
+                CampaignRecognition.acceptCommission(deeds); rumors(stage);
+            });
+        }
+        labels.add("Back");actions.add(() -> show(stage));
+        String commission = deeds.has("commission.academy.completed") ? "\n\nThe Academy received your letter."
+                : deeds.has("commission.academy.accepted") ? "\n\nDeliver the Chronicler's letter by speaking to Urza at the Academy. You need not defeat him. A useful blue card awaits."
+                : CampaignRecognition.commissionAvailable(deeds) ? "\n\nCommission: carry my letter to Urza's Academy. Speak to him for a useful blue card." : "";
+        stage.showOptionsDialog("[GOLD]Word across Shandalar[WHITE]\n" + String.join("\n\n", CampaignRecognition.rumors(deeds)) + commission,labels,actions);
     }
     private static void crossroads(MapStage stage) {
         if (CampaignState.instance().expedition().isActive()) {
