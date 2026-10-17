@@ -2,7 +2,6 @@ package forge.adventure.campaign;
 
 import forge.adventure.player.AdventurePlayer;
 import forge.adventure.util.SaveFileData;
-import forge.deck.Deck;
 import forge.item.PaperCard;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.AfterMethod;
