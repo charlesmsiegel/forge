@@ -295,7 +295,9 @@ public class InventoryScene extends UIScene {
 
         //done();
         setSelected(null);
-        RewardScene.instance().loadRewards(data, RewardScene.Type.Loot, null, data.getTags().contains("noSell"));
+        if (CampaignConfig.instance().isActive())
+            RewardScene.instance().loadPack(data, Current.player().getBoostersOwned().size - 1);
+        else RewardScene.instance().loadRewards(data, RewardScene.Type.Loot, null, data.getTags().contains("noSell"));
         Forge.switchScene(RewardScene.instance());
         Current.player().getBoostersOwned().removeValue(data, true);
         if (CampaignConfig.instance().isActive()) {
