@@ -1,7 +1,6 @@
 package forge.adventure.campaign;
 
 import forge.adventure.data.ConfigData;
-import forge.adventure.util.SaveFileData;
 import forge.deck.Deck;
 import org.testng.annotations.Test;
 import java.util.List;
