@@ -14,6 +14,8 @@ public final class CampaignJournal {
         for (var entry : state.seededLegends().entries()) if (state.seededLegends().isClaimed(entry.slot())) names.add("Mastered " + entry.card().getName());
         if (deeds.has("shandalar.champion")) names.add("Champion of Shandalar");
         if (deeds.has("seal.broken")) names.add("Broke Shandalar's seal — Planeswalker");
+        for (var path : config.training) if (deeds.has("training.completed." + path.id)) names.add("Completed " + path.name);
+        if (deeds.has("commission.academy.completed")) names.add("Delivered the Chronicler’s Academy letter");
         return List.copyOf(names);
     }
     public static List<Section> sections(CampaignConfig config, CampaignState state) {
@@ -42,6 +44,9 @@ public final class CampaignJournal {
         for (var entry : state.seededLegends().entries()) landmarks.append("\n\n").append(entry.card().getName()).append(" • ")
                 .append(entry.card().getEdition()).append("\n").append(state.seededLegends().isClaimed(entry.slot()) ? "Mastered — named reward received" : "Unmastered — named reward awaits");
         result.add(new Section("Legendary landmarks", landmarks.toString()));
+        StringBuilder training = new StringBuilder("Optional Wayfarer training is available through the town Chronicler. Skip or resume at any time; normal ante and life rules apply.");
+        for (var path : config.training) training.append("\n\n").append(path.name).append(": ").append(CampaignTraining.completed(path,deeds)).append("/3 lessons complete");
+        result.add(new Section("Optional training", training.toString()));
         var progress = state.progression();
         result.add(new Section("Your abilities", "Ordinary copies per card: " + progress.ordinaryLimit(config.player.ordinaryCopyLimit)
                 + "\nRestricted copies: " + config.player.restrictedCopyLimit + " (earned exceptions apply)"

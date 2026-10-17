@@ -17,10 +17,20 @@ import java.util.Set;
 public final class CampaignTrades {
     private CampaignTrades() { }
 
+    public static boolean available(CampaignConfig.TradeRecipe recipe, WorldDeeds deeds) {
+        for (String flag : recipe.requires) if (!deeds.has(flag)) return false;
+        return true;
+    }
+    private static void requireAvailable(CampaignConfig.TradeRecipe recipe) {
+        if (!available(recipe, CampaignState.instance().deeds()))
+            throw new IllegalArgumentException("This specialist exchange requires: " + String.join(", ", recipe.requires));
+    }
+
     public static void validate(CampaignConfig.TradeRecipe recipe) {
         if (recipe == null || recipe.id == null || recipe.id.isBlank() || recipe.requiredCount < 1
                 || recipe.inputEditions == null || recipe.inputEditions.length == 0
                 || recipe.outputEditions == null || recipe.outputEditions.length == 0
+                || recipe.requires == null || Arrays.stream(recipe.requires).anyMatch(flag -> flag == null || flag.isBlank())
                 || CardRarity.smartValueOf(recipe.inputRarity) == CardRarity.Unknown
                 || CardRarity.smartValueOf(recipe.outputRarity) == CardRarity.Unknown
                 || (!recipe.inputColor.isEmpty() && MagicColor.fromName(recipe.inputColor) == 0)
@@ -43,7 +53,7 @@ public final class CampaignTrades {
     }
 
     public static List<OwnedCard> preview(CampaignConfig.TradeRecipe recipe, AdventurePlayer player) {
-        validate(recipe);
+        validate(recipe); requireAvailable(recipe);
         List<OwnedCard> inputs = new ArrayList<>();
         for (OwnedCard copy : CampaignState.instance().voluntaryRemovalCopies(player))
             if (inputMatches(copy.card, recipe)) {
@@ -56,7 +66,7 @@ public final class CampaignTrades {
 
     public static PaperCard execute(CampaignConfig.TradeRecipe recipe, List<OwnedCard> inputs,
                                      AdventurePlayer player, boolean allowProtected, Random random) {
-        validate(recipe);
+        validate(recipe); requireAvailable(recipe);
         CampaignState state = CampaignState.instance();
         List<OwnedCard> available = state.availableCopies(player);
         if (inputs == null || inputs.size() != recipe.requiredCount) throw new IllegalArgumentException("Wrong number of trade copies");
