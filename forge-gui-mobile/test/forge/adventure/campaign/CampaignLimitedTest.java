@@ -4,7 +4,6 @@ import forge.adventure.data.AdventureEventData;
 import forge.adventure.player.AdventurePlayer;
 import forge.adventure.util.AdventureEventController.EventFormat;
 import forge.adventure.util.AdventureEventController.EventStatus;
-import forge.deck.Deck;
 import forge.deck.DeckSection;
 import forge.model.CardBlock;
 import org.testng.annotations.BeforeMethod;
