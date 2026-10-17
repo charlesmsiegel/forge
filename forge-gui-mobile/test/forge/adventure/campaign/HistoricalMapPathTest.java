@@ -82,6 +82,19 @@ public class HistoricalMapPathTest extends AdventureTestBase {
             }
         }
         NodeList objects = root.getElementsByTagName("object");
+        for (int i = 0; i < objects.getLength(); i++) {
+            Element object = (Element) objects.item(i); boolean collision = object.getAttribute("type").equals("collision");
+            NodeList properties = object.getElementsByTagName("property");
+            for (int p = 0; p < properties.getLength(); p++) {
+                Element property = (Element)properties.item(p);
+                collision |= property.getAttribute("name").equals("type") && property.getAttribute("value").equals("collision");
+            }
+            if (collision) for (int cell = 0; cell < blocked.length; cell++) {
+                float x = (cell % width) * 16 + 8, y = (cell / width) * 16 + 8;
+                if (x >= number(object, "x") && x < number(object, "x") + number(object, "width")
+                        && y >= number(object, "y") && y < number(object, "y") + number(object, "height")) blocked[cell] = true;
+            }
+        }
         int start = -1;
         Set<Integer> gates = new HashSet<>();
         for (int i = 0; i < objects.getLength(); i++) {
@@ -89,7 +102,7 @@ public class HistoricalMapPathTest extends AdventureTestBase {
             int cell = (int) ((number(object, "y") - 8) / 16) * width + (int) ((number(object, "x") + 8) / 16);
             NodeList props = object.getElementsByTagName("property");
             for (int p = 0; p < props.getLength(); p++)
-                if (((Element)props.item(p)).getAttribute("name").equals("seedSlot") || ((Element)props.item(p)).getAttribute("name").equals("storyEncounter") || ((Element)props.item(p)).getAttribute("name").equals("completesChapter")) gates.add(cell);
+                if (((Element)props.item(p)).getAttribute("name").equals("seedSlot") || ((Element)props.item(p)).getAttribute("name").equals("storyEncounter") || ((Element)props.item(p)).getAttribute("name").equals("completesChapter") || ((Element)props.item(p)).getAttribute("name").equals("campaignLore")) gates.add(cell);
             if (object.getAttribute("id").equals("38") || (start < 0 && object.getAttribute("template").endsWith("/portal.tx"))) start = cell;
             if (object.getAttribute("type").equals("expeditionGate") || object.getAttribute("type").equals("campaignServices") || object.getAttribute("type").equals("campaignLimited") || object.getAttribute("type").equals("campaignChronicler")) gates.add(cell);
         }

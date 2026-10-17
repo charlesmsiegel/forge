@@ -1,41 +1,38 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="902">
- <properties>
-  <property name="respawnEnemies" type="bool" value="false" />
-  <property name="canFailDungeon" type="bool" value="false" />
-  <property name="persistentLife" type="bool" value="true" />
- </properties>
- <editorsettings>
-  <export target="wastetown..tmx" format="tmx" />
- </editorsettings>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="25" tilewidth="16" tileheight="16" infinite="0" nextlayerid="901" nextobjectid="3000">
  <tileset firstgid="1" source="../../../common/maps/tileset/main.tsx" />
  <tileset firstgid="10113" source="../../../common/maps/tileset/buildings.tsx" />
- <tileset firstgid="11905" source="../../../common/maps/tileset/dungeon.tsx" />
- <layer id="1" name="Background" width="30" height="17">
+ <tileset firstgid="11905" source="../../../common/maps/tileset/dungeon/dungeon_bis.tsx" />
+ <layer id="6" name="Collision" width="30" height="25">
   <data encoding="base64" compression="zlib">
-   eJwL42RgCBvFo5jOOA4NYxPDpoaadpKCB8peSuweCHuHol+pEbcgQOv0S4p/aZFnR/HwwQDYMMBE
+   eJy1lksOwjAMRLuk12ELa1T1rByp69JjQIUshmHGcRBEGqmAnedfUpbzMCxF3cantocuiZQvrhbndHxp/5yxWOjL+2QcFueY2aLdZPKvcGfBUuyoCbInYedq7XLNcnRC7r6qXMfs6VHMY8V/f96SflaZ2Ovr4dPf9TSYHBMqzo6KS8151rOZ7GNfxVdnNnqI/lUu1knVuXUumYv3h5rtCrclxw2tZs85YVXmySlWxLOO73vOFGMlN2XnfN2dpvLNzrp7F3Ce3N/IuVq/njqrhf58tyqbb/upuDh7yG31F89pdY5479Z88O+qFtw7xY1nxey581vCfiE3m8eK3Jy6PPmebv1P4llo8VxfHYO/y3iV2cX9KnEwu+eM/IL/LacnDqV/rTvHbHZ/
   </data>
  </layer>
- <layer id="2" name="Ground" width="30" height="17">
+ <layer id="1" name="Background" width="30" height="25">
   <data encoding="base64" compression="zlib">
-   eJzVk00OgjAQhbuE9hgeQjFsReMNPJrxZ2sEryOoW6N4DDuhL5axSlrcOMkLpNX3zWuHLBYi81AeCVEYHSK//4b609pNP1HXuM3Of9DLjPkXjMn3sM978c3qYnTVUgpxVkKspP899GFeNHOkNdbaaZ9H4Pl+yoNMLia4c88zvmvto+95SIlyr4M76TlTqJR5E9fFBDdkvsC152RoPNf6vdTPSr33gv3KnIXPWdNcgUdZFnHT/1G9eCha28hGpXm39324lDU1POjkmKWuCplnyrGVbTYpUd28kKyY59qRGfc2sNiUqTa/t78B36ycj7vDvdn+3Bv9kkKZ3Iv7Ezvk++yrafy/3CdWVrhX
+   eJztkksOgCAMBT2RCyFRTy5IvJsQf5W0UR8ENywmGsAOr9W0TWM9s8cIHPvuBdw3yw7dc0Jt6Q4otL5NqDN1/slgu3tGmpW6pV7E52LXoHhGvbk5l2v5Oz3RCy7OTbOjvmXPOuh33tOvMBeSNacXyRrPupSTm3UpJ9pzZKYcNvT7B+/X/2vy501in79mTXEHl1EbiBNxo/meZh3eOd+xntN5Zo7Rl7Mk/Q/O6q3e6r1YASr6U50=
   </data>
  </layer>
- <layer id="3" name="Foreground" width="30" height="17">
+ <layer id="2" name="Walls" width="30" height="25">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFyOAnFrHdNgwMe2zoY/8fJPZvoJ1/0OyNQWI/5qTMrs1QehsO+eUcDAwrgHglB4T9nBPCjqbMWgyzQUAUSQ7krzVA8WdA+gUQrwKyn3LidicpANlsmH+wybtxQtSgy1MCXDkh5oKwO5a480KS96AwbsWR2CA/PUHyN3K4w+wFhTFIzVMK7MWlF1eYemEJYzHyrccKYGEOS0PI7qE0fvGlR5AdqzkwwwRmN6XxSw54TGH8wgAszGBlAgxsodzoUUAnAAB51T3h
+   eJzllMEOgjAMhvtMjAMwHklPyLO5vZOelLs1ppEYZruuIzH+yX8ho1//ruAbAL8yyTd6W9XYqimVlpPKopGWu1bX1stulVPD5XQbAO7oZbDjSjR5gBN69vtyn1oSzN4BxMzvinTB+V2/zHAaMS96Hje4uHvho39un0kHzHIUzFCqPfb3V7g19U/cEmbn0s8j888uzRraF4d6IGZM9GTFPWP94N58CZPj5twvZe4LcmrvmuPmMiX82txUD7XmzPEt8+ac5bhWnBwu9+4DPFuldA==
   </data>
  </layer>
- <layer id="6" name="Clutter" width="30" height="17">
+ <layer id="3" name="Clutter" width="30" height="25">
   <properties>
    <property name="spriteLayer" type="bool" value="true" />
   </properties>
   <data encoding="base64" compression="zlib">
-   eJxjYBgFhMAeWwaGvbYDY/ffAbJ3FIyCoQaMgXnFBIhN6ZxnioH2lQBx6WheHQVDBAAA29EGlA==
+   eJy1lgFugzAMRXOiwmBStZBwpO18JMCR2ivM0exhXJymQL9kCUGSFzuxjTFl6htjItoI1rW6Bfjum2VuvMCcy9/z18f2+r4CRrWMIznGcmAxYxbZUfCTBsYdquV5gue5Wo/t0Udad2zzsQnITnu0jEs+afI1fK/XvjrB0uJF7wP5jlxbb/vENcGYGbnkq/RxULjyPXFD/ThWEzGlr68osPtIZz1kfObMZ+eZkxX3fAKb2ZlbER93AjMpiHvucQ+aHJ7pzRlzd/u5fH7aw4R7yHGTvr0xP34/V5sv81pybzDnfoCrzdfqilP2c0S8bth2u6a+g8vrRmB3zb6Zu6XA8ot6zlnqoFa5TL3i+XWkRiX1n8tzBOaY4fL82lsvZE/5XxvqUkQbsUbl6qW2jibeUzhzYvVwVnrKs3VI14KYELMD3xxYyPioScZF4/JaT/mZeF2z9BvaUxQ2FsSixF/+zxNZj5OxJ5Xkb1Gc23UvpB5HTIo/aS7wuYRL7Ny/2VYPPoP7qo5yc/n5Cxl3ntY=
   </data>
  </layer>
- <objectgroup id="4" name="Objects">
-  <object id="38" template="../../../common/maps/obj/portal.tx" x="217" y="235" type="expeditionGate">
+ <properties>
+  <property name="persistentLife" type="bool" value="true" />
+  <property name="respawnEnemies" type="bool" value="false" />
+  <property name="campaignLayoutRevision" value="authored-v1:6efbb622945815c8" />
+ </properties>
+ <objectgroup id="900" name="Campaign places">
+  <object id="38" template="../../../common/maps/obj/portal.tx" x="240" y="400" type="expeditionGate">
    <properties>
     <property name="teleport" value="" />
     <property name="direction" value="up" />
@@ -44,34 +41,7 @@
     <property name="region" value="fallen-empires" />
    </properties>
   </object>
-  <object id="304" template="../../../common/maps/obj/shop.tx" x="111.633" y="145.511">
-   <properties>
-    <property name="shopList" value="Fallen Empires Trader" />
-    <property name="hasSign" type="bool" value="false" />
-   </properties>
-  </object>
-  <object id="57" template="../../../common/maps/obj/enemy.tx" x="292.252" y="63.2047">
-   <properties>
-    <property name="enemy" value="Sarpadian Thallid Grove" />
-    <property name="threatRange" type="int" value="40" />
-    <property name="waypoints" value="71,72,76,67,76,72" />
-   </properties>
-  </object>
-  <object id="62" template="../../../common/maps/obj/enemy.tx" x="331.577" y="161.127">
-   <properties>
-    <property name="enemy" value="Sarpadian Homarid Shoal" />
-    <property name="threatRange" type="int" value="40" />
-    <property name="waypoints" value="70,71" />
-   </properties>
-  </object>
-  <object id="63" template="../../../common/maps/obj/enemy.tx" x="252.705" y="162.45">
-   <properties>
-    <property name="enemy" value="Sarpadian Thrull Breeder" />
-    <property name="threatRange" type="int" value="40" />
-    <property name="waypoints" value="75,74" />
-   </properties>
-  </object>
-  <object id="58" template="../../../common/maps/obj/enemy.tx" x="217.794" y="66.2717">
+  <object id="58" template="../../../common/maps/obj/enemy.tx" x="0" y="16">
    <properties>
     <property name="enemy" value="Sarpadian Icatian Council" />
     <property name="threatRange" type="int" value="0" />
@@ -79,23 +49,36 @@
     <property name="completesChapter" value="fallen-empires" />
    </properties>
   </object>
-  <object id="51" template="../../../common/maps/obj/treasure.tx" x="213.75" y="27.75">
+  <object id="304" template="../../../common/maps/obj/shop.tx" x="464" y="80">
+   <properties>
+    <property name="shopList" value="Fallen Empires Trader" />
+    <property name="hasSign" type="bool" value="false" />
+   </properties>
+  </object>
+  <object id="57" template="../../../common/maps/obj/enemy.tx" x="192" y="128">
+   <properties>
+    <property name="enemy" value="Sarpadian Thallid Grove" />
+    <property name="threatRange" type="int" value="40" />
+   </properties>
+  </object>
+  <object id="62" template="../../../common/maps/obj/enemy.tx" x="32" y="288">
+   <properties>
+    <property name="enemy" value="Sarpadian Homarid Shoal" />
+    <property name="threatRange" type="int" value="40" />
+   </properties>
+  </object>
+  <object id="63" template="../../../common/maps/obj/enemy.tx" x="352" y="240">
+   <properties>
+    <property name="enemy" value="Sarpadian Thrull Breeder" />
+    <property name="threatRange" type="int" value="40" />
+   </properties>
+  </object>
+  <object id="51" template="../../../common/maps/obj/treasure.tx" x="464" y="368">
    <properties>
     <property name="reward" value="[{&quot;type&quot;: &quot;card&quot;, &quot;count&quot;: 1, &quot;editions&quot;: [&quot;FEM&quot;], &quot;rarity&quot;: [&quot;Rare&quot;]}]" />
    </properties>
   </object>
-  <object id="67" template="../../../common/maps/obj/waypoint.tx" x="230.472" y="130.16" />
-  <object id="68" template="../../../common/maps/obj/waypoint.tx" x="255.88" y="196.858" />
-  <object id="69" template="../../../common/maps/obj/waypoint.tx" x="298.228" y="213.003" />
-  <object id="70" template="../../../common/maps/obj/waypoint.tx" x="328.401" y="214.591" />
-  <object id="71" template="../../../common/maps/obj/waypoint.tx" x="334.224" y="76.6958" />
-  <object id="72" template="../../../common/maps/obj/waypoint.tx" x="257.733" y="61.874" />
-  <object id="73" template="../../../common/maps/obj/waypoint.tx" x="104.487" y="84.636" />
-  <object id="74" template="../../../common/maps/obj/waypoint.tx" x="82.7832" y="200.563" />
-  <object id="75" template="../../../common/maps/obj/waypoint.tx" x="170.126" y="171.184" />
-  <object id="76" template="../../../common/maps/obj/waypoint.tx" x="164.303" y="83.3126" />
-  <object id="77" template="../../../common/maps/obj/waypoint.tx" x="134.395" y="226.236" />
-  <object id="900" template="../../../common/maps/obj/portal.tx" type="expeditionGate" x="240" y="80">
+  <object id="900" template="../../../common/maps/obj/portal.tx" type="expeditionGate" x="336" y="16">
    <properties>
     <property name="mode" value="advance" />
     <property name="region" value="fallen-empires" />
@@ -104,11 +87,19 @@
     <property name="portalState" value="active" />
    </properties>
   </object>
-  <object id="901" template="../../../common/maps/obj/dialog.tx" type="campaignLimited" x="250" y="208" width="16" height="16">
+  <object id="901" template="../../../common/maps/obj/dialog.tx" type="campaignLimited" x="48" y="144" width="16" height="16">
    <properties>
     <property name="type" value="campaignLimited" />
     <property name="hidden" type="bool" value="false" />
     <property name="organizer" value="fallen-empires-limited" />
+   </properties>
+  </object>
+  <object id="1900" template="../../../common/maps/obj/dialog.tx" type="dialog" x="128" y="224">
+   <properties>
+    <property name="type" value="dialog" />
+    <property name="hidden" value="false" />
+    <property name="campaignLore" value="fallen-empires" />
+    <property name="dialog" value="{&quot;text&quot;: &quot;Sarpadia: The Fractured Frontier\nThallids, Homarids, Thrulls and Icatians contest a dying order. Their cards share one historical set; the council guards the expedition checkpoint and its sealed reward.&quot;, &quot;options&quot;: [{&quot;name&quot;: &quot;Leave&quot;}]}" />
    </properties>
   </object>
  </objectgroup>

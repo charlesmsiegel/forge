@@ -41,4 +41,13 @@ public class MapResumeStateTest {
         loaded.load(new SaveFileData());
         assertFalse(loaded.isActive());
     }
+    @Test public void changedLayoutsDoNotReuseObsoleteCoordinates() {
+        MapResumeState state = new MapResumeState("castle", "maps/map/castle_white.tmx", 50, 50, Map.of());
+        state.layoutRevision = "authored-v1";
+        MapResumeState loaded = new MapResumeState(); loaded.load(state.save());
+        assertTrue(loaded.matchesLayout("authored-v1")); assertFalse(loaded.matchesLayout("authored-v2"));
+        var legacy = state.save(); legacy.remove("layoutRevision"); loaded.load(legacy);
+        assertTrue(loaded.matchesLayout("")); assertFalse(loaded.matchesLayout("authored-v1"));
+    }
+
 }

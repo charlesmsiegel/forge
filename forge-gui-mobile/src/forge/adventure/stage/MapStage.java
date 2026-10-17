@@ -74,6 +74,10 @@ public class MapStage extends GameStage {
     /** Shandalar Reborn: map property persistentLife - duel ending life carries between fights. */
     private boolean persistentLifeMap = false;
 
+    public String getLayoutRevision() {
+        return tiledMap == null ? "" : tiledMap.getProperties().get("campaignLayoutRevision", "", String.class);
+    }
+
     public boolean isPersistentLifeMap() {
         return isInMap && persistentLifeMap;
     }
@@ -206,6 +210,13 @@ public class MapStage extends GameStage {
 
     /** The roster selection becomes the actual camp actor used by duel animations. */
     public void replaceCampRival(EnemySprite host, EnemySprite chosen) {
+        // A persistent identity must not erase the authored objective it inhabits.
+        chosen.campaignLandmarkSlot = host.campaignLandmarkSlot;
+        chosen.campaignStoryEncounter = host.campaignStoryEncounter;
+        chosen.completesRegion = host.completesRegion;
+        chosen.completesRealm = host.completesRealm;
+        chosen.completesChapter = host.completesChapter;
+        chosen.questStageID = host.questStageID;
         host.remove();
         actors.removeValue(host, true);
         enemies.remove(host);

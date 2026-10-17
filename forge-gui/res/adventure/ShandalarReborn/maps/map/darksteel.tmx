@@ -1,41 +1,42 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="902">
- <properties>
-  <property name="respawnEnemies" type="bool" value="false" />
-  <property name="canFailDungeon" type="bool" value="false" />
-  <property name="persistentLife" type="bool" value="true" />
- </properties>
- <editorsettings>
-  <export target="wastetown..tmx" format="tmx" />
- </editorsettings>
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="16" tileheight="16" infinite="0" nextlayerid="901" nextobjectid="3000">
  <tileset firstgid="1" source="../../../common/maps/tileset/main.tsx" />
  <tileset firstgid="10113" source="../../../common/maps/tileset/buildings.tsx" />
- <tileset firstgid="11905" source="../../../common/maps/tileset/dungeon.tsx" />
- <layer id="1" name="Background" width="30" height="17">
+ <layer id="1" name="Background" width="50" height="50">
   <data encoding="base64" compression="zlib">
-   eJwL42RgCBvFo5jOOA4NYxPDpoaadpKCB8peSuweCHuHol+pEbcgQOv0S4p/aZFnR/HwwQDYMMBE
+   eJzt100KwjAQQOEssildeVtPIvQQc0cRKYYhjT/JTJ3wFh+4kJpHMhq3JaUNAAAAMHRdU7otn3m89+z19jb8Q8slP0l+vf6loWzZn9di1TGiQbe0eqw7eht2ukF/TqQOvSfRO/T8WXeIYYduid4hE3SULVHnQ5+tyB2znCuPORfj/fD43i33e/S9pHY3seio3RlG3BNrM+E1H70tuuGs30Hd8e3/qHcN3h2Sj9fVOo9Ha/e47wIAAAAA5nAHTKzKjg==
   </data>
  </layer>
- <layer id="2" name="Ground" width="30" height="17">
+ <layer id="8" name="Ground" width="50" height="50">
   <data encoding="base64" compression="zlib">
-   eJzVk00OgjAQhbuE9hgeQjFsReMNPJrxZ2sEryOoW6N4DDuhL5axSlrcOMkLpNX3zWuHLBYi81AeCVEYHSK//4b609pNP1HXuM3Of9DLjPkXjMn3sM978c3qYnTVUgpxVkKspP899GFeNHOkNdbaaZ9H4Pl+yoNMLia4c88zvmvto+95SIlyr4M76TlTqJR5E9fFBDdkvsC152RoPNf6vdTPSr33gv3KnIXPWdNcgUdZFnHT/1G9eCha28hGpXm39324lDU1POjkmKWuCplnyrGVbTYpUd28kKyY59qRGfc2sNiUqTa/t78B36ycj7vDvdn+3Bv9kkKZ3Iv7Ezvk++yrafy/3CdWVrhX
+   eJzNWmtuE0EM3iQrld3kDi3nCH38qXqKwllAcIVKCKniJhwmcAqEYK3EyodrezzeWcQnrSIl8/r8Gtub7dB1H7Zd92PsTPTTmCflWQ/6+Ofp+xtnPYmH0T7D3Xhc73o8j/turD1M417v/L324/nstObeWOv3q+O+zwZHDduTLOnBczAHlheOK8neQ184G3LwdHKvfL8VssR1rseXY5mLBZJBjU1YHCydHE62oXHBMzw7dku43Ok64bmWDKz9Vqe9epi7Hv4+xx5kg7LM2oV1FilDjQP5FsmS90b/Y/Ti7Aj6jTmTP17tjp8EXNcC6ft2PH9Ku6X9NnCejcKD4wQ9tDf7PI67DcjW0jHrqEXMtNZ4D+dHP2R5k3zuFPmUgDZJaBEz2Wcs37PWb2mTUZRipuX/HlrZpMRdA/8nW/Vi4kqRR9YmJVC/UUj7ZHh64X1wXtYmtXVb26e2N9sDPxqX7H2whH1S/NH0JPd8qtB9FC3sk87PuYWXD9wH7iwLj+uuezs979Yvf2ttnx6HyH4ePm+67tP0+UvhgWtn5FTDgcH3b5bLl015/dq1ozykjCg/iuha4tGwK4SnF86vpA9Hcty58Qjxc+LwbVXmYsVMijG9EjNZD6UcIZLLRcA+Qlwsn/fi5eG0v4y7NTkO62UuiMvHTvd5L2byHVKKmSzvgzOmlV4IEZ9HkByvhL1xvi3HRWo14jIscA/WwsvHWN7Sz7J1+1Io9QEIUtbI+8bIL1shWxtGIHsIpVpmLjK1YRQcu/8nZOVJcSCTi8zBUn7ZMu56yPTT5HyGddYl4262NkTgPK8HTsjkiBFkakPEUr3tw8U096J+Xm1tSKjtbVs9Cg0ZHpnaMNLblr69r+gfZvWRqRVe3At8xmH+3Z3lwYj203AM9mpL8SIqp7k8ov009HfJwbrza3Q+lwch0k9j1PYboveh5NH6nY6WL70Z29eHmj68dzoM7Kd5iPTTovWhBL7Tseyq1G+v7aexjr2edbQm197pRPwD76NsP630njhaH1pxTvIo9cyz/bRe7P1VmVuqDwlWXoQ8Ij3zfvDjPcGLl32FHmV9iJBrM4+anvm/7Kdp8U7Li1AfrXPkVv00rT6UOp9zD9b00xgPSf1ocRcxh0dNP41AHLx3yxwTI7YofQd51N7l1v+A+FwYL1v990lyYf+X+ojc5YhL5Xetn7b0f580u8q8/0do/bQ/Lwpjqw==
   </data>
  </layer>
- <layer id="3" name="Foreground" width="30" height="17">
+ <layer id="2" name="Walls" width="50" height="50">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFyOAnFrHdNgwMe2zoY/8fJPZvoJ1/0OyNQWI/5qTMrs1QehsO+eUcDAwrgHglB4T9nBPCjqbMWgyzQUAUSQ7krzVA8WdA+gUQrwKyn3LidicpANlsmH+wybtxQtSgy1MCXDkh5oKwO5a480KS96AwbsWR2CA/PUHyN3K4w+wFhTFIzVMK7MWlF1eYemEJYzHyrccKYGEOS0PI7qE0fvGlR5AdqzkwwwRmN6XxSw54TGH8wgAszGBlAgxsodzoUUAnAAB51T3h
+   eJzt1eEKgyAUhmHtmoaXOruu1QUNWYdCKs+iwbd6H+hHaOGLSSEAAAAAvzd0vktZWd+4s8Y0jb2EW1oNRVqMK7Z4GopUzVFq8ZwBu687CpWWtbV9O/fxZx1b6DjPVb4rO6Oes6r8X7zKftyxY4tCR44h9PH488/4eYcCb0u9d0oNxtOy7FBsMK0W61BuMDn6LgAAAAAAMHsDZYM3zA==
   </data>
  </layer>
- <layer id="6" name="Clutter" width="30" height="17">
+ <layer id="7" name="Ornamental Walls" width="50" height="50">
+  <data encoding="base64" compression="zlib">
+   eJzt10sKgCAURmFzTRG009ZVLaga3In4KKX6kfNNK/CAN9Q5AAAA4H2TLz8bM+8oyDWEVFueNBi1lpoGo9LS0mBUWgDEXXO++XuzmvonKM250lparGfHTMvvwj1f06KyJ1Mty1D+VqXBxFr2whrVGkwP53bTwz0KAAAAAICvHfENDSM=
+  </data>
+ </layer>
+ <layer id="3" name="Clutter" width="50" height="50">
   <properties>
    <property name="spriteLayer" type="bool" value="true" />
   </properties>
   <data encoding="base64" compression="zlib">
-   eJxjYBgFhMAeWwaGvbYDY/ffAbJ3FIyCoQaMgXnFBIhN6ZxnioH2lQBx6WheHQVDBAAA29EGlA==
+   eJzdWkEOwjAMgxsP4QYXeCQf2H6KuKMhkKYqaevUbVJ8AY2udT2nSYDDQcZ6Uj5QcD9i41lYBJ4rMrawzxodpHlnRqpfTgPW3hfrfWTtNe9ouHXyvTZveh3ZPxrTGtI1Uc2sQLQexYkB5BnOctbs84HFd73iyhv757fXxSt/emPTwGPvtfmmV7x5x3HN/iWOtbz/NX6lfV2Ea4/v6zmADlavPbk0TLDWhVZouapWw4jn+MYpl4N/tVJ2DOih1DvXo/y+Bsx+DsGjPKTLvRYw8wkj7llxOzqPIOux+iCr3kyvWzAyt0Xt56Q4Z/ZzUeqo1n4uhdYHWRGhVpkRo+srBli5jukZ737OCms/VzqXpJj+rdWzRk7XjViPb2jxy6xe25A7b7zrGakP8s6/tX5GtbNqrfGZ2ZMRwdCz1c8lDhaOtXnE4yzw+l0LwcubgANYObyHn0tIfcyMP2/s+Vn7uVF+jtTnoH6Gvk/Apv4A4dPjXG7xOZOPxsMrDnPrtvhZ+n9Paz+H8Il8rr0B5iBNmg==
   </data>
  </layer>
- <objectgroup id="4" name="Objects">
-  <object id="38" template="../../../common/maps/obj/portal.tx" x="217" y="235" type="expeditionGate">
+ <properties>
+  <property name="persistentLife" type="bool" value="true" />
+  <property name="respawnEnemies" type="bool" value="false" />
+  <property name="campaignLayoutRevision" value="authored-v1:5c3dc235c67a6087" />
+ </properties>
+ <objectgroup id="900" name="Campaign places">
+  <object id="38" template="../../../common/maps/obj/portal.tx" x="400" y="800" type="expeditionGate">
    <properties>
     <property name="teleport" value="" />
     <property name="direction" value="up" />
@@ -44,34 +45,7 @@
     <property name="region" value="mirrodin" />
    </properties>
   </object>
-  <object id="304" template="../../../common/maps/obj/shop.tx" x="111.633" y="145.511">
-   <properties>
-    <property name="shopList" value="Darksteel Trader" />
-    <property name="hasSign" type="bool" value="false" />
-   </properties>
-  </object>
-  <object id="57" template="../../../common/maps/obj/enemy.tx" x="292.252" y="63.2047">
-   <properties>
-    <property name="enemy" value="Razorfield Patrol" />
-    <property name="threatRange" type="int" value="40" />
-    <property name="waypoints" value="71,72,76,67,76,72" />
-   </properties>
-  </object>
-  <object id="62" template="../../../common/maps/obj/enemy.tx" x="331.577" y="161.127">
-   <properties>
-    <property name="enemy" value="Neurok Engineer" />
-    <property name="threatRange" type="int" value="40" />
-    <property name="waypoints" value="70,71" />
-   </properties>
-  </object>
-  <object id="63" template="../../../common/maps/obj/enemy.tx" x="252.705" y="162.45">
-   <properties>
-    <property name="enemy" value="Furnace Stoker" />
-    <property name="threatRange" type="int" value="40" />
-    <property name="waypoints" value="75,74" />
-   </properties>
-  </object>
-  <object id="58" template="../../../common/maps/obj/enemy.tx" x="217.794" y="66.2717">
+  <object id="58" template="../../../common/maps/obj/enemy.tx" x="0" y="16">
    <properties>
     <property name="enemy" value="Darksteel Modular Sovereign" />
     <property name="threatRange" type="int" value="0" />
@@ -79,23 +53,36 @@
     <property name="completesChapter" value="darksteel" />
    </properties>
   </object>
-  <object id="51" template="../../../common/maps/obj/treasure.tx" x="213.75" y="27.75">
+  <object id="304" template="../../../common/maps/obj/shop.tx" x="784" y="208">
+   <properties>
+    <property name="shopList" value="Darksteel Trader" />
+    <property name="hasSign" type="bool" value="false" />
+   </properties>
+  </object>
+  <object id="57" template="../../../common/maps/obj/enemy.tx" x="288" y="320">
+   <properties>
+    <property name="enemy" value="Razorfield Patrol" />
+    <property name="threatRange" type="int" value="40" />
+   </properties>
+  </object>
+  <object id="62" template="../../../common/maps/obj/enemy.tx" x="0" y="608">
+   <properties>
+    <property name="enemy" value="Neurok Engineer" />
+    <property name="threatRange" type="int" value="40" />
+   </properties>
+  </object>
+  <object id="63" template="../../../common/maps/obj/enemy.tx" x="480" y="16">
+   <properties>
+    <property name="enemy" value="Furnace Stoker" />
+    <property name="threatRange" type="int" value="40" />
+   </properties>
+  </object>
+  <object id="51" template="../../../common/maps/obj/treasure.tx" x="592" y="496">
    <properties>
     <property name="reward" value="[{&quot;type&quot;: &quot;card&quot;, &quot;count&quot;: 1, &quot;editions&quot;: [&quot;DST&quot;], &quot;rarity&quot;: [&quot;Rare&quot;]}]" />
    </properties>
   </object>
-  <object id="67" template="../../../common/maps/obj/waypoint.tx" x="230.472" y="130.16" />
-  <object id="68" template="../../../common/maps/obj/waypoint.tx" x="255.88" y="196.858" />
-  <object id="69" template="../../../common/maps/obj/waypoint.tx" x="298.228" y="213.003" />
-  <object id="70" template="../../../common/maps/obj/waypoint.tx" x="328.401" y="214.591" />
-  <object id="71" template="../../../common/maps/obj/waypoint.tx" x="334.224" y="76.6958" />
-  <object id="72" template="../../../common/maps/obj/waypoint.tx" x="257.733" y="61.874" />
-  <object id="73" template="../../../common/maps/obj/waypoint.tx" x="104.487" y="84.636" />
-  <object id="74" template="../../../common/maps/obj/waypoint.tx" x="82.7832" y="200.563" />
-  <object id="75" template="../../../common/maps/obj/waypoint.tx" x="170.126" y="171.184" />
-  <object id="76" template="../../../common/maps/obj/waypoint.tx" x="164.303" y="83.3126" />
-  <object id="77" template="../../../common/maps/obj/waypoint.tx" x="134.395" y="226.236" />
-  <object id="900" template="../../../common/maps/obj/portal.tx" type="expeditionGate" x="240" y="80">
+  <object id="900" template="../../../common/maps/obj/portal.tx" type="expeditionGate" x="784" y="736">
    <properties>
     <property name="mode" value="advance" />
     <property name="region" value="mirrodin" />
@@ -104,11 +91,19 @@
     <property name="portalState" value="active" />
    </properties>
   </object>
-  <object id="901" template="../../../common/maps/obj/dialog.tx" type="campaignLimited" x="250" y="208" width="16" height="16">
+  <object id="901" template="../../../common/maps/obj/dialog.tx" type="campaignLimited" x="240" y="64" width="16" height="16">
    <properties>
     <property name="type" value="campaignLimited" />
     <property name="hidden" type="bool" value="false" />
     <property name="organizer" value="mirrodin-limited" />
+   </properties>
+  </object>
+  <object id="1900" template="../../../common/maps/obj/dialog.tx" type="dialog" x="80" y="224">
+   <properties>
+    <property name="type" value="dialog" />
+    <property name="hidden" value="false" />
+    <property name="campaignLore" value="darksteel" />
+    <property name="dialog" value="{&quot;text&quot;: &quot;Darksteel: The Modular Vault\nThe vault gathers fragments into greater machines. Its modular sovereign guards the next checkpoint; retreat preserves the path already earned.&quot;, &quot;options&quot;: [{&quot;name&quot;: &quot;Leave&quot;}]}" />
    </properties>
   </object>
  </objectgroup>
