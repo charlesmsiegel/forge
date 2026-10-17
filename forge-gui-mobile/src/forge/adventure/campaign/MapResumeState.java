@@ -15,6 +15,7 @@ import java.util.Map;
 public class MapResumeState implements SaveFileContent {
     public String rootPoiId = "";
     public String mapPath = "";
+    public String layoutRevision = "";
     public float playerX;
     public float playerY;
     public final Map<Integer, Vector2> enemies = new LinkedHashMap<>();
@@ -31,6 +32,10 @@ public class MapResumeState implements SaveFileContent {
         enemies.forEach((id, position) -> this.enemies.put(id, position.cpy()));
     }
 
+    public boolean matchesLayout(String currentRevision) {
+        return layoutRevision.equals(currentRevision == null ? "" : currentRevision);
+    }
+
     public boolean isActive() {
         return !rootPoiId.isEmpty() && !mapPath.isEmpty();
     }
@@ -39,12 +44,14 @@ public class MapResumeState implements SaveFileContent {
     public void load(SaveFileData data) {
         rootPoiId = "";
         mapPath = "";
+        layoutRevision = "";
         enemies.clear();
         rivalIds.clear();
         if (data == null || !data.containsKey("rootPoiId"))
             return;
         rootPoiId = data.readString("rootPoiId");
         mapPath = data.readString("mapPath");
+        if (data.containsKey("layoutRevision")) layoutRevision = data.readString("layoutRevision");
         playerX = data.readFloat("playerX");
         playerY = data.readFloat("playerY");
         int count = data.readInt("enemyCount");
@@ -59,9 +66,10 @@ public class MapResumeState implements SaveFileContent {
     @Override
     public SaveFileData save() {
         SaveFileData data = new SaveFileData();
-        data.store("version", 1);
+        data.store("version", 2);
         data.store("rootPoiId", rootPoiId);
         data.store("mapPath", mapPath);
+        data.store("layoutRevision", layoutRevision);
         data.store("playerX", playerX);
         data.store("playerY", playerY);
         data.store("enemyCount", enemies.size());

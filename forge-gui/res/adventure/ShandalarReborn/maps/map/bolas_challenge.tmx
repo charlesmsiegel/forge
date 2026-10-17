@@ -1,45 +1,42 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="902">
- <properties>
-  <property name="persistentLife" type="bool" value="true" />
-  <property name="respawnEnemies" type="bool" value="true" />
- </properties>
- <editorsettings>
-  <export target="wastetown..tmx" format="tmx" />
- </editorsettings>
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="16" tileheight="16" infinite="0" nextlayerid="901" nextobjectid="3000">
  <tileset firstgid="1" source="../../../common/maps/tileset/main.tsx" />
  <tileset firstgid="10113" source="../../../common/maps/tileset/buildings.tsx" />
- <tileset firstgid="11905" source="../../../common/maps/tileset/dungeon.tsx" />
  <layer id="1" name="Background" width="30" height="17">
   <data encoding="base64" compression="zlib">
-   eJwL42RgCBvFo5jOOA4NYxPDpoaadpKCB8peSuweCHuHol+pEbcgQOv0S4p/aZFnR/HwwQDYMMBE
+   eJzT4GZg0BhC+BfXwLthOGIZnsFpLyi+kTG93IXLXnqE00D5F+Q3GB6ItLBdgv72wTC10gkujKye2mkEZiY+e0fxKEbGAMapgro=
   </data>
  </layer>
  <layer id="2" name="Ground" width="30" height="17">
   <data encoding="base64" compression="zlib">
-   eJzVk00OgjAQhbuE9hgeQjFsReMNPJrxZ2sEryOoW6N4DDuhL5axSlrcOMkLpNX3zWuHLBYi81AeCVEYHSK//4b609pNP1HXuM3Of9DLjPkXjMn3sM978c3qYnTVUgpxVkKspP899GFeNHOkNdbaaZ9H4Pl+yoNMLia4c88zvmvto+95SIlyr4M76TlTqJR5E9fFBDdkvsC152RoPNf6vdTPSr33gv3KnIXPWdNcgUdZFnHT/1G9eCha28hGpXm39324lDU1POjkmKWuCplnyrGVbTYpUd28kKyY59qRGfc2sNiUqTa/t78B36ycj7vDvdn+3Bv9kkKZ3Iv7Ezvk++yrafy/3CdWVrhX
+   eJy91G0OgyAMBmD+iydAdzA9y9y1/Jh3UyJNauPC2zIlaQKS8lCjHb1z4wPRiEBy+tq52Z8jDpp39f9c2o/mkpxfYwJsTb3cfF3Ys8dt1EXq1NSNuBYzZyNuy8z4fi13oLNornVbpTlUR5TWi7rBn+elrmXc5QZg3+Kue3wqm/ve875Gt0m27I3UJyaxlubVuZo+masbNbV9ErVzptblNv2X3KJnOdPiyhz61oPh/jw2X6zUNg==
   </data>
  </layer>
- <layer id="3" name="Foreground" width="30" height="17">
+ <layer id="8" name="Walls Supplementary" width="30" height="17">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFyOAnFrHdNgwMe2zoY/8fJPZvoJ1/0OyNQWI/5qTMrs1QehsO+eUcDAwrgHglB4T9nBPCjqbMWgyzQUAUSQ7krzVA8WdA+gUQrwKyn3LidicpANlsmH+wybtxQtSgy1MCXDkh5oKwO5a480KS96AwbsWR2CA/PUHyN3K4w+wFhTFIzVMK7MWlF1eYemEJYzHyrccKYGEOS0PI7qE0fvGlR5AdqzkwwwRmN6XxSw54TGH8wgAszGBlAgxsodzoUUAnAAB51T3h
+   eJxjYBhaYBfPQLuAvgDkX2ka+jkGSmtwMzD8RhL/xYCw9xeN7A5hh9iLDnD5twGLWmoCkL3Y0he1wv8TO+nuoRZYKUo9sygFIH/FEFZGFpAFmh2OJZx34YhbatpLDPhBJftAfqmncX4YBbgBetgTG/+DBQAAowgPRQ==
   </data>
  </layer>
- <layer id="6" name="Clutter" width="30" height="17">
+ <layer id="3" name="Clutter" width="30" height="17">
   <properties>
    <property name="spriteLayer" type="bool" value="true" />
   </properties>
   <data encoding="base64" compression="zlib">
-   eJxjYBgFhMAeWwaGvbYDY/ffAbJ3FIyCoQaMgXnFBIhN6ZxnioH2lQBx6WheHQVDBAAA29EGlA==
+   eJxjYBgFhEAtNwNDHRTXc9PP3p08EDqKl4FBloe2diGb36+JXZzW9iKDvTy0C+9dPBDcgGa2NA9CfjcN/P2JnYEhhB1hD7q9IABLa5QCHzlMMXz2UhPUosUbPntActslIJhSO/eQ4D9q+R1kpwydwhUZ7MViByhtobNpmX+reHHL0brcGGz2DjUAAGVqFfM=
   </data>
  </layer>
- <objectgroup id="4" name="Objects">
-  <object id="38" template="../../../common/maps/obj/entry_up.tx" x="217.032" y="271.777">
+ <properties>
+  <property name="persistentLife" type="bool" value="true" />
+  <property name="respawnEnemies" type="bool" value="true" />
+  <property name="campaignLayoutRevision" value="authored-v1:1671f9cd942b20ab" />
+ </properties>
+ <objectgroup id="900" name="Campaign places">
+  <object id="38" template="../../../common/maps/obj/entry_up.tx" x="224" y="272">
    <properties>
     <property name="teleport" value="" />
    </properties>
   </object>
-  <object id="900" template="../../../common/maps/obj/enemy.tx" x="250" y="208" type="enemy">
+  <object id="900" template="../../../common/maps/obj/enemy.tx" x="0" y="16" type="enemy">
    <properties>
     <property name="enemy" value="Master Black Wizard" />
     <property name="storyEncounter" value="bolas-challenge" />
@@ -47,11 +44,26 @@
     <property name="speed" value="0" />
    </properties>
   </object>
-  <object id="901" template="../../../common/maps/obj/enemy.tx" x="111.633" y="145.511" type="enemy">
+  <object id="901" template="../../../common/maps/obj/enemy.tx" x="400" y="32" type="enemy">
    <properties>
     <property name="enemy" value="Adept Black Wizard" />
     <property name="threatRange" value="0" />
     <property name="speed" value="0" />
+   </properties>
+  </object>
+  <object id="1800" template="../../../common/maps/obj/enemy.tx" type="enemy" x="192" y="64">
+   <properties>
+    <property name="enemy" value="Adept Black Wizard" />
+    <property name="threatRange" value="32" />
+    <property name="speed" value="10" />
+   </properties>
+  </object>
+  <object id="1900" template="../../../common/maps/obj/dialog.tx" type="dialog" x="64" y="192">
+   <properties>
+    <property name="type" value="dialog" />
+    <property name="hidden" value="false" />
+    <property name="campaignLore" value="bolas-challenge" />
+    <property name="dialog" value="{&quot;text&quot;: &quot;The Court of a Thousand Bolases\nEvery monument celebrates the same dragon. His servants insist this is architectural consistency. Bolas permits an audience long before he considers you worthy of a challenge.&quot;, &quot;options&quot;: [{&quot;name&quot;: &quot;Leave&quot;}]}" />
    </properties>
   </object>
  </objectgroup>

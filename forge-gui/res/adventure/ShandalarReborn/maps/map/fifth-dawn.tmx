@@ -1,41 +1,46 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="902">
- <properties>
-  <property name="respawnEnemies" type="bool" value="false" />
-  <property name="canFailDungeon" type="bool" value="false" />
-  <property name="persistentLife" type="bool" value="true" />
- </properties>
- <editorsettings>
-  <export target="wastetown..tmx" format="tmx" />
- </editorsettings>
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="30" height="30" tilewidth="16" tileheight="16" infinite="0" nextlayerid="901" nextobjectid="3000">
  <tileset firstgid="1" source="../../../common/maps/tileset/main.tsx" />
  <tileset firstgid="10113" source="../../../common/maps/tileset/buildings.tsx" />
- <tileset firstgid="11905" source="../../../common/maps/tileset/dungeon.tsx" />
- <layer id="1" name="Background" width="30" height="17">
+ <tileset firstgid="11905" source="../../../common/maps/tileset/dungeon/dungeon_bis.tsx" />
+ <layer id="6" name="Collision" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJwL42RgCBvFo5jOOA4NYxPDpoaadpKCB8peSuweCHuHol+pEbcgQOv0S4p/aZFnR/HwwQDYMMBE
+   eJztlU0OgkAMhWfLAkQUbqC30IUh7OA2XsMDGBJZiKdy401MgxPG0g4dfmKMvuQtxmH6tZ0imadUxpjScTHcEnF5rEPZeaxdMOyc1q9x70HXpd/snX16X1sibjZWYdeHpD0H6yqmLRHXTxs3TZr1mHmW3iPFBeE6o7DxVFypJMyxXKjxsm8NaxduHdM2hfciZq6kXPNuzPNwh/o+KQaOD/XqZ1242JiL2WO5nCiumSsXf06uLT73e50rdcvn5cbE3qZQalsQ+RDzbOMuLf106fWVeHe4ODamKxdqK/eNbXH6mFNy04Rnwh7+Lkhy00zzG+ci7n9Lqk9wq9fsPgzbZPZW2lOO65IvcIf0tE8pqvmBerEM5+GevPd4Y+bGlfvXd+kJ07yAKw==
   </data>
  </layer>
- <layer id="2" name="Ground" width="30" height="17">
+ <layer id="1" name="Background" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJzVk00OgjAQhbuE9hgeQjFsReMNPJrxZ2sEryOoW6N4DDuhL5axSlrcOMkLpNX3zWuHLBYi81AeCVEYHSK//4b609pNP1HXuM3Of9DLjPkXjMn3sM978c3qYnTVUgpxVkKspP899GFeNHOkNdbaaZ9H4Pl+yoNMLia4c88zvmvto+95SIlyr4M76TlTqJR5E9fFBDdkvsC152RoPNf6vdTPSr33gv3KnIXPWdNcgUdZFnHT/1G9eCha28hGpXm39324lDU1POjkmKWuCplnyrGVbTYpUd28kKyY59qRGfc2sNiUqTa/t78B36ycj7vDvdn+3Bv9kkKZ3Iv7Ezvk++yrafy/3CdWVrhX
+   eJzVlc1OwkAQgOdCgKs3bHkA1Gdgyw0P8Cw+iXdBEoMnlBAehvg8zoKjs9P9bd0mbPKlbbqZj5mhs4MbgMEVcKua0db7Og2zmcIbwb1P/XzeUpleTk6vy5nDW6iwM9Yb08eUXHN6bX561tcuvLbn3F7N+yPAdo7X+a+7E6+lBlHe3QLgA/kU7BdmvF3gvc47xTtZAtwJ7pGHpRlX7pPvOW2+X9mDlB5dg/erd6FLLzlt3pG6YItFHn1GSGK8R4z5gntXyFqZv517OXxPE6/OUXtHFZ6fSFGZMQuLV9Y11Uu1PeeLvhWyrupxudfWzxQv76mvzuT1zahyVsf1n5VeV52p1t75OKvjyrGWr6XOJd6Pq7CXehCqq807+ZmPxDkmOjcOL1++79XnJTdx6IfrTD69YmdDiOfhXy4yN75ccyzFy3PR3pizNnUWck69OMd/e5s623jbOGO93yfe42I=
   </data>
  </layer>
- <layer id="3" name="Foreground" width="30" height="17">
+ <layer id="2" name="Walls" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFyOAnFrHdNgwMe2zoY/8fJPZvoJ1/0OyNQWI/5qTMrs1QehsO+eUcDAwrgHglB4T9nBPCjqbMWgyzQUAUSQ7krzVA8WdA+gUQrwKyn3LidicpANlsmH+wybtxQtSgy1MCXDkh5oKwO5a480KS96AwbsWR2CA/PUHyN3K4w+wFhTFIzVMK7MWlF1eYemEJYzHyrccKYGEOS0PI7qE0fvGlR5AdqzkwwwRmN6XxSw54TGH8wgAszGBlAgxsodzoUUAnAAB51T3h
+   eJzllU0KAjEMhYsgIp5g1IXgD/6BN5jZioLn8CQuvYAK6kpQPI14Hls0mBnTdDK2uPDBw6qJ30srU6VkGs6EDZ5UT9I2aiRvc30+uZH2LlZ7+N6s8Xtf3Cj5NGZl1yG5wB7os2+i+SGDcch5OU88/R8jlB9+O5sB1xfh9omeiNg3+AyY2/g77snCdRlLwm1Plepod7V7U1lWzD3o3qOwX6rzjOYevuSa/drE7jrq/PNosPgNl9O/cfOI4o49PbO2zNwUl6unasG/5nJZbM+rENwLOjfg4Roup4RL5efmLCJbZrz2yaO4k/nz1XX3hJLhSM6qiFbVtLGKslslGdfcCaPXfTG03Bv3spu5rPE110qabctky2BjctybI7dUmGnjwpyhmK59prSuvp1HZoYs0/gBuMaNRg==
   </data>
  </layer>
- <layer id="6" name="Clutter" width="30" height="17">
+ <layer id="3" name="Clutter" width="30" height="30">
   <properties>
    <property name="spriteLayer" type="bool" value="true" />
   </properties>
   <data encoding="base64" compression="zlib">
-   eJxjYBgFhMAeWwaGvbYDY/ffAbJ3FIyCoQaMgXnFBIhN6ZxnioH2lQBx6WheHQVDBAAA29EGlA==
+   eJztlsFOg0AQhvegQY8evFTvCpJiome5NhB4LI8+QFuTnluE+IYywsRhOrvsLnDzT/5Qsst8zOwyW6X89JQNf1Pr5k3RmsVZpbJRd6maRcCl8T/fOoPa64HPn4vL8+q5B+TjO4D26XJc8H1vYESZue5jirLz/QKmeaHrvHumyafnxfcP157UE7k14UZl+56lH/dh48993AyvLlyTgDtmH41xdyNxOTex7B/Hdt5JcJz9cZNcP+7LtZEUK5nIDS324hJcG/1z9VzQs0M/k/olCPoj54btfWXguuQsfccQc8e4lEm5tI/MzeV50n61BLfp6y7lGQo9p5rIBfE+yfOE3I5F51PvqpiHy2tJBVw4C/E8BMcO5yLt07GwhpQZetZ0TIlm79BxrK2ppi+XbtyG5AyKhH2DtTUx68CNi2sG/yvAv2tXDL29UKq8UupVyAmZtxbcj+uh4RnkfmXdPTfMa1hsyjRx6+CciVwaH/zO5ty0Y1WgZ5q4EtPGNkyJ+63J04eJdZPW4gcjTMcF
   </data>
  </layer>
- <objectgroup id="4" name="Objects">
-  <object id="38" template="../../../common/maps/obj/portal.tx" x="217" y="235" type="expeditionGate">
+ <layer id="8" name="Clutter2" width="30" height="30">
+  <properties>
+   <property name="spriteLayer" type="bool" value="true" />
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJy9lktOwzAQhr1j1QuwgzalaUuQcgDYNY/S3gaQOAubPtKSvlA4FBsuwQyulakVO3aS9pd+OY4df/Z44oQxew1ixtYRL9FCyYix1Si/T/sNY/V4JvKOz9+Rca6feOkEjHUDXhfGflg+NMRdxzlT53XDXBMmdV3uBp7fSr4/rsktaBPe1eSmE2BLxhgcxnxN20lu0Y7Xu4nZ+DSeszC/dqeM9SVTLtYH07y/qA/JvTL1wtP6PCzuh1zv+XQPOzAPB9wdm/OE2oG+fQnzSBRzQa0ie2YViXj0pPnK9SrKyBrcghzF9k/gpOADeBvwuqlSRf7J7+GmJE/L9kKWq8g/mdu3yNM6qnvuNMlNINargngvLeJbhetArLsF8e5Ajn088usvy2+hb3nO0nZkUtuKnpOqM0vFXIT2OS10A+PdgtuatVKmmBty2xGPt1Ph7JrBmHPwQhrbj5r5xuk0j3LepWTCqrqHJsou9H3JrvTt54q54L63eIl59E3W7Gvyyeb/QsV9Ae7rkU3PK0/iImtfEiPUW8t+Lilh7c/4/vwY9MF9sNlqw1/LfzWRQmJ+v5o+VfagTDR2f7FciE0=
+  </data>
+ </layer>
+ <properties>
+  <property name="persistentLife" type="bool" value="true" />
+  <property name="respawnEnemies" type="bool" value="false" />
+  <property name="campaignLayoutRevision" value="authored-v1:2ea700364e7a9b0b" />
+ </properties>
+ <objectgroup id="900" name="Campaign places">
+  <object id="38" template="../../../common/maps/obj/portal.tx" x="240" y="480" type="expeditionGate">
    <properties>
     <property name="teleport" value="" />
     <property name="direction" value="up" />
@@ -44,34 +49,7 @@
     <property name="region" value="mirrodin" />
    </properties>
   </object>
-  <object id="304" template="../../../common/maps/obj/shop.tx" x="111.633" y="145.511">
-   <properties>
-    <property name="shopList" value="Fifth Dawn Trader" />
-    <property name="hasSign" type="bool" value="false" />
-   </properties>
-  </object>
-  <object id="57" template="../../../common/maps/obj/enemy.tx" x="292.252" y="63.2047">
-   <properties>
-    <property name="enemy" value="Tangle Witness" />
-    <property name="threatRange" type="int" value="40" />
-    <property name="waypoints" value="71,72,76,67,76,72" />
-   </properties>
-  </object>
-  <object id="62" template="../../../common/maps/obj/enemy.tx" x="331.577" y="161.127">
-   <properties>
-    <property name="enemy" value="Auriok Restoration Guard" />
-    <property name="threatRange" type="int" value="40" />
-    <property name="waypoints" value="70,71" />
-   </properties>
-  </object>
-  <object id="63" template="../../../common/maps/obj/enemy.tx" x="252.705" y="162.45">
-   <properties>
-    <property name="enemy" value="Vulshok Spark Guard" />
-    <property name="threatRange" type="int" value="40" />
-    <property name="waypoints" value="75,74" />
-   </properties>
-  </object>
-  <object id="58" template="../../../common/maps/obj/enemy.tx" x="217.794" y="66.2717">
+  <object id="58" template="../../../common/maps/obj/enemy.tx" x="464" y="432">
    <properties>
     <property name="enemy" value="Sunburst Convergence" />
     <property name="threatRange" type="int" value="0" />
@@ -79,23 +57,36 @@
     <property name="completesChapter" value="fifth-dawn" />
    </properties>
   </object>
-  <object id="51" template="../../../common/maps/obj/treasure.tx" x="213.75" y="27.75">
+  <object id="304" template="../../../common/maps/obj/shop.tx" x="0" y="32">
+   <properties>
+    <property name="shopList" value="Fifth Dawn Trader" />
+    <property name="hasSign" type="bool" value="false" />
+   </properties>
+  </object>
+  <object id="57" template="../../../common/maps/obj/enemy.tx" x="432" y="16">
+   <properties>
+    <property name="enemy" value="Tangle Witness" />
+    <property name="threatRange" type="int" value="40" />
+   </properties>
+  </object>
+  <object id="62" template="../../../common/maps/obj/enemy.tx" x="224" y="144">
+   <properties>
+    <property name="enemy" value="Auriok Restoration Guard" />
+    <property name="threatRange" type="int" value="40" />
+   </properties>
+  </object>
+  <object id="63" template="../../../common/maps/obj/enemy.tx" x="48" y="320">
+   <properties>
+    <property name="enemy" value="Vulshok Spark Guard" />
+    <property name="threatRange" type="int" value="40" />
+   </properties>
+  </object>
+  <object id="51" template="../../../common/maps/obj/treasure.tx" x="384" y="240">
    <properties>
     <property name="reward" value="[{&quot;type&quot;: &quot;card&quot;, &quot;count&quot;: 1, &quot;editions&quot;: [&quot;5DN&quot;], &quot;rarity&quot;: [&quot;Rare&quot;]}]" />
    </properties>
   </object>
-  <object id="67" template="../../../common/maps/obj/waypoint.tx" x="230.472" y="130.16" />
-  <object id="68" template="../../../common/maps/obj/waypoint.tx" x="255.88" y="196.858" />
-  <object id="69" template="../../../common/maps/obj/waypoint.tx" x="298.228" y="213.003" />
-  <object id="70" template="../../../common/maps/obj/waypoint.tx" x="328.401" y="214.591" />
-  <object id="71" template="../../../common/maps/obj/waypoint.tx" x="334.224" y="76.6958" />
-  <object id="72" template="../../../common/maps/obj/waypoint.tx" x="257.733" y="61.874" />
-  <object id="73" template="../../../common/maps/obj/waypoint.tx" x="104.487" y="84.636" />
-  <object id="74" template="../../../common/maps/obj/waypoint.tx" x="82.7832" y="200.563" />
-  <object id="75" template="../../../common/maps/obj/waypoint.tx" x="170.126" y="171.184" />
-  <object id="76" template="../../../common/maps/obj/waypoint.tx" x="164.303" y="83.3126" />
-  <object id="77" template="../../../common/maps/obj/waypoint.tx" x="134.395" y="226.236" />
-  <object id="900" template="../../../common/maps/obj/portal.tx" type="expeditionGate" x="240" y="80">
+  <object id="900" template="../../../common/maps/obj/portal.tx" type="expeditionGate" x="288" y="336">
    <properties>
     <property name="mode" value="advance" />
     <property name="region" value="mirrodin" />
@@ -104,11 +95,19 @@
     <property name="portalState" value="active" />
    </properties>
   </object>
-  <object id="901" template="../../../common/maps/obj/dialog.tx" type="campaignLimited" x="250" y="208" width="16" height="16">
+  <object id="901" template="../../../common/maps/obj/dialog.tx" type="campaignLimited" x="160" y="16" width="16" height="16">
    <properties>
     <property name="type" value="campaignLimited" />
     <property name="hidden" type="bool" value="false" />
     <property name="organizer" value="mirrodin-limited" />
+   </properties>
+  </object>
+  <object id="1900" template="../../../common/maps/obj/dialog.tx" type="dialog" x="64" y="160">
+   <properties>
+    <property name="type" value="dialog" />
+    <property name="hidden" value="false" />
+    <property name="campaignLore" value="fifth-dawn" />
+    <property name="dialog" value="{&quot;text&quot;: &quot;Fifth Dawn: The Sunburst Temple\nFive colors of mana meet beneath the new dawn. The convergence marks the end of the Mirrodin block expedition and the beginning of repeatable mastery.&quot;, &quot;options&quot;: [{&quot;name&quot;: &quot;Leave&quot;}]}" />
    </properties>
   </object>
  </objectgroup>

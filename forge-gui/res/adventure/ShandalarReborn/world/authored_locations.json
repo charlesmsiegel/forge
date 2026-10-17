@@ -1,0 +1,100 @@
+[
+  {
+    "id": "guardian-white",
+    "map": "maps/map/castle_white.tmx",
+    "source": "main_story/castles/white_castle_f1.tmx",
+    "title": "The Ivory Bastion",
+    "description": "These halls shelter the people who cannot defend themselves. Seren will not surrender the white bond until you prove that opening the plane is worth the risk."
+  },
+  {
+    "id": "guardian-blue",
+    "map": "maps/map/castle_blue.tmx",
+    "source": "main_story/castles/blue_castle_f1.tmx",
+    "title": "The Tidal Archive",
+    "description": "Ilyon has catalogued every failed attempt to cross the seal. The archive preserves their lessons, and its guardian demands more than a confident theory."
+  },
+  {
+    "id": "guardian-black",
+    "map": "maps/map/castle_black.tmx",
+    "source": "main_story/castles/black_castle_f1.tmx",
+    "title": "The Court of Debts",
+    "description": "Veyra calls the seal a debt owed by the living to the dead. Her sentries collect their stakes through ordinary ante; there is no bargain that replaces victory."
+  },
+  {
+    "id": "guardian-red",
+    "map": "maps/map/castle_red.tmx",
+    "source": "main_story/castles/red_castle_f1.tmx",
+    "title": "The Furnace Keep",
+    "description": "Rhaz tends a fire that has never felt a wind from another plane. Defeat the herald and the red bond can finally burn through its own cage."
+  },
+  {
+    "id": "guardian-green",
+    "map": "maps/map/castle_green.tmx",
+    "source": "main_story/castles/green_castle_f1.tmx",
+    "title": "The Rootbound Hold",
+    "description": "Thalen remembers when these roots reached beyond Shandalar. The green bond protects the living world, but protection has become confinement."
+  },
+  {
+    "id": "seal",
+    "map": "maps/map/seal_warden.tmx",
+    "source": "fort/fort_colorless_7_multilevel4.tmx",
+    "title": "The Veiled Sanctum",
+    "description": "Five bonds converge here. Their guardians can name a champion, but only defeating the Veiled Warden can break the seal and make that champion a planeswalker."
+  },
+  {
+    "id": "urza-challenge",
+    "map": "maps/map/urza_challenge.tmx",
+    "source": "fort/fort_blue_3_factory.tmx",
+    "title": "The Academy Workshop",
+    "description": "The Academy turns mana into machinery and machinery into possibility. Explore the workshop before seeking an audience; Urza judges accomplishments rather than promises."
+  },
+  {
+    "id": "urza-conquest",
+    "map": "maps/map/urza_conquest.tmx",
+    "source": "fort/fort_colorless_6_study.tmx",
+    "title": "Urza Unbound: The Inner Study",
+    "description": "Beyond the workshop is a study unconstrained by one historical era. Its artifacts are tools, not favors from the rules of Magic. A true conquest here will be remembered."
+  },
+  {
+    "id": "bolas-challenge",
+    "map": "maps/map/bolas_challenge.tmx",
+    "source": "djinnpalace/djinnpalace_1.tmx",
+    "title": "The Court of a Thousand Bolases",
+    "description": "Every monument celebrates the same dragon. His servants insist this is architectural consistency. Bolas permits an audience long before he considers you worthy of a challenge."
+  },
+  {
+    "id": "bolas-conquest",
+    "map": "maps/map/bolas_conquest.tmx",
+    "source": "vampirecastle/vampirecastle_4.tmx",
+    "title": "Bolas: The Sovereign Throne",
+    "description": "The inner court contains still more tributes to its owner. Bolas has reserved his most self-aggrandizing deck for the planeswalker audacious enough to pursue him here."
+  },
+  {
+    "id": "fallen-empires",
+    "map": "maps/map/fallen-empires.tmx",
+    "source": "fort/fort_green_2_grove.tmx",
+    "title": "Sarpadia: The Fractured Frontier",
+    "description": "Thallids, Homarids, Thrulls and Icatians contest a dying order. Their cards share one historical set; the council guards the expedition checkpoint and its sealed reward."
+  },
+  {
+    "id": "mirrodin",
+    "map": "maps/map/mirrodin.tmx",
+    "source": "minibosses/slobad_factory.tmx",
+    "title": "Mirrodin: The Foundry Roads",
+    "description": "Myr and scavengers travel these foundry roads. Follow their artifacts toward Lumengrid, where the archmage guards the passage into Darksteel."
+  },
+  {
+    "id": "darksteel",
+    "map": "maps/map/darksteel.tmx",
+    "source": "fort/fort_colorless_7_multilevel3.tmx",
+    "title": "Darksteel: The Modular Vault",
+    "description": "The vault gathers fragments into greater machines. Its modular sovereign guards the next checkpoint; retreat preserves the path already earned."
+  },
+  {
+    "id": "fifth-dawn",
+    "map": "maps/map/fifth-dawn.tmx",
+    "source": "fort/fort_blue_5_temple.tmx",
+    "title": "Fifth Dawn: The Sunburst Temple",
+    "description": "Five colors of mana meet beneath the new dawn. The convergence marks the end of the Mirrodin block expedition and the beginning of repeatable mastery."
+  }
+]

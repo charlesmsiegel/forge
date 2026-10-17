@@ -1,45 +1,44 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="30" height="17" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="902">
- <properties>
-  <property name="persistentLife" type="bool" value="true" />
-  <property name="respawnEnemies" type="bool" value="true" />
- </properties>
- <editorsettings>
-  <export target="wastetown..tmx" format="tmx" />
- </editorsettings>
+<map version="1.10" tiledversion="1.10.1" orientation="orthogonal" renderorder="right-down" width="40" height="30" tilewidth="16" tileheight="16" infinite="0" nextlayerid="901" nextobjectid="3000">
  <tileset firstgid="1" source="../../../common/maps/tileset/main.tsx" />
  <tileset firstgid="10113" source="../../../common/maps/tileset/buildings.tsx" />
- <tileset firstgid="11905" source="../../../common/maps/tileset/dungeon.tsx" />
- <layer id="1" name="Background" width="30" height="17">
+ <tileset firstgid="11905" source="../../../common/maps/tileset/dungeon/dungeon_bis.tsx" />
+ <tileset firstgid="28289" source="../../../common/maps/tileset/main-nocollide.tsx" />
+ <layer id="6" name="Collision" width="40" height="30">
   <data encoding="base64" compression="zlib">
-   eJwL42RgCBvFo5jOOA4NYxPDpoaadpKCB8peSuweCHuHol+pEbcgQOv0S4p/aZFnR/HwwQDYMMBE
+   eJzt1TEKgDAMheEuUjqLVxZcPJPgXTyHhBIIpSko2FfwfZBFB39SqCEQERFRT3tCF/ikjX3vINuW2H6vbSPuzrb16jtiHrE1vonam/bZTqW96DNtNQp03zWN3bemPOecx4Po0zY7nlqf3EflfN3nNSL3Vz6rQd0vT4z436D/ugGr1SsW
   </data>
  </layer>
- <layer id="2" name="Ground" width="30" height="17">
+ <layer id="1" name="Background" width="40" height="30">
   <data encoding="base64" compression="zlib">
-   eJzVk00OgjAQhbuE9hgeQjFsReMNPJrxZ2sEryOoW6N4DDuhL5axSlrcOMkLpNX3zWuHLBYi81AeCVEYHSK//4b609pNP1HXuM3Of9DLjPkXjMn3sM978c3qYnTVUgpxVkKspP899GFeNHOkNdbaaZ9H4Pl+yoNMLia4c88zvmvto+95SIlyr4M76TlTqJR5E9fFBDdkvsC152RoPNf6vdTPSr33gv3KnIXPWdNcgUdZFnHT/1G9eCha28hGpXm39324lDU1POjkmKWuCplnyrGVbTYpUd28kKyY59qRGfc2sNiUqTa/t78B36ycj7vDvdn+3Bv9kkKZ3Iv7Ezvk++yrafy/3CdWVrhX
+   eJzt1jFOAzEQBVA3i+MkEtVehZoTcA5EC8oRkFJwgDSU1HsBJA4AFTkDNUdAg/ns7MQ29sRLGo/0pc2m8NN41vJgjRlaWn4Sq6fO51SuT5POKY0x086Fjf/l2nd+zVwfjLLmsl2vwoYSLzKHrdSXM6M1bVrfo/PBs9a3D8zyBdtXROvjTkqv6JN83ye+V41PM4OwvS7zzxKtjfe/1GbXdW3Sh/l4tv53yezfrKbzUHNf0Tc5u7TGe+T85jbqXW/r+uS8xXxb5413Z2Okjfa1li/2LcDH5+be+WxFYrZjfCGTDPmoProx5EMfuS9k0/hi/Yrl9tz8Fox8/ZQtxyfP2hIb1Yv1MWZc73ITtqR8qfOl1PWdxWiDb1D4rhbT1LgPPLipDcH+ki/XyO8CyFw+pMT3tjwMvT+mj9KD2eOVu79/hd9juBnP8n8U99WytLS0TPMFcsnGeQ==
   </data>
  </layer>
- <layer id="3" name="Foreground" width="30" height="17">
+ <layer id="2" name="Walls" width="40" height="30">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFyOAnFrHdNgwMe2zoY/8fJPZvoJ1/0OyNQWI/5qTMrs1QehsO+eUcDAwrgHglB4T9nBPCjqbMWgyzQUAUSQ7krzVA8WdA+gUQrwKyn3LidicpANlsmH+wybtxQtSgy1MCXDkh5oKwO5a480KS96AwbsWR2CA/PUHyN3K4w+wFhTFIzVMK7MWlF1eYemEJYzHyrccKYGEOS0PI7qE0fvGlR5AdqzkwwwRmN6XxSw54TGH8wgAszGBlAgxsodzoUUAnAAB51T3h
+   eJxjYBgF9AQF/NjxYAB8ArjxYAFrBDCxwCBzIwh8ZUewV2Nx42CLe2Q3Dsb4zweGUxEQCyLFOwzQOv57OBgYejmIc9taHO6gpRu1OBkYtDmxy6WKMDDwQu3mx2M/Lw3dh55fcYkjh90zVgYGT1ZU91HbTeQCkNuesaKKUdt95AJ0t32AYmq7758kefpckNwWzQHBtHAfJaCJDeE2EBhM4YcMFKB1zAfKjaI62At02252iBtB7gOVLaDy8RwXdcxHDj9y8/JepDoa5LYvwPhm5aGeG6kFVkP9B8rX2lC3gdzYiaPMHyhwgB2CS8oh4XiWC4LZeQbaZRAAc59QBX3smw309xwgXgjEiwiEAcxtB6BpEhSGtAaWvAwMVkBsD8QOvNjVvAfmCX0uVLweGH4b6BSGhMAkYB44wEQ/+5KB/k8lonyAhZUBncsSRm4GBmZu+tm3hsQyiN7uIxXgcx+pfqWWXmQwlMOPFgAAW0VNMQ==
   </data>
  </layer>
- <layer id="6" name="Clutter" width="30" height="17">
+ <layer id="3" name="Clutter" width="40" height="30">
   <properties>
    <property name="spriteLayer" type="bool" value="true" />
   </properties>
   <data encoding="base64" compression="zlib">
-   eJxjYBgFhMAeWwaGvbYDY/ffAbJ3FIyCoQaMgXnFBIhN6ZxnioH2lQBx6WheHQVDBAAA29EGlA==
+   eJztlr1uE0EQxycRcD5LFx+SMU5HgYJtgUhLT4OE+Oh4CxuIYj8AH1WMeASQqLATFINTQYEi8gjQgOkQEhBIaPgomNHO6Ob29nw+I4eGkUY+797O/u6/M3MH8N8OwpolgFYpff76mLlZG7HdyNj/ZunfMArbQghwNBx/70Ez2mx99Ld1gHd1M6+vNWPLyoXWjLiDMM52zQP4gTw/mUlfZ9kstBW+kjrXuQbAfCN57bJeaHwWjKuBm29SG6Gu7+vm97FaP00sbU2VP5J7eWKOmOkX+u+6yYmRyoG/4dP1oF1i3jqeXGOPEcuOD3B/DuCFF+lIlvdZ6QxdbFQPnypR/kwS8y4YrTQb/Rcdp+FLY+urGKTPJDGfI8sJL64bsX6F6Hzz8O0WANqsn91HyBpVgJNVc00xX2OdvhlTq8L46FBcx+X56fjWcP3qkTgfrT1VTd5L47drAHdq0dhLXP/KN7/bfpxRdBS2vPlH2vUw5qaX5Ftivrql3wNke1hzx7ONGM8fNteSf5P2AmJbLhrtOg79llL0s883TT/b7G+LfgZfj891C5+x4tBPrOHgzGvERr05DNPZdA8R7ehcF5mvafVhO/+kX9vvpW3Wb4d/XWyim177vZDOR/VK2rWVfvJ8xKffj58r5pf2sHtOlo3rV2mmtRuwP+XzTWM8KLY+6r/lRzXR9eP14WKcho3M1Uuz7Avqto9eRr2GXvx8ySQHNOO5heneRdN+83T9qC6OeSYXh17yPlvHluV09k3HeNY3D+XX2aLxb6pG9gumZrqqr1Q5/xaZrx3EY2lG17dMkDLn+uYRNrvnihGvzAkb1QXxlh36acaewymn0ubs+2w2nVNiup8Imx5zWW/M+yCP2Wyy/0qQHB8oNj2mbSVI7tFxjLnsGT7TOvuQ+0UncJ+bnWt6vKzG9vD5BhxvgzWjXjTgfTZy6HgF9bjKfhH9Q9Ewbipt9rgWspgrrPEZjLGLfonjEecT9As8Tj1pUvvIcS7zWllP9Ul+umj2W3No5GK+x9r8AStiA8g=
   </data>
  </layer>
- <objectgroup id="4" name="Objects">
-  <object id="38" template="../../../common/maps/obj/entry_up.tx" x="217.032" y="271.777">
+ <properties>
+  <property name="persistentLife" type="bool" value="true" />
+  <property name="respawnEnemies" type="bool" value="true" />
+  <property name="campaignLayoutRevision" value="authored-v1:d8d5db55df7073ce" />
+ </properties>
+ <objectgroup id="900" name="Campaign places">
+  <object id="38" template="../../../common/maps/obj/entry_up.tx" x="272" y="480">
    <properties>
     <property name="teleport" value="" />
    </properties>
   </object>
-  <object id="900" template="../../../common/maps/obj/enemy.tx" x="250" y="208" type="enemy">
+  <object id="900" template="../../../common/maps/obj/enemy.tx" x="624" y="176" type="enemy">
    <properties>
     <property name="enemy" value="Master Blue Wizard" />
     <property name="storyEncounter" value="urza-challenge" />
@@ -47,11 +46,26 @@
     <property name="speed" value="0" />
    </properties>
   </object>
-  <object id="901" template="../../../common/maps/obj/enemy.tx" x="111.633" y="145.511" type="enemy">
+  <object id="901" template="../../../common/maps/obj/enemy.tx" x="192" y="80" type="enemy">
    <properties>
     <property name="enemy" value="Adept Blue Wizard" />
     <property name="threatRange" value="0" />
     <property name="speed" value="0" />
+   </properties>
+  </object>
+  <object id="1800" template="../../../common/maps/obj/enemy.tx" type="enemy" x="0" y="368">
+   <properties>
+    <property name="enemy" value="Adept Blue Wizard" />
+    <property name="threatRange" value="32" />
+    <property name="speed" value="10" />
+   </properties>
+  </object>
+  <object id="1900" template="../../../common/maps/obj/dialog.tx" type="dialog" x="464" y="336">
+   <properties>
+    <property name="type" value="dialog" />
+    <property name="hidden" value="false" />
+    <property name="campaignLore" value="urza-challenge" />
+    <property name="dialog" value="{&quot;text&quot;: &quot;The Academy Workshop\nThe Academy turns mana into machinery and machinery into possibility. Explore the workshop before seeking an audience; Urza judges accomplishments rather than promises.&quot;, &quot;options&quot;: [{&quot;name&quot;: &quot;Leave&quot;}]}" />
    </properties>
   </object>
  </objectgroup>
