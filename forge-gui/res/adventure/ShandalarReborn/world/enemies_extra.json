@@ -719,5 +719,757 @@
       "Historical",
       "Rath"
     ]
+  },
+  {
+    "name": "Sarpadian Thallid Grove",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/fallen-empires/0.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "FEM"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "G",
+    "questTags": [
+      "Fallen Empires",
+      "Historical",
+      "fallen-empires"
+    ]
+  },
+  {
+    "name": "Sarpadian Homarid Shoal",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/fallen-empires/1.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "FEM"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "U",
+    "questTags": [
+      "Fallen Empires",
+      "Historical",
+      "fallen-empires"
+    ]
+  },
+  {
+    "name": "Sarpadian Thrull Breeder",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/fallen-empires/2.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "FEM"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "B",
+    "questTags": [
+      "Fallen Empires",
+      "Historical",
+      "fallen-empires"
+    ]
+  },
+  {
+    "name": "Sarpadian Icatian Council",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/fallen-empires/3.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": true,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 14,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "FEM"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "W",
+    "questTags": [
+      "Fallen Empires",
+      "Historical",
+      "fallen-empires"
+    ]
+  },
+  {
+    "name": "Oxidda Scrap Raider",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/mirrodin/0.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "MRD"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "R",
+    "questTags": [
+      "Mirrodin",
+      "Historical",
+      "mirrodin"
+    ]
+  },
+  {
+    "name": "Tel-Jilad Defender",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/mirrodin/1.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "MRD"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "G",
+    "questTags": [
+      "Mirrodin",
+      "Historical",
+      "mirrodin"
+    ]
+  },
+  {
+    "name": "Mephidross Scavenger",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/mirrodin/2.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "MRD"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "B",
+    "questTags": [
+      "Mirrodin",
+      "Historical",
+      "mirrodin"
+    ]
+  },
+  {
+    "name": "Lumengrid Archmage",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/mirrodin/3.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": true,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 14,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "MRD"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "U",
+    "questTags": [
+      "Mirrodin",
+      "Historical",
+      "mirrodin"
+    ]
+  },
+  {
+    "name": "Razorfield Patrol",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/darksteel/0.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "DST"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "W",
+    "questTags": [
+      "Darksteel",
+      "Historical",
+      "mirrodin"
+    ]
+  },
+  {
+    "name": "Neurok Engineer",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/darksteel/1.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "DST"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "U",
+    "questTags": [
+      "Darksteel",
+      "Historical",
+      "mirrodin"
+    ]
+  },
+  {
+    "name": "Furnace Stoker",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/darksteel/2.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "DST"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "R",
+    "questTags": [
+      "Darksteel",
+      "Historical",
+      "mirrodin"
+    ]
+  },
+  {
+    "name": "Darksteel Modular Sovereign",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/darksteel/3.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": true,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 14,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "DST"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "U",
+    "questTags": [
+      "Darksteel",
+      "Historical",
+      "mirrodin"
+    ]
+  },
+  {
+    "name": "Tangle Witness",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/fifth-dawn/0.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "5DN"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "G",
+    "questTags": [
+      "Fifth Dawn",
+      "Historical",
+      "mirrodin"
+    ]
+  },
+  {
+    "name": "Auriok Restoration Guard",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/fifth-dawn/1.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "5DN"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "W",
+    "questTags": [
+      "Fifth Dawn",
+      "Historical",
+      "mirrodin"
+    ]
+  },
+  {
+    "name": "Vulshok Spark Guard",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/fifth-dawn/2.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "5DN"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "R",
+    "questTags": [
+      "Fifth Dawn",
+      "Historical",
+      "mirrodin"
+    ]
+  },
+  {
+    "name": "Sunburst Convergence",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/fifth-dawn/3.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": true,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 14,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "5DN"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "WUBRG",
+    "questTags": [
+      "Fifth Dawn",
+      "Historical",
+      "mirrodin"
+    ]
   }
 ]

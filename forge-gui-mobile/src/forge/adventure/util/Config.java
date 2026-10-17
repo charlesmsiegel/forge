@@ -62,6 +62,11 @@ public class Config {
     }
 
     private Config() {
+        this(null);
+    }
+
+    /** Select a plane explicitly without changing the saved Adventure settings. */
+    public Config(String selectedPlane) {
         String path = resPath();
         FilenameFilter planesFilter = (file, s) -> !s.contains(".") && !s.equals(commonDirectoryName);
 
@@ -70,6 +75,9 @@ public class Config {
             settingsData = new Json().fromJson(SettingData.class, new FileHandle(ForgeConstants.USER_ADVENTURE_DIR + "settings.json"));
         } catch (Exception e) {
             settingsData = new SettingData();
+        }
+        if (selectedPlane != null && !selectedPlane.isBlank()) {
+            settingsData.plane = selectedPlane;
         }
         if (settingsData.plane == null || settingsData.plane.isEmpty()) {
             if (adventures != null && adventures.length >= 1) {
