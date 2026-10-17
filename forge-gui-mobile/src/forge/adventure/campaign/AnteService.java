@@ -77,6 +77,68 @@ public final class AnteService {
         return new AnteStake(AnteStake.Kind.NORMAL, player, opponent);
     }
 
+    /** Campaign random risks select and preserve exact IDs, preferring unprotected eligible units. */
+    private static List<OwnedCard> pickPlayerCopies(AdventurePlayer player, int count, CampaignConfig.AnteRules rules, Random random) {
+        CardPool needed = new CardPool();
+        needed.add(eligiblePlayerCards(player.getSelectedDeck(), rules));
+        CampaignState state = CampaignState.instance();
+        List<OwnedCard> unprotected = new ArrayList<>(), protectedCopies = new ArrayList<>();
+        for (OwnedCard copy : state.voluntaryRemovalCopies(player)) {
+            if (needed.count(copy.card) == 0) continue;
+            needed.remove(copy.card);
+            (state.progression().isProtected(copy.id) ? protectedCopies : unprotected).add(copy);
+        }
+        if (!needed.isEmpty()) throw new IllegalArgumentException("Deck contains unavailable physical copies");
+        List<OwnedCard> picked = new ArrayList<>();
+        while (picked.size() < count && (!unprotected.isEmpty() || !protectedCopies.isEmpty())) {
+            List<OwnedCard> pool = unprotected.isEmpty() ? protectedCopies : unprotected;
+            picked.add(pool.remove(random.nextInt(pool.size())));
+        }
+        return picked;
+    }
+
+    private static AnteStake withPlayerCopies(AnteStake.Kind kind, List<OwnedCard> player, List<PaperCard> opponent, List<String> opponentIds) {
+        return new AnteStake(kind, player.stream().map(copy -> copy.card).toList(), opponent,
+                player.stream().map(copy -> copy.id).toList(), opponentIds);
+    }
+
+    public static AnteStake normalStake(AdventurePlayer player, Deck opponentDeck, CampaignConfig.AnteRules rules, Random random) {
+        return withPlayerCopies(AnteStake.Kind.NORMAL, pickPlayerCopies(player, rules.playerAnteCount, rules, random),
+                pickRandom(eligibleOpponentCards(opponentDeck, rules), rules.opponentAnteCount, random), List.of());
+    }
+
+    public static AnteStake targetedStake(AdventurePlayer player, Deck opponentDeck, PaperCard target,
+                                          OpponentKnowledge knowledge, String opponentId,
+                                          CampaignConfig.AnteRules rules, Random random) {
+        if (!knowledge.targets(opponentId, opponentDeck).contains(target))
+            throw new IllegalArgumentException("That exact printing is not known in this opponent's active deck");
+        List<OwnedCard> risk = pickPlayerCopies(player, 2, rules, random);
+        if (risk.size() < 2) throw new IllegalArgumentException("Targeted ante requires two eligible cards");
+        return withPlayerCopies(AnteStake.Kind.TARGETED, risk, List.of(target), List.of());
+    }
+
+    public static AnteStake reclamationStake(AdventurePlayer player, OwnedCard reclaimed, CampaignConfig.AnteRules rules, Random random) {
+        return withPlayerCopies(AnteStake.Kind.RECLAMATION, pickPlayerCopies(player, rules.reclamationRiskCount, rules, random),
+                List.of(reclaimed.card), List.of(reclaimed.id));
+    }
+
+    /** Raise the ante before rolling a normal stake: two player copies for one known deck printing. */
+    public static AnteStake targetedStake(Deck playerDeck, Deck opponentDeck, PaperCard target,
+                                          OpponentKnowledge knowledge, String opponentId,
+                                          CampaignConfig.AnteRules rules, Random random) {
+        if (!knowledge.targets(opponentId, opponentDeck).contains(target))
+            throw new IllegalArgumentException("That exact printing is not known in this opponent's active deck");
+        List<PaperCard> eligible = eligiblePlayerCards(playerDeck, rules);
+        if (eligible.size() < 2) throw new IllegalArgumentException("Targeted ante requires two eligible cards");
+        return new AnteStake(AnteStake.Kind.TARGETED, pickRandom(eligible, 2, random), List.of(target));
+    }
+
+    public static void validateTargetedStake(AnteStake stake, Deck opponentDeck, OpponentKnowledge knowledge, String opponentId) {
+        if (stake.kind != AnteStake.Kind.TARGETED || stake.playerCards.size() != 2 || stake.opponentCards.size() != 1
+                || !knowledge.targets(opponentId, opponentDeck).contains(stake.opponentCards.get(0)))
+            throw new IllegalArgumentException("Targeted ante is no longer valid for this encounter");
+    }
+
     /**
      * Reclamation ante: the player risks {@code reclamationRiskCount} random eligible copies against
      * one specific card the opponent previously won from them.
@@ -99,7 +161,16 @@ public final class AnteService {
         deck.addAll(human.getDeck().getMain());
         if (human.getDeck().has(DeckSection.Sideboard)) deck.addAll(human.getDeck().get(DeckSection.Sideboard));
         Map<String, PaperCard> playerCopies = new LinkedHashMap<>();
-        for (OwnedCard copy : CampaignState.instance().availableCopies(player)) {
+        List<OwnedCard> available = CampaignState.instance().availableCopies(player);
+        List<OwnedCard> bindingOrder = new ArrayList<>();
+        for (String selected : stake.playerIds) {
+            OwnedCard copy = available.stream().filter(c -> c.id.equals(selected)).findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("Selected ante copy is unavailable"));
+            if (bindingOrder.contains(copy)) throw new IllegalArgumentException("Duplicate physical ante ID");
+            bindingOrder.add(copy);
+        }
+        for (OwnedCard copy : available) if (!bindingOrder.contains(copy)) bindingOrder.add(copy);
+        for (OwnedCard copy : bindingOrder) {
             if (deck.count(copy.card) > 0) {
                 playerCopies.put(copy.id, copy.card);
                 deck.remove(copy.card);
@@ -111,7 +182,15 @@ public final class AnteService {
             OwnedCard copy = OwnedCard.mint(card);
             opponentCopies.put(copy.id, card);
         }
-        List<String> playerIds = selectIds(stake.playerCards, playerCopies, random);
+        List<String> playerIds;
+        if (stake.playerIds.isEmpty()) playerIds = selectIds(stake.playerCards, playerCopies, random);
+        else {
+            if (stake.playerIds.size() != stake.playerCards.size()) throw new IllegalArgumentException("Ante IDs do not match the stake");
+            for (int i = 0; i < stake.playerIds.size(); i++)
+                if (!stake.playerCards.get(i).equals(playerCopies.get(stake.playerIds.get(i))))
+                    throw new IllegalArgumentException("Selected physical ante copy does not match its printing");
+            playerIds = stake.playerIds;
+        }
         List<String> opponentIds = stake.opponentIds.isEmpty()
                 ? selectIds(stake.opponentCards, opponentCopies, random) : stake.opponentIds;
         human.setPhysicalCards(playerCopies);

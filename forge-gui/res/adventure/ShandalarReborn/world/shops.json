@@ -7793,5 +7793,79 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Tempest Trader",
+    "description": "Tempest Expedition Quartermaster",
+    "spriteAtlas": "maps/tileset/buildings.atlas",
+    "sprite": "RotatingShop",
+    "overlaySprite": "Overlay6Black",
+    "rewards": [
+      {
+        "type": "card",
+        "count": 8,
+        "editions": [
+          "TMP"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      },
+      {
+        "type": "card",
+        "count": 2,
+        "editions": [
+          "TMP"
+        ],
+        "rarity": [
+          "Rare"
+        ]
+      },
+      {
+        "type": "cardPackShop",
+        "count": 2,
+        "editions": [
+          "TMP"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Exodus Trader",
+    "description": "Exodus Expedition Quartermaster",
+    "spriteAtlas": "maps/tileset/buildings.atlas",
+    "sprite": "RotatingShop",
+    "overlaySprite": "Overlay6Black",
+    "rewards": [
+      {
+        "type": "card",
+        "count": 8,
+        "editions": [
+          "EXO"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      },
+      {
+        "type": "card",
+        "count": 2,
+        "editions": [
+          "EXO"
+        ],
+        "rarity": [
+          "Rare"
+        ]
+      },
+      {
+        "type": "cardPackShop",
+        "count": 2,
+        "editions": [
+          "EXO"
+        ]
+      }
+    ]
   }
 ]

@@ -104,6 +104,10 @@ public class RewardData implements Serializable {
 
         List<Predicate<PaperCard>> filters = new ArrayList<>();
 
+        forge.adventure.campaign.CardUniverse universe = forge.adventure.campaign.CampaignState.instance()
+                .universeFor(forge.adventure.campaign.CampaignConfig.instance());
+        if (universe != null) filters.add(universe::allowsPrinting);
+
         if (legals != null)
             filters.add(new CardUtil.CardPredicate(legals, true));
         
@@ -149,6 +153,7 @@ public class RewardData implements Serializable {
 
     public static void invalidateCardPool() {
         allCards = null;
+        allEnemyCards = null;
     }
 
     public Array<Reward> generate(boolean isForEnemy, boolean useSeedlessRandom) {
@@ -300,6 +305,10 @@ public class RewardData implements Serializable {
                             endDate = endDate == 0 ? 9999 : endDate;
                             allEditions.removeIf(q -> q.getDate().getYear()+1900 < startDate || q.getDate().getYear()+1900 > endDate);
                         }
+                        forge.adventure.campaign.CardUniverse universe = forge.adventure.campaign.CampaignState.instance()
+                                .universeFor(forge.adventure.campaign.CampaignConfig.instance());
+                        if (universe != null) allEditions.removeIf(edition -> !universe.allowsEdition(edition.getCode()));
+                        if (allEditions.isEmpty()) break;
                         for (int i = 0; i < count + addedCount; i++) {
                             ret.add(new Reward(AdventureEventController.instance().generateBooster(
                                 allEditions.get(rewardRandom.nextInt(allEditions.size())).getCode())));

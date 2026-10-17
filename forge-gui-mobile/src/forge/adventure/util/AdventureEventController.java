@@ -160,10 +160,12 @@ public class AdventureEventController implements Serializable {
     }
 
     public Deck generateBooster(String setCode) {
+        forge.adventure.campaign.CampaignState.instance().requireCampaignEdition(setCode);
         SealedTemplate template = AdventureOverrides.instance().getBoosterTemplate(setCode);
         List<PaperCard> cards = BoosterGenerator.getBoosterPack(template);
         Deck output = new Deck();
         output.getMain().add(cards);
+        forge.adventure.campaign.CampaignState.instance().filterGeneratedPack(output);
         String editionName = FModel.getMagicDb().getEditions().get(setCode).getName();
         output.setName(editionName + " Booster");
         output.setComment(setCode);
@@ -173,6 +175,7 @@ public class AdventureEventController implements Serializable {
         List<PaperCard> cards = BoosterPack.fromColor(color).getCards();
         Deck output = new Deck();
         output.getMain().add(cards);
+        forge.adventure.campaign.CampaignState.instance().filterGeneratedPack(output);
         String editionName = color + " Booster Pack";
         output.setName(editionName);
         output.setComment(color);
