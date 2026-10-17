@@ -4,7 +4,6 @@ import forge.adventure.character.EnemySprite;
 import forge.adventure.scene.DuelScene;
 import forge.adventure.scene.TileMapScene;
 import forge.adventure.stage.MapStage;
-import forge.adventure.util.Current;
 import java.util.ArrayList;
 import java.util.List;
 
