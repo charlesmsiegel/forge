@@ -985,7 +985,7 @@
         "cards": [
           {
             "name": "Island",
-            "count": 16
+            "count": 12
           },
           {
             "name": "Tolarian Academy",
@@ -1013,22 +1013,38 @@
           },
           {
             "name": "Voltaic Key",
-            "count": 4
+            "count": 2
           },
           {
             "name": "Grim Monolith",
-            "count": 4
+            "count": 2
           },
           {
             "name": "Windfall",
-            "count": 4
+            "count": 2
           },
           {
             "name": "Time Spiral",
-            "count": 4
+            "count": 2
           },
           {
             "name": "Stroke of Genius",
+            "count": 2
+          },
+          {
+            "name": "Urza, Lord High Artificer",
+            "count": 2
+          },
+          {
+            "name": "Thought Monitor",
+            "count": 4
+          },
+          {
+            "name": "Walking Ballista",
+            "count": 4
+          },
+          {
+            "name": "Metalworker",
             "count": 4
           }
         ],
@@ -1071,7 +1087,7 @@
         "cards": [
           {
             "name": "Island",
-            "count": 16
+            "count": 12
           },
           {
             "name": "Tolarian Academy",
@@ -1090,31 +1106,47 @@
             "count": 4
           },
           {
-            "name": "Mana Crypt",
-            "count": 4
-          },
-          {
             "name": "Mana Vault",
             "count": 4
           },
           {
             "name": "Time Vault",
-            "count": 4
+            "count": 2
           },
           {
             "name": "Voltaic Key",
-            "count": 4
+            "count": 2
           },
           {
             "name": "Paradoxical Outcome",
-            "count": 4
+            "count": 2
           },
           {
             "name": "Time Spiral",
-            "count": 4
+            "count": 2
           },
           {
             "name": "Stroke of Genius",
+            "count": 2
+          },
+          {
+            "name": "Urza, Lord High Artificer",
+            "count": 2
+          },
+          {
+            "name": "Thought Monitor",
+            "count": 4
+          },
+          {
+            "name": "Walking Ballista",
+            "count": 4
+          },
+          {
+            "name": "Metalworker",
+            "count": 4
+          },
+          {
+            "name": "Grim Monolith",
             "count": 4
           }
         ],

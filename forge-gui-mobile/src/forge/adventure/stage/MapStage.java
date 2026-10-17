@@ -1435,6 +1435,7 @@ public class MapStage extends GameStage {
             currentMob = null;
             return;
         }
+        if (!forge.adventure.campaign.CampaignOpponentDecks.prepare(this, mob)) return;
         mob.clearCollisionHeight();
         currentMob = mob;
         player.setAnimation(CharacterSprite.AnimationTypes.Attack);
