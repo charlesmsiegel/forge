@@ -28,12 +28,30 @@ public class CampaignConfig implements Serializable {
     public StrongholdRules stronghold = new StrongholdRules();
     public WorldRules worldRules = new WorldRules();
     public SeedRules seeds = new SeedRules();
+    public StoryRules story = new StoryRules();
     public LimitedOrganizer[] limitedOrganizers = new LimitedOrganizer[0];
     public TradeRecipe[] trades = new TradeRecipe[0];
     public ProgressionRules progression = new ProgressionRules();
     public HistoricalRealm[] realms = new HistoricalRealm[0];
     public DungeonRules dungeon = new DungeonRules();
     public RivalRules rivals = new RivalRules();
+
+    public static class StoryRules implements Serializable {
+        public String[] guardianFlags = new String[0];
+        public StoryEncounter[] encounters = new StoryEncounter[0];
+    }
+    public static class StoryEncounter implements Serializable {
+        public String id = "", name = "", enemy = "", map = "", poi = "";
+        public String audience = "", refusal = "", reward = "", pursuit = "";
+        public String[] requires = new String[0], grants = new String[0];
+        public DeckCard[] cards = new DeckCard[0];
+        public String[] basicLands = {"Island"}, fallbackSpells = new String[0];
+        public boolean bolasDuplicates;
+    }
+    public static class DeckCard implements Serializable {
+        public String name = "";
+        public int count;
+    }
 
     public static class PlayerRules implements Serializable {
         public int startingLife = 12;

@@ -3,7 +3,6 @@ package forge.adventure.scene;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.google.common.collect.Lists;
 import forge.Forge;
 import forge.adventure.pointofintrest.PointOfInterest;
 import forge.adventure.pointofintrest.PointOfInterestChanges;
@@ -16,7 +15,6 @@ import forge.adventure.campaign.MapResumeState;
 import forge.sound.SoundEffectType;
 import forge.sound.SoundSystem;
 
-import java.util.ArrayList;
 
 /**
  * Scene that will render tiled maps.
@@ -161,7 +159,6 @@ public class TileMapScene extends HudScene {
         stage.getPlayerSprite().stop();
     }
 
-    private final static ArrayList<String> AUTO_HEAL_LOCATIONS = Lists.newArrayList("capital", "town");
 
     public boolean isAutoHealLocation() {
         return forge.adventure.campaign.DungeonLife.shouldAutoHealLocation(rootPoint.getData().type,

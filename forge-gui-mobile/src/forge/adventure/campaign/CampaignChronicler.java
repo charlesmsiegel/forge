@@ -11,8 +11,23 @@ public final class CampaignChronicler {
     private CampaignChronicler() { }
     public static void show(MapStage stage) {
         stage.showOptionsDialog("[GOLD]Chronicler of Shandalar[WHITE]\nYour deeds are remembered. Old paths lead to the legendary places bound to this world's seed.",
-                List.of("Legendary landmarks", "Recorded deeds", "Leave"),
-                List.of(() -> landmarks(stage, 0), () -> deeds(stage, 0), stage::resetPosition));
+                List.of("Legendary landmarks", "Guardians and legends", "Recorded deeds", "Leave"),
+                List.of(() -> landmarks(stage, 0), () -> story(stage, 0), () -> deeds(stage, 0), stage::resetPosition));
+    }
+    private static void story(MapStage stage, int page) {
+        var config = CampaignConfig.instance(); var deeds = CampaignState.instance().deeds();
+        var entries = java.util.Arrays.stream(config.story.encounters)
+                .filter(entry -> !entry.poi.isBlank() || CampaignStory.canChallenge(config, entry.id, deeds)).toList();
+        int current = Math.max(0, Math.min(page, Math.max(0, (entries.size() - 1) / 3)));
+        List<String> labels = new ArrayList<>(); List<Runnable> actions = new ArrayList<>();
+        for (var entry : entries.subList(current * 3, Math.min(entries.size(), current * 3 + 3))) {
+            labels.add(entry.name + (deeds.has("encounter." + entry.id) ? " — defeated" : ""));
+            actions.add(() -> CampaignStoryEncounter.travel(stage, entry.id));
+        }
+        if (current > 0) { labels.add("Previous"); actions.add(() -> story(stage, current - 1)); }
+        if ((current + 1) * 3 < entries.size()) { labels.add("Next"); actions.add(() -> story(stage, current + 1)); }
+        labels.add("Back"); actions.add(() -> show(stage));
+        stage.showOptionsDialog("[GOLD]" + CampaignStory.title(deeds) + "[WHITE]\nFive guardians hold the paths to the seal. Legendary figures may grant an audience before accepting a challenge.", labels, actions);
     }
     private static void landmarks(MapStage stage, int page) {
         var manifest = CampaignState.instance().seededLegends();

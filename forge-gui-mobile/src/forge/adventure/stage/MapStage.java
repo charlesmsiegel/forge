@@ -584,6 +584,12 @@ public class MapStage extends GameStage {
                     case "enemy":
                         if (!canSpawn(prop)) break;
                         Object enemy = prop.get("enemy");
+                        forge.adventure.campaign.CampaignConfig.StoryEncounter storyEntry = null;
+                        if (prop.get("storyEncounter") != null) {
+                            if (!CampaignConfig.instance().isActive()) break;
+                            storyEntry = forge.adventure.campaign.CampaignStory.encounter(CampaignConfig.instance(), prop.get("storyEncounter").toString());
+                            enemy = storyEntry.enemy;
+                        }
                         forge.adventure.campaign.SeededLegends.Entry landmarkEntry = null;
                         if (prop.get("seedSlot") != null) {
                             landmarkEntry = CampaignState.instance().seededLegends().entry(prop.get("seedSlot").toString());
@@ -593,14 +599,14 @@ public class MapStage extends GameStage {
                         if (enemy != null && !enemy.toString().isEmpty()) {
                             EnemyData EN = WorldData.getEnemy(enemy.toString());
                             if (EN == null) {
-                                if (landmarkEntry != null) throw new IllegalArgumentException("Unknown legendary encounter enemy " + enemy);
+                                if (landmarkEntry != null || storyEntry != null) throw new IllegalArgumentException("Unknown authored encounter enemy " + enemy);
                                 System.err.printf("Enemy \"%s\" not found, choosing a random one for current biome\n", enemy);
                                 forge.adventure.world.World world = Current.world();
                                 Vector2 poiPos = AdventureQuestController.instance().mostRecentPOI.getPosition();
                                 int currentBiome = forge.adventure.world.World.highestBiome(world.getBiome((int) poiPos.x / world.getTileSize(), (int) poiPos.y / world.getTileSize()));
                                 EN = world.getData().GetBiomes().get(currentBiome).getEnemy(1.0f);
                             }
-                            EnemySprite mob = new EnemySprite(id, landmarkEntry == null ? EN : new EnemyData(EN));
+                            EnemySprite mob = new EnemySprite(id, landmarkEntry == null && storyEntry == null ? EN : new EnemyData(EN));
                             Object dialogObject = prop.get("dialog"); //Check if the enemy has a dialogue attached to it.
                             if (dialogObject != null && !dialogObject.toString().isEmpty()) {
                                 mob.dialog = new MapDialog(dialogObject.toString(), this, mob.getId(), currentMap);
@@ -681,6 +687,10 @@ public class MapStage extends GameStage {
                             if (landmarkEntry != null) {
                                 mob.campaignLandmarkSlot = landmarkEntry.slot();
                                 mob.nameOverride = landmarkEntry.card().getName();
+                            }
+                            if (storyEntry != null) {
+                                mob.campaignStoryEncounter = storyEntry.id;
+                                mob.nameOverride = storyEntry.name;
                             }
                             enemies.add(mob);
                             addMapActor(obj, mob);
@@ -1157,6 +1167,18 @@ public class MapStage extends GameStage {
         CampaignState campaign = CampaignState.instance();
         forge.adventure.campaign.HistoricalRealm.Chapter activeChapter = null;
         try {
+            if (currentMob.campaignStoryEncounter != null) {
+                var storyConfig = CampaignConfig.instance();
+                var storyEntry = forge.adventure.campaign.CampaignStory.encounter(storyConfig, currentMob.campaignStoryEncounter);
+                boolean firstVictory = !campaign.deeds().has("encounter." + storyEntry.id);
+                var unique = forge.adventure.campaign.CampaignStory.resolve(storyConfig, storyEntry.id, true, Current.player(),
+                        campaign.deeds(), campaign.universeFor(storyConfig));
+                if (firstVictory) pendingCampaignMessage = "[GOLD]" + storyEntry.name + " defeated![WHITE]\nYour title: "
+                        + forge.adventure.campaign.CampaignStory.title(campaign.deeds())
+                        + (unique.isEmpty() ? "" : "\nReceived " + DuelScene.describeAll(unique) + ".")
+                        + (storyEntry.pursuit.isBlank() ? "\nYour deed is remembered across Shandalar."
+                        : "\nThe pursuit is open. Return to this figure or ask the Chronicler to follow the path home.");
+            }
             if (currentMob.campaignLandmarkSlot != null) {
                 forge.item.PaperCard card = campaign.onLandmarkResult(currentMob.campaignLandmarkSlot, true, Current.player());
                 if (card != null) pendingCampaignMessage = "[GOLD]Legendary landmark mastered![WHITE]\nReceived "
@@ -1306,7 +1328,9 @@ public class MapStage extends GameStage {
                     EnemySprite mob = (EnemySprite) actor;
                     currentMob = mob;
                     resetPosition();
-                    if (mob.campaignRivalId != null) { //Shandalar Reborn rival: offer normal duel / reclamation / leave.
+                    if (mob.campaignStoryEncounter != null) {
+                        forge.adventure.campaign.CampaignStoryEncounter.show(this, mob);
+                    } else if (mob.campaignRivalId != null) { //Shandalar Reborn rival: offer normal duel / reclamation / leave.
                         RivalEncounter.start(this, mob);
                     } else if (mob.dialog != null && mob.dialog.canShow()) { //This enemy has something to say. Display a dialog like if it was a DialogActor but only if dialogue is possible.
                         mob.dialog.activate();
@@ -1357,6 +1381,10 @@ public class MapStage extends GameStage {
     
     public void beginDuel(EnemySprite mob) {
         if (mob == null) return;
+        if (mob.campaignStoryEncounter != null && !forge.adventure.campaign.CampaignStory.canChallenge(
+                CampaignConfig.instance(), mob.campaignStoryEncounter, CampaignState.instance().deeds())) {
+            forge.adventure.campaign.CampaignStoryEncounter.show(this, mob); return;
+        }
         if (!DeckRepairGate.ensureDeckLegal(this)) {
             mob.freezeMovement();
             resetPosition();

@@ -318,5 +318,852 @@
         "map": "maps/map/tron_plant.tmx"
       }
     ]
+  },
+  "story": {
+    "guardianFlags": [
+      "guardian.white",
+      "guardian.blue",
+      "guardian.black",
+      "guardian.red",
+      "guardian.green"
+    ],
+    "encounters": [
+      {
+        "id": "guardian-white",
+        "name": "White Castle Guardian",
+        "enemy": "Master White Wizard",
+        "map": "maps/map/castle_white.tmx",
+        "poi": "CastleWhite",
+        "audience": "The white guardian bars the way to the seal. Prove your mastery in a duel.",
+        "refusal": "The castle trial is unavailable.",
+        "requires": [],
+        "grants": [
+          "guardian.white"
+        ],
+        "basicLands": [
+          "Plains"
+        ],
+        "cards": [
+          {
+            "name": "Plains",
+            "count": 24
+          },
+          {
+            "name": "Savannah Lions",
+            "count": 4
+          },
+          {
+            "name": "Whitemane Lion",
+            "count": 4
+          },
+          {
+            "name": "Serra Angel",
+            "count": 4
+          },
+          {
+            "name": "Swords to Plowshares",
+            "count": 4
+          },
+          {
+            "name": "Disenchant",
+            "count": 4
+          },
+          {
+            "name": "Pacifism",
+            "count": 4
+          },
+          {
+            "name": "Glorious Anthem",
+            "count": 4
+          },
+          {
+            "name": "Raise the Alarm",
+            "count": 4
+          },
+          {
+            "name": "Wrath of God",
+            "count": 4
+          }
+        ],
+        "fallbackSpells": [
+          "Savannah Lions",
+          "Whitemane Lion",
+          "Serra Angel",
+          "Swords to Plowshares",
+          "Disenchant",
+          "Pacifism",
+          "Glorious Anthem",
+          "Raise the Alarm",
+          "Wrath of God",
+          "Warrior en-Kor",
+          "Nomads en-Kor",
+          "Soltari Champion",
+          "Wall of Essence"
+        ]
+      },
+      {
+        "id": "guardian-blue",
+        "name": "Blue Castle Guardian",
+        "enemy": "Master Blue Wizard",
+        "map": "maps/map/castle_blue.tmx",
+        "poi": "CastleBlue",
+        "audience": "The blue guardian bars the way to the seal. Prove your mastery in a duel.",
+        "refusal": "The castle trial is unavailable.",
+        "requires": [],
+        "grants": [
+          "guardian.blue"
+        ],
+        "basicLands": [
+          "Island"
+        ],
+        "cards": [
+          {
+            "name": "Island",
+            "count": 24
+          },
+          {
+            "name": "Counterspell",
+            "count": 4
+          },
+          {
+            "name": "Mana Leak",
+            "count": 4
+          },
+          {
+            "name": "Brainstorm",
+            "count": 4
+          },
+          {
+            "name": "Air Elemental",
+            "count": 4
+          },
+          {
+            "name": "Sphinx of Uthuun",
+            "count": 4
+          },
+          {
+            "name": "Control Magic",
+            "count": 4
+          },
+          {
+            "name": "Man-o'-War",
+            "count": 4
+          },
+          {
+            "name": "Unsummon",
+            "count": 4
+          },
+          {
+            "name": "Opportunity",
+            "count": 4
+          }
+        ],
+        "fallbackSpells": [
+          "Counterspell",
+          "Mana Leak",
+          "Brainstorm",
+          "Air Elemental",
+          "Sphinx of Uthuun",
+          "Control Magic",
+          "Man-o'-War",
+          "Unsummon",
+          "Opportunity",
+          "Silver Wyvern",
+          "Cloud Spirit",
+          "Sift",
+          "Thalakos Deceiver"
+        ]
+      },
+      {
+        "id": "guardian-black",
+        "name": "Black Castle Guardian",
+        "enemy": "Master Black Wizard",
+        "map": "maps/map/castle_black.tmx",
+        "poi": "CastleBlack",
+        "audience": "The black guardian bars the way to the seal. Prove your mastery in a duel.",
+        "refusal": "The castle trial is unavailable.",
+        "requires": [],
+        "grants": [
+          "guardian.black"
+        ],
+        "basicLands": [
+          "Swamp"
+        ],
+        "cards": [
+          {
+            "name": "Swamp",
+            "count": 24
+          },
+          {
+            "name": "Dark Ritual",
+            "count": 4
+          },
+          {
+            "name": "Hypnotic Specter",
+            "count": 4
+          },
+          {
+            "name": "Sengir Vampire",
+            "count": 4
+          },
+          {
+            "name": "Terror",
+            "count": 4
+          },
+          {
+            "name": "Doom Blade",
+            "count": 4
+          },
+          {
+            "name": "Duress",
+            "count": 4
+          },
+          {
+            "name": "Drain Life",
+            "count": 4
+          },
+          {
+            "name": "Sign in Blood",
+            "count": 4
+          },
+          {
+            "name": "Demonic Tutor",
+            "count": 4
+          }
+        ],
+        "fallbackSpells": [
+          "Dark Ritual",
+          "Hypnotic Specter",
+          "Sengir Vampire",
+          "Terror",
+          "Doom Blade",
+          "Duress",
+          "Drain Life",
+          "Sign in Blood",
+          "Demonic Tutor",
+          "Dungeon Shade",
+          "Stronghold Assassin",
+          "Serpent Warrior",
+          "Wall of Souls"
+        ]
+      },
+      {
+        "id": "guardian-red",
+        "name": "Red Castle Guardian",
+        "enemy": "Master Red Wizard",
+        "map": "maps/map/castle_red.tmx",
+        "poi": "CastleRed",
+        "audience": "The red guardian bars the way to the seal. Prove your mastery in a duel.",
+        "refusal": "The castle trial is unavailable.",
+        "requires": [],
+        "grants": [
+          "guardian.red"
+        ],
+        "basicLands": [
+          "Mountain"
+        ],
+        "cards": [
+          {
+            "name": "Mountain",
+            "count": 24
+          },
+          {
+            "name": "Lightning Bolt",
+            "count": 4
+          },
+          {
+            "name": "Chain Lightning",
+            "count": 4
+          },
+          {
+            "name": "Ball Lightning",
+            "count": 4
+          },
+          {
+            "name": "Shivan Dragon",
+            "count": 4
+          },
+          {
+            "name": "Lava Axe",
+            "count": 4
+          },
+          {
+            "name": "Earthquake",
+            "count": 4
+          },
+          {
+            "name": "Flametongue Kavu",
+            "count": 4
+          },
+          {
+            "name": "Fireblast",
+            "count": 4
+          },
+          {
+            "name": "Goblin Guide",
+            "count": 4
+          }
+        ],
+        "fallbackSpells": [
+          "Lightning Bolt",
+          "Chain Lightning",
+          "Ball Lightning",
+          "Shivan Dragon",
+          "Lava Axe",
+          "Earthquake",
+          "Flametongue Kavu",
+          "Fireblast",
+          "Goblin Guide",
+          "Shock",
+          "Mogg Flunkies",
+          "Flowstone Mauler",
+          "Flowstone Shambler",
+          "Fling"
+        ]
+      },
+      {
+        "id": "guardian-green",
+        "name": "Green Castle Guardian",
+        "enemy": "Master Green Wizard",
+        "map": "maps/map/castle_green.tmx",
+        "poi": "CastleGreen",
+        "audience": "The green guardian bars the way to the seal. Prove your mastery in a duel.",
+        "refusal": "The castle trial is unavailable.",
+        "requires": [],
+        "grants": [
+          "guardian.green"
+        ],
+        "basicLands": [
+          "Forest"
+        ],
+        "cards": [
+          {
+            "name": "Forest",
+            "count": 24
+          },
+          {
+            "name": "Llanowar Elves",
+            "count": 4
+          },
+          {
+            "name": "Rampant Growth",
+            "count": 4
+          },
+          {
+            "name": "Rancor",
+            "count": 4
+          },
+          {
+            "name": "Giant Growth",
+            "count": 4
+          },
+          {
+            "name": "Leatherback Baloth",
+            "count": 4
+          },
+          {
+            "name": "Erhnam Djinn",
+            "count": 4
+          },
+          {
+            "name": "Craw Wurm",
+            "count": 4
+          },
+          {
+            "name": "Overrun",
+            "count": 4
+          },
+          {
+            "name": "Naturalize",
+            "count": 4
+          }
+        ],
+        "fallbackSpells": [
+          "Llanowar Elves",
+          "Rampant Growth",
+          "Rancor",
+          "Giant Growth",
+          "Leatherback Baloth",
+          "Erhnam Djinn",
+          "Craw Wurm",
+          "Overrun",
+          "Naturalize",
+          "Spined Wurm",
+          "Spike Feeder",
+          "Wall of Blossoms",
+          "Elven Rite",
+          "Overgrowth"
+        ]
+      },
+      {
+        "id": "seal",
+        "name": "Warden of the Shandalar Seal",
+        "enemy": "Master Black Wizard",
+        "map": "maps/map/seal_warden.tmx",
+        "poi": "SealSanctum",
+        "audience": "Five powers bind this plane. Only their champion may confront the keeper of the seal.",
+        "refusal": "Defeat all five color guardians first.",
+        "requires": [
+          "guardian.white",
+          "guardian.blue",
+          "guardian.black",
+          "guardian.red",
+          "guardian.green"
+        ],
+        "grants": [
+          "campaign.completed",
+          "seal.broken",
+          "planeswalker"
+        ],
+        "basicLands": [
+          "Island",
+          "Swamp",
+          "Plains",
+          "Mountain",
+          "Forest"
+        ],
+        "cards": [
+          {
+            "name": "Island",
+            "count": 4
+          },
+          {
+            "name": "Swamp",
+            "count": 4
+          },
+          {
+            "name": "Plains",
+            "count": 4
+          },
+          {
+            "name": "Mountain",
+            "count": 4
+          },
+          {
+            "name": "Forest",
+            "count": 4
+          },
+          {
+            "name": "Tolarian Academy",
+            "count": 4
+          },
+          {
+            "name": "Sol Ring",
+            "count": 4
+          },
+          {
+            "name": "Mana Vault",
+            "count": 4
+          },
+          {
+            "name": "Mox Sapphire",
+            "count": 4
+          },
+          {
+            "name": "Mox Jet",
+            "count": 4
+          },
+          {
+            "name": "Mox Pearl",
+            "count": 4
+          },
+          {
+            "name": "Mox Ruby",
+            "count": 4
+          },
+          {
+            "name": "Mox Emerald",
+            "count": 4
+          },
+          {
+            "name": "Urza, Lord High Artificer",
+            "count": 4
+          },
+          {
+            "name": "Tezzeret the Seeker",
+            "count": 4
+          }
+        ],
+        "fallbackSpells": [
+          "Counterspell",
+          "Mana Leak",
+          "Brainstorm",
+          "Air Elemental",
+          "Sphinx of Uthuun",
+          "Control Magic",
+          "Man-o'-War",
+          "Unsummon",
+          "Opportunity",
+          "Silver Wyvern",
+          "Cloud Spirit",
+          "Sift",
+          "Thalakos Deceiver"
+        ]
+      },
+      {
+        "id": "urza-challenge",
+        "name": "Urza, Academy Master",
+        "enemy": "Master Blue Wizard",
+        "map": "maps/map/urza_challenge.tmx",
+        "poi": "UrzaAcademy",
+        "audience": "At the Academy, power is measured in possibility. Show me what you have learned.",
+        "refusal": "Break the seal around Shandalar before demanding my attention.",
+        "requires": [
+          "seal.broken"
+        ],
+        "grants": [
+          "legend.urza.challenged"
+        ],
+        "pursuit": "urza-conquest",
+        "reward": "",
+        "cards": [
+          {
+            "name": "Island",
+            "count": 16
+          },
+          {
+            "name": "Tolarian Academy",
+            "count": 4
+          },
+          {
+            "name": "City of Traitors",
+            "count": 4
+          },
+          {
+            "name": "Black Lotus",
+            "count": 4
+          },
+          {
+            "name": "Lotus Petal",
+            "count": 4
+          },
+          {
+            "name": "Mox Diamond",
+            "count": 4
+          },
+          {
+            "name": "Mana Vault",
+            "count": 4
+          },
+          {
+            "name": "Voltaic Key",
+            "count": 4
+          },
+          {
+            "name": "Grim Monolith",
+            "count": 4
+          },
+          {
+            "name": "Windfall",
+            "count": 4
+          },
+          {
+            "name": "Time Spiral",
+            "count": 4
+          },
+          {
+            "name": "Stroke of Genius",
+            "count": 4
+          }
+        ],
+        "basicLands": [
+          "Island"
+        ],
+        "fallbackSpells": [
+          "Counterspell",
+          "Unsummon",
+          "Brainstorm",
+          "Opt",
+          "Divination",
+          "Air Elemental",
+          "Sage Owl",
+          "Man-o'-War",
+          "Cancel",
+          "Silver Wyvern",
+          "Cloud Spirit",
+          "Mana Leak",
+          "Sift",
+          "Thalakos Deceiver"
+        ]
+      },
+      {
+        "id": "urza-conquest",
+        "name": "Urza Unbound",
+        "enemy": "Master Blue Wizard",
+        "map": "maps/map/urza_conquest.tmx",
+        "poi": "",
+        "audience": "You followed me home. Here the Academy is no longer bound by a single age.",
+        "refusal": "Defeat my Academy challenge before pursuing me here.",
+        "requires": [
+          "legend.urza.challenged"
+        ],
+        "grants": [
+          "legend.urza.conquered"
+        ],
+        "pursuit": "",
+        "reward": "Tolarian Academy",
+        "cards": [
+          {
+            "name": "Island",
+            "count": 16
+          },
+          {
+            "name": "Tolarian Academy",
+            "count": 4
+          },
+          {
+            "name": "Mishra's Workshop",
+            "count": 4
+          },
+          {
+            "name": "Black Lotus",
+            "count": 4
+          },
+          {
+            "name": "Sol Ring",
+            "count": 4
+          },
+          {
+            "name": "Mana Crypt",
+            "count": 4
+          },
+          {
+            "name": "Mana Vault",
+            "count": 4
+          },
+          {
+            "name": "Time Vault",
+            "count": 4
+          },
+          {
+            "name": "Voltaic Key",
+            "count": 4
+          },
+          {
+            "name": "Paradoxical Outcome",
+            "count": 4
+          },
+          {
+            "name": "Time Spiral",
+            "count": 4
+          },
+          {
+            "name": "Stroke of Genius",
+            "count": 4
+          }
+        ],
+        "basicLands": [
+          "Island"
+        ],
+        "fallbackSpells": [
+          "Counterspell",
+          "Unsummon",
+          "Brainstorm",
+          "Opt",
+          "Divination",
+          "Air Elemental",
+          "Sage Owl",
+          "Man-o'-War",
+          "Cancel",
+          "Silver Wyvern",
+          "Cloud Spirit",
+          "Mana Leak",
+          "Sift",
+          "Thalakos Deceiver"
+        ]
+      },
+      {
+        "id": "bolas-challenge",
+        "name": "Nicol Bolas, the Magnificent",
+        "enemy": "Master Black Wizard",
+        "map": "maps/map/bolas_challenge.tmx",
+        "poi": "BolasCourt",
+        "audience": "Behold the court of Nicol Bolas. Every statue is exquisite because every statue is me.",
+        "refusal": "Cute. Return after you break the seal and possess actual power.",
+        "requires": [
+          "seal.broken"
+        ],
+        "grants": [
+          "legend.bolas.challenged"
+        ],
+        "pursuit": "bolas-conquest",
+        "reward": "",
+        "cards": [
+          {
+            "name": "Island",
+            "count": 8
+          },
+          {
+            "name": "Swamp",
+            "count": 8
+          },
+          {
+            "name": "Mountain",
+            "count": 8
+          },
+          {
+            "name": "Nicol Bolas",
+            "count": 4
+          },
+          {
+            "name": "Nicol Bolas, Dragon-God",
+            "count": 4
+          },
+          {
+            "name": "Nicol Bolas, the Ravager",
+            "count": 4
+          },
+          {
+            "name": "Nicol Bolas, God-Pharaoh",
+            "count": 4
+          },
+          {
+            "name": "Dark Ritual",
+            "count": 4
+          },
+          {
+            "name": "Sol Ring",
+            "count": 4
+          },
+          {
+            "name": "Counterspell",
+            "count": 4
+          },
+          {
+            "name": "Lightning Bolt",
+            "count": 4
+          },
+          {
+            "name": "Nightscape Familiar",
+            "count": 4
+          }
+        ],
+        "basicLands": [
+          "Island",
+          "Swamp",
+          "Mountain"
+        ],
+        "fallbackSpells": [
+          "Dark Ritual",
+          "Counterspell",
+          "Lightning Bolt",
+          "Terror",
+          "Nightscape Familiar",
+          "Terminate",
+          "Divination",
+          "Shivan Dragon",
+          "Air Elemental",
+          "Silver Wyvern",
+          "Cloud Spirit",
+          "Mana Leak",
+          "Sift",
+          "Thalakos Deceiver",
+          "Dungeon Shade",
+          "Stronghold Assassin",
+          "Serpent Warrior",
+          "Wall of Souls",
+          "Shock",
+          "Mogg Flunkies",
+          "Flowstone Mauler",
+          "Flowstone Shambler",
+          "Fling"
+        ],
+        "bolasDuplicates": true
+      },
+      {
+        "id": "bolas-conquest",
+        "name": "Nicol Bolas, Supreme Above All",
+        "enemy": "Master Black Wizard",
+        "map": "maps/map/bolas_conquest.tmx",
+        "poi": "",
+        "audience": "Behold the court of Nicol Bolas. Every statue is exquisite because every statue is me.",
+        "refusal": "You have not even survived my first demonstration.",
+        "requires": [
+          "legend.bolas.challenged"
+        ],
+        "grants": [
+          "legend.bolas.conquered"
+        ],
+        "pursuit": "",
+        "reward": "Nicol Bolas, Dragon-God",
+        "cards": [
+          {
+            "name": "Island",
+            "count": 8
+          },
+          {
+            "name": "Swamp",
+            "count": 8
+          },
+          {
+            "name": "Mountain",
+            "count": 8
+          },
+          {
+            "name": "Nicol Bolas",
+            "count": 8
+          },
+          {
+            "name": "Nicol Bolas, Dragon-God",
+            "count": 4
+          },
+          {
+            "name": "Nicol Bolas, the Ravager",
+            "count": 4
+          },
+          {
+            "name": "Nicol Bolas, God-Pharaoh",
+            "count": 4
+          },
+          {
+            "name": "Dark Ritual",
+            "count": 4
+          },
+          {
+            "name": "Sol Ring",
+            "count": 4
+          },
+          {
+            "name": "Counterspell",
+            "count": 4
+          },
+          {
+            "name": "Lightning Bolt",
+            "count": 4
+          }
+        ],
+        "basicLands": [
+          "Island",
+          "Swamp",
+          "Mountain"
+        ],
+        "fallbackSpells": [
+          "Dark Ritual",
+          "Counterspell",
+          "Lightning Bolt",
+          "Terror",
+          "Nightscape Familiar",
+          "Terminate",
+          "Divination",
+          "Shivan Dragon",
+          "Air Elemental",
+          "Silver Wyvern",
+          "Cloud Spirit",
+          "Mana Leak",
+          "Sift",
+          "Thalakos Deceiver",
+          "Dungeon Shade",
+          "Stronghold Assassin",
+          "Serpent Warrior",
+          "Wall of Souls",
+          "Shock",
+          "Mogg Flunkies",
+          "Flowstone Mauler",
+          "Flowstone Shambler",
+          "Fling"
+        ],
+        "bolasDuplicates": true
+      }
+    ]
   }
 }

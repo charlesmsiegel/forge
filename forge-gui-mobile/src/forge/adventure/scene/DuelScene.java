@@ -599,6 +599,12 @@ public class DuelScene extends ForgeScene {
             if (i == 0 && enemy.campaignLandmarkSlot != null)
                 deck = forge.adventure.campaign.CampaignLandmarks.encounterDeck(deck,
                         CampaignState.instance().seededLegends().entry(enemy.campaignLandmarkSlot));
+            if (i == 0 && enemy.campaignStoryEncounter != null) {
+                var storyConfig = CampaignConfig.instance();
+                if (forge.adventure.campaign.CampaignStory.encounter(storyConfig, enemy.campaignStoryEncounter).cards.length > 0)
+                    deck = forge.adventure.campaign.CampaignStory.deck(storyConfig, enemy.campaignStoryEncounter,
+                            CampaignState.instance().universeFor(storyConfig));
+            }
             RegisteredPlayer aiPlayer = RegisteredPlayer.forVariants(playerCount, appliedVariants, deck, null, false, null, null);
             if (campaignAnteActive && i == 0) {
                 if (campaignStake == null)

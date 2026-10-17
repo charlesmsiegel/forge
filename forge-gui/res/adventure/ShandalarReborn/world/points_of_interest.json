@@ -313,5 +313,125 @@
       "BiomeBlack"
     ],
     "seedSlot": "synergy.plant"
+  },
+  {
+    "name": "CastleWhite",
+    "displayName": "White Castle Guardian",
+    "type": "dungeon",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "MageTower",
+    "map": "../ShandalarReborn/maps/map/castle_white.tmx",
+    "radiusFactor": 0.6,
+    "questTags": [
+      "Hostile",
+      "LegendaryLandmark",
+      "BiomeGreen"
+    ]
+  },
+  {
+    "name": "CastleBlue",
+    "displayName": "Blue Castle Guardian",
+    "type": "dungeon",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "MageTower",
+    "map": "../ShandalarReborn/maps/map/castle_blue.tmx",
+    "radiusFactor": 0.6,
+    "questTags": [
+      "Hostile",
+      "LegendaryLandmark",
+      "BiomeGreen"
+    ]
+  },
+  {
+    "name": "CastleBlack",
+    "displayName": "Black Castle Guardian",
+    "type": "dungeon",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "MageTower",
+    "map": "../ShandalarReborn/maps/map/castle_black.tmx",
+    "radiusFactor": 0.6,
+    "questTags": [
+      "Hostile",
+      "LegendaryLandmark",
+      "BiomeGreen"
+    ]
+  },
+  {
+    "name": "CastleRed",
+    "displayName": "Red Castle Guardian",
+    "type": "dungeon",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "MageTower",
+    "map": "../ShandalarReborn/maps/map/castle_red.tmx",
+    "radiusFactor": 0.6,
+    "questTags": [
+      "Hostile",
+      "LegendaryLandmark",
+      "BiomeGreen"
+    ]
+  },
+  {
+    "name": "CastleGreen",
+    "displayName": "Green Castle Guardian",
+    "type": "dungeon",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "MageTower",
+    "map": "../ShandalarReborn/maps/map/castle_green.tmx",
+    "radiusFactor": 0.6,
+    "questTags": [
+      "Hostile",
+      "LegendaryLandmark",
+      "BiomeGreen"
+    ]
+  },
+  {
+    "name": "SealSanctum",
+    "displayName": "Warden of the Shandalar Seal",
+    "type": "dungeon",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "MageTower",
+    "map": "../ShandalarReborn/maps/map/seal_warden.tmx",
+    "radiusFactor": 0.6,
+    "questTags": [
+      "Hostile",
+      "LegendaryLandmark",
+      "BiomeGreen"
+    ]
+  },
+  {
+    "name": "UrzaAcademy",
+    "displayName": "Urza, Academy Master",
+    "type": "dungeon",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "MageTower",
+    "map": "../ShandalarReborn/maps/map/urza_challenge.tmx",
+    "radiusFactor": 0.6,
+    "questTags": [
+      "Hostile",
+      "LegendaryLandmark",
+      "BiomeGreen"
+    ]
+  },
+  {
+    "name": "BolasCourt",
+    "displayName": "Nicol Bolas, the Magnificent",
+    "type": "dungeon",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "MageTower",
+    "map": "../ShandalarReborn/maps/map/bolas_challenge.tmx",
+    "radiusFactor": 0.6,
+    "questTags": [
+      "Hostile",
+      "LegendaryLandmark",
+      "BiomeGreen"
+    ]
   }
 ]
