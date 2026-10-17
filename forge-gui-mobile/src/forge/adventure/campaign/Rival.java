@@ -29,10 +29,11 @@ public class Rival implements SaveFileContent {
     private int savedDeckTier = -1;
 
     public Deck opponentDeck(Deck template, CardUniverse universe, Collection<PaperCard> pool) {
-        int tier = upgradeTier();
+        int tier = Math.max(upgradeTier(), CampaignConfig.instance().difficulty.ordinaryTierFloor);
+        savedUpgradeTier = Math.max(savedUpgradeTier, tier);
         if (savedDeckTier != tier || savedOpponentDeck.isEmpty()
                 || !savedOpponentDeck.toFlatList().stream().allMatch(universe::allowsPrinting)) {
-            Deck generated = EnemyDeckPolicy.adapt(template, universe, pool, deckSeed(), tier);
+            Deck generated = EnemyDeckPolicy.adapt(template, universe, pool, deckSeed(), tier, CampaignConfig.instance().rivals.rarityUpgradeSlotsPerTier);
             generated = EnemyDeckPolicy.withAcquired(generated, universe, getCardsTakenFromPlayer());
             savedOpponentDeck.clear(); savedOpponentDeck.addAll(generated.getMain());
             savedDeckTier = tier;
@@ -40,14 +41,14 @@ public class Rival implements SaveFileContent {
         Deck result = new Deck(name); result.getMain().addAll(savedOpponentDeck); return result;
     }
 
-    /** Three and six player victories unlock bounded, persistent template upgrades. */
+    /** Configured player victories unlock bounded, persistent template upgrades. */
     public int upgradeTier() {
-        savedUpgradeTier = Math.max(0, Math.min(2, Math.max(savedUpgradeTier, playerWins / 3)));
+        savedUpgradeTier = Math.max(0, Math.min(2, Math.max(savedUpgradeTier, playerWins / Math.max(1, CampaignConfig.instance().rivals.winsPerTier))));
         return savedUpgradeTier;
     }
 
     public void advanceForWorld(WorldDeeds deeds) {
-        int floor = deeds.has("seal.broken") ? 2 : deeds.has("shandalar.champion") ? 1 : 0;
+        int floor = deeds.has("seal.broken") ? CampaignConfig.instance().rivals.sealTier : deeds.has("shandalar.champion") ? CampaignConfig.instance().rivals.championTier : 0;
         savedUpgradeTier = Math.max(upgradeTier(), floor);
     }
 

@@ -71,4 +71,13 @@ public class DungeonLifeTest extends AdventureTestBase {
         assertFalse(DungeonLife.shouldAutoHealLocation("dungeon", false, true));
     }
 
+    @Test public void townTravelStartsDungeonLifeButConnectedMapsAndHistoricalProgressDoNotResetIt() {
+        assertTrue(DungeonLife.shouldResetAtEntry(false,false,true,false,true), "A resumed town can hold less than maximum life");
+        assertTrue(DungeonLife.shouldResetAtEntry(true,false,true,false,true), "World-map dungeon entrance");
+        assertFalse(DungeonLife.shouldResetAtEntry(false,true,true,false,true), "Carry life through connected dungeon maps");
+        assertFalse(DungeonLife.shouldResetAtEntry(false,false,true,true,true), "Historical entry/checkpoint policy owns its own life boundary");
+        assertFalse(DungeonLife.shouldResetAtEntry(false,true,false,false,true), "Leaving a dungeon is not an entry reset");
+        assertFalse(DungeonLife.shouldResetAtEntry(false,false,true,false,false), "Other planes retain their prior child-map behavior");
+    }
+
 }
