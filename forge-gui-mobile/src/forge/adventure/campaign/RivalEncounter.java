@@ -23,6 +23,7 @@ public final class RivalEncounter {
     }
 
     public static void start(MapStage stage, EnemySprite mob) {
+        if (!CampaignOpponentDecks.prepare(stage, mob)) return;
         Rival rival = CampaignState.instance().rivals().byId(mob.campaignRivalId);
         if (rival == null) {
             stage.beginDuel(mob);
@@ -32,6 +33,7 @@ public final class RivalEncounter {
         StringBuilder message = new StringBuilder();
         message.append("[GOLD]").append(rival.name).append("[WHITE]\n");
         message.append("Record vs you: ").append(rival.record()).append('\n');
+        message.append("Experience: ").append(new String[]{"Established", "Seasoned", "Veteran"}[rival.upgradeTier()]).append('\n');
         if (taken.isEmpty())
             message.append("Holds none of your cards.");
         else
@@ -109,8 +111,8 @@ public final class RivalEncounter {
         return mob.campaignEncounter().deck(() -> {
             boolean genetic = Config.instance().getConfigData().enableGeneticAI
                     && (Current.player().isUsingCustomDeck() || Current.player().isHardorInsaneDifficulty());
-            return mob.getData().copyPlayerDeck ? Current.player().getSelectedDeck()
-                    : mob.getData().generateDeck(Current.player().isFantasyMode(), genetic);
+            return CampaignOpponentDecks.generate(mob, () -> mob.getData().copyPlayerDeck ? Current.player().getSelectedDeck()
+                    : mob.getData().generateDeck(Current.player().isFantasyMode(), genetic));
         });
     }
 

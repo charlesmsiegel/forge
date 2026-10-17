@@ -121,6 +121,10 @@ public class WorldStage extends GameStage implements SaveFileContent {
                         removeEnemy(mob);
                         break;
                     }
+                    if (!forge.adventure.campaign.CampaignOpponentDecks.prepare(this, mob)) {
+                        removeEnemy(mob); // No stake or reward; avoid trapping movement in a failed encounter.
+                        break;
+                    }
                     collided = true;
                     player.setAnimation(CharacterSprite.AnimationTypes.Attack);
                     player.playEffect(Paths.EFFECT_SPARKS, 0.5f);
