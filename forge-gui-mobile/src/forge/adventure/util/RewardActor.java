@@ -500,7 +500,7 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
                 Sprite item = Config.instance().getItemSprite(reward.type.toString());
                 setItemTooltips(item, backSprite, false);
                 processSprite(backSprite, item, isRewardShop ? null :
-                        Controls.newTextraLabel("[%200]" + reward.getCount() + " " + reward.type), 0, isRewardShop ? 0 : -10, false);
+                        Controls.newTextraLabel("[%200]" + displayedCount() + " " + reward.type), 0, isRewardShop ? 0 : -10, false);
                 needsToBeDisposed = true;
                 break;
             }
@@ -961,7 +961,7 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
                 } else if (getReward().getDeck() != null) {
                     description = getReward().getDeck().getName();
                 } else {
-                    description = "Adds " + getReward().getCount() + " " + getReward().type;
+                    description = "Adds " + displayedCount() + " " + getReward().type;
                 }
                 if (itemExists && description.isEmpty() && item.questItem)
                     description = "Quest Item";
@@ -988,6 +988,12 @@ public class RewardActor extends Actor implements Disposable, ImageFetcher.Callb
             tooltip.setInstant(true);
         }
         addListener(tooltip);
+    }
+
+    private long displayedCount() {
+        return reward.getType() == Reward.Type.Gold && forge.adventure.campaign.CampaignConfig.instance().isActive()
+                ? forge.adventure.campaign.CampaignPrices.rewardGold(reward.getCount(), forge.adventure.campaign.CampaignConfig.instance().economy)
+                : reward.getCount();
     }
 
     public boolean frontSideUp() {

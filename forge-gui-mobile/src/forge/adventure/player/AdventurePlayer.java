@@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
 
 import forge.Forge;
 import forge.adventure.campaign.CampaignState;
+import forge.adventure.campaign.CampaignConfig;
 import forge.adventure.data.*;
 import forge.adventure.pointofintrest.PointOfInterestChanges;
 import forge.adventure.scene.AdventureDeckEditor;
@@ -159,6 +160,8 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
 
     public void create(String n, Deck startingDeck, boolean male, int race, int avatar, boolean isFantasy,
                        boolean isUsingCustomDeck, DifficultyData difficultyData, AdventureModes adventureMode) {
+        var campaignRules = CampaignConfig.instance();
+        if (campaignRules.isActive()) campaignRules.validateBalance();
         clear();
         this.adventureMode = adventureMode;
         announceFantasy = fantasyMode = isFantasy; //Set Chaos mode first.
@@ -175,7 +178,7 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
         cards.addAllFlat(deck.getAllCardsInASinglePool(true, true).toFlatList());
         CampaignState.instance().initializeOwnership(this);
 
-        this.difficultyData.startingLife = difficultyData.startingLife;
+        this.difficultyData.startingLife = campaignRules.isActive() ? campaignRules.player.startingLife : difficultyData.startingLife;
         this.difficultyData.startingMoney = difficultyData.startingMoney;
         this.difficultyData.startingDifficulty = difficultyData.startingDifficulty;
         this.difficultyData.name = difficultyData.name;
@@ -194,7 +197,7 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
 
         setColorIdentity(DeckProxy.getColorIdentity(deck));
 
-        life = maxLife = difficultyData.startingLife;
+        life = maxLife = this.difficultyData.startingLife;
         shards = difficultyData.startingShards;
 
         for (String s : difficultyData.startItems) {
@@ -251,7 +254,8 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
     }
 
     public void updateDifficulty(DifficultyData diff) {
-        maxLife = diff.startingLife;
+        // Campaign max life includes earned, saved milestones; bundled difficulty must not erase them.
+        if (!CampaignConfig.instance().isActive()) maxLife = diff.startingLife;
         this.difficultyData.startingShards = diff.startingShards;
         this.difficultyData.startingLife = diff.startingLife;
         this.difficultyData.startingMoney = diff.startingMoney;
@@ -1019,8 +1023,14 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
     }
 
     private void addGold(int goldCount) {
-        gold += goldCount;
-        onGoldChangeList.emit();
+        // Loot must not interrupt a mixed reward set at the currency cap.
+        if (CampaignConfig.instance().isActive() && goldCount > 0) {
+            long requested = forge.adventure.campaign.CampaignPrices.rewardGold(goldCount, CampaignConfig.instance().economy);
+            int credited = (int)Math.min(requested, (long)Integer.MAX_VALUE - gold);
+            if (credited != requested)
+                forge.adventure.campaign.CampaignLog.event("gold_reward_capped").with("requested", requested).with("credited", credited).write();
+            changeGold(credited, false);
+        } else changeGold(goldCount, false);
     }
 
     public void onShardsChange(Runnable o) {
@@ -1120,19 +1130,24 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
         onLifeTotalChangeList.emit();
     }
 
-    public void giveGold(int price) {
-        takeGold(-price);
-    }
+    public void giveGold(int price) { changeGold(price, true); }
 
-    public void takeGold(int price) {
+    public void takeGold(int price) { changeGold(-(long) price, true); }
+
+    private int checkedGoldAfter(long delta) {
+        long after = gold + delta;
+        if (CampaignConfig.instance().isActive() && (after < 0 || after > Integer.MAX_VALUE))
+            throw new IllegalArgumentException("Gold limit reached. Spend some gold before this transaction.");
+        return (int) after;
+    }
+    private void changeGold(long delta, boolean sound) {
         int before = gold;
-        gold -= price;
-        if (forge.adventure.campaign.CampaignConfig.instance().isActive())
+        gold = checkedGoldAfter(delta);
+        if (CampaignConfig.instance().isActive())
             forge.adventure.campaign.CampaignLog.event("gold_changed").with("before", before)
-                    .with("after", gold).with("delta", gold - before).write();
+                    .with("after", gold).with("delta", (long)gold - before).write();
         onGoldChangeList.emit();
-        //play sfx
-        SoundSystem.instance.play(SoundEffectType.CoinsDrop, false);
+        if (sound) SoundSystem.instance.play(SoundEffectType.CoinsDrop, false);
     }
 
     public void addShards(int number) {
@@ -1294,7 +1309,11 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
         }
 
         forge.adventure.campaign.CampaignConfig campaign = forge.adventure.campaign.CampaignConfig.instance();
-        float sellFactor = campaign.isActive() ? campaign.economy.cardSellMultiplier : difficultyData.sellFactor;
+        if (campaign.isActive()) {
+            float town = currentLocationChanges == null ? 1f : currentLocationChanges.getTownPriceModifier();
+            return forge.adventure.campaign.CampaignPrices.sale(CardUtil.getCardPrice(card), card.isFoil(), town, campaign.economy);
+        }
+        float sellFactor = difficultyData.sellFactor;
         int basePrice = (int) (CardUtil.getCardPrice(card) * sellFactor);
 
         if (card.isFoil()) {
@@ -1314,6 +1333,10 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
             return 0;
 
         int amountToSell = Math.min(amount, CampaignState.instance().availableCards(this).count(card));
+        if (CampaignConfig.instance().isActive()) {
+            if (card.hasNoSellValue()) return 0;
+            checkedGoldAfter((long)cardSellPrice(card) * amountToSell);
+        }
         int earned = performSale(card, amountToSell);
 
         if(earned > 0)
@@ -1325,13 +1348,34 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
      * Sells all cards in the given card pool and adds the resulting amount of gold.
      * The given card pool will be emptied.
      */
-    public void doBulkSell(ItemPool<PaperCard> cards) {
-        int profit = 0;
-        for (PaperCard cardToSell : cards.toFlatList()) {
-            profit += AdventurePlayer.current().performSale(cardToSell, 1);
-            cards.remove(cardToSell);
+    public void doBulkSell(ItemPool<PaperCard> selected) {
+        if (CampaignConfig.instance().isActive()) {
+            // Stage the complete transaction, including balance, before retiring any physical ID.
+            var available = CampaignState.instance().availableCards(this);
+            java.util.Map<PaperCard,Integer> plan = new java.util.LinkedHashMap<>();
+            long total = 0;
+            for (var entry : selected) {
+                if (entry.getKey().hasNoSellValue()) continue;
+                int count = Math.min(entry.getValue(), available.count(entry.getKey()));
+                if (count > 0) {
+                    total += (long)cardSellPrice(entry.getKey()) * count;
+                    plan.put(entry.getKey(), count);
+                }
+            }
+            checkedGoldAfter(total);
+            for (var entry : plan.entrySet()) {
+                performSale(entry.getKey(), entry.getValue());
+                if (selected != this.cards) selected.remove(entry.getKey(), entry.getValue());
+            }
+            giveGold((int)total);
+            return;
         }
-        giveGold(profit); //do this as one transaction so as not to get multiple copies of sound effect
+        int profit = 0;
+        for (PaperCard cardToSell : selected.toFlatList()) {
+            profit += performSale(cardToSell, 1);
+            selected.remove(cardToSell);
+        }
+        giveGold(profit);
     }
 
     /**
@@ -1341,10 +1385,10 @@ public class AdventurePlayer implements Serializable, SaveFileContent {
     private int performSale(PaperCard card, int amount) {
         int amountToSell = Math.min(amount, CampaignState.instance().availableCards(this).count(card));
         if (amountToSell <= 0) return 0;
+        int proceeds = Math.multiplyExact(cardSellPrice(card), amountToSell);
         if(!cards.remove(card, amountToSell))
             return 0; //Failed to sell?
         CampaignState.instance().onCardsLost(card, amountToSell);
-        int proceeds = cardSellPrice(card) * amountToSell;
         if (forge.adventure.campaign.CampaignConfig.instance().isActive())
             forge.adventure.campaign.CampaignLog.event("card_sold").with("card", card)
                     .with("count", amountToSell).with("gold", proceeds).write();

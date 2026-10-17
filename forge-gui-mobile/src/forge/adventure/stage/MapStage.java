@@ -303,6 +303,7 @@ public class MapStage extends GameStage {
     }
 
     public void loadMap(TiledMap map, String sourceMap, String targetMap, int spawnTargetId) {
+        boolean previousPersistent = isInMap && persistentLifeMap;
         disposeWorld();
         createNewWorld();
         isLoadingMatch = false;
@@ -349,7 +350,8 @@ public class MapStage extends GameStage {
         boolean inHistoricalRealm = CampaignState.instance().expedition().isActive()
                 && CampaignConfig.instance().hasRealm(CampaignState.instance().expedition().getRegionId());
         persistentLifeMap = inHistoricalRealm || (MP.get("persistentLife") instanceof Boolean && (Boolean) MP.get("persistentLife"));
-        if (persistentLifeMap && !inHistoricalRealm && sourceMap.isEmpty()) //entering the dungeon from the world map
+        if (DungeonLife.shouldResetAtEntry(sourceMap.isEmpty(), previousPersistent, persistentLifeMap,
+                inHistoricalRealm, CampaignConfig.instance().isActive()))
             DungeonLife.onEnter(Current.player());
 
         if (MP.get("music") != null && !MP.get("music").toString().isEmpty()) {

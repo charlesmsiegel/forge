@@ -44,7 +44,8 @@
   "economy": {
     "cardSellMultiplier": 0.5,
     "shopPriceMultiplier": 1.0,
-    "boosterPriceMultiplier": 1.0
+    "boosterPriceMultiplier": 1.0,
+    "goldRewardMultiplier": 1.0
   },
   "stronghold": {
     "region": "stronghold",
@@ -85,7 +86,11 @@
       "the Grifter",
       "Sevenfingers",
       "the Collector"
-    ]
+    ],
+    "winsPerTier": 3,
+    "championTier": 1,
+    "sealTier": 2,
+    "rarityUpgradeSlotsPerTier": 2
   },
   "realms": [
     {
@@ -1572,5 +1577,10 @@
         }
       ]
     }
-  ]
+  ],
+  "difficulty": {
+    "enemyLifeMultiplier": 1.0,
+    "aiProfile": "",
+    "ordinaryTierFloor": 0
+  }
 }

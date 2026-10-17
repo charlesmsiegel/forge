@@ -180,6 +180,7 @@ public class WorldSave {
         CampaignConfig campaign = forge.adventure.campaign.CampaignSetup.withPreset(CampaignConfig.instance(), campaignPreset);
         Deck starterDeck;
         try {
+            if (campaign.isActive()) campaign.validateBalance();
             CampaignState.instance().initializeUniverse(campaign, Config.instance().getPlaneConfigData());
             starterDeck = Config.instance().starterDeck(startingColorIdentity, diff, mode, customDeckIndex, starterEdition);
             starterDeck = forge.adventure.campaign.CampaignSetup.starter(starterDeck, startingColorIdentity, campaign, CampaignState.instance().universeFor(campaign));

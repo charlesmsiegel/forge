@@ -67,7 +67,7 @@ public class ShopScene extends ForgeScene {
         boolean touchesProtection = forge.adventure.campaign.CampaignState.instance()
                 .saleTouchesProtection(Current.player(), Current.player().autoSellCards);
         if (touchesProtection || FModel.getPreferences().getPrefBoolean(ForgePreferences.FPref.PROMPT_FOR_AUTOSELL)) {
-            int profit = 0;
+            long profit = 0;
             int cards = 0;
             for (PaperCard cardToSell : Current.player().autoSellCards.toFlatList()) {
                 cards++;
@@ -91,7 +91,8 @@ public class ShopScene extends ForgeScene {
 
     private void doAutosell() {
         ItemPool<PaperCard> autoSellCards = AdventurePlayer.current().autoSellCards;
-        AdventurePlayer.current().doBulkSell(autoSellCards);
+        try { AdventurePlayer.current().doBulkSell(autoSellCards); }
+        catch (IllegalArgumentException error) { FOptionPane.showErrorDialog(error.getMessage(), "Sale unavailable"); return; }
         autoSellCards.clear();
         if (screen != null)
             screen.refresh();
