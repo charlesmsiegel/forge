@@ -343,5 +343,381 @@
       "Stronghold",
       "Historical"
     ]
+  },
+  {
+    "name": "Rath Mogg Skirmisher",
+    "sprite": "sprites/enemy/humanoid/goblin/goblin.atlas",
+    "deck": [
+      "decks/tempest/raiders.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "TMP"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "R",
+    "questTags": [
+      "Tempest",
+      "Historical",
+      "Rath"
+    ]
+  },
+  {
+    "name": "Rath Skyshroud Scout",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/tempest/grove.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "TMP"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "G",
+    "questTags": [
+      "Tempest",
+      "Historical",
+      "Rath"
+    ]
+  },
+  {
+    "name": "Rath Dauthi Stalker",
+    "sprite": "sprites/enemy/humanoid/goblin/goblin.atlas",
+    "deck": [
+      "decks/tempest/shadow.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "TMP"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "B",
+    "questTags": [
+      "Tempest",
+      "Historical",
+      "Rath"
+    ]
+  },
+  {
+    "name": "Rath Storm Warden",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/tempest/warden.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": true,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 14,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "TMP"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "U",
+    "questTags": [
+      "Tempest",
+      "Historical",
+      "Rath"
+    ]
+  },
+  {
+    "name": "Rath Furnace Vanguard",
+    "sprite": "sprites/enemy/humanoid/goblin/goblin.atlas",
+    "deck": [
+      "decks/exodus/brood.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "EXO"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "R",
+    "questTags": [
+      "Exodus",
+      "Historical",
+      "Rath"
+    ]
+  },
+  {
+    "name": "Rath Skyshroud Survivor",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/exodus/forest.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "EXO"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "G",
+    "questTags": [
+      "Exodus",
+      "Historical",
+      "Rath"
+    ]
+  },
+  {
+    "name": "Rath Kor Rescuer",
+    "sprite": "sprites/enemy/humanoid/elf/deftsorceress.atlas",
+    "deck": [
+      "decks/exodus/rebels.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": false,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 12,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "EXO"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "W",
+    "questTags": [
+      "Exodus",
+      "Historical",
+      "Rath"
+    ]
+  },
+  {
+    "name": "Rath Evacuation Overseer",
+    "sprite": "sprites/enemy/humanoid/goblin/goblin.atlas",
+    "deck": [
+      "decks/exodus/overseer.dck"
+    ],
+    "ai": "",
+    "randomizeDeck": true,
+    "boss": true,
+    "spawnRate": 0,
+    "difficulty": 1,
+    "speed": 20,
+    "life": 14,
+    "rewards": [
+      {
+        "type": "deckCard",
+        "probability": 1,
+        "count": 1,
+        "addMaxCount": 2
+      },
+      {
+        "type": "gold",
+        "probability": 1,
+        "count": 20,
+        "addMaxCount": 40
+      },
+      {
+        "type": "card",
+        "probability": 0.6,
+        "count": 1,
+        "addMaxCount": 1,
+        "editions": [
+          "EXO"
+        ],
+        "rarity": [
+          "Common",
+          "Uncommon"
+        ]
+      }
+    ],
+    "colors": "B",
+    "questTags": [
+      "Exodus",
+      "Historical",
+      "Rath"
+    ]
   }
 ]

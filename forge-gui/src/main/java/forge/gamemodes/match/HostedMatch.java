@@ -53,6 +53,7 @@ public class HostedMatch {
     private String title;
     private MusicPlaylist matchPlaylist = null;
     public HashMap<LobbySlot, IGameController> gameControllers = null;
+    private java.util.function.Consumer<Game> gameCreatedHook;
     private Runnable startGameHook = null;
     private Runnable endGameHook = null;
     private Runnable onMatchOver = null;
@@ -66,6 +67,15 @@ public class HostedMatch {
     public int subGameCount = 0;
 
     public HostedMatch() {}
+
+    /** Installs observers synchronously, before any game setup is scheduled on the game thread. */
+    public void setGameCreatedHook(java.util.function.Consumer<Game> hook) { gameCreatedHook = hook; }
+
+    protected Game createGame(Match match) {
+        Game created = match.createGame();
+        if (gameCreatedHook != null) gameCreatedHook.accept(created);
+        return created;
+    }
 
     public void setStartGameHook(Runnable hook) {
         startGameHook = hook;
@@ -159,7 +169,7 @@ public class HostedMatch {
         nextGameDecisions.clear();
         SoundSystem.instance.setBackgroundMusic(this.matchPlaylist == null ? MusicPlaylist.MATCH : this.matchPlaylist);
 
-        game = match.createGame();
+        game = createGame(match);
         game.EXPERIMENTAL_RESTORE_SNAPSHOT = FModel.getPreferences().getPrefBoolean(FPref.MATCH_EXPERIMENTAL_RESTORE);
         game.AI_TIMEOUT = FModel.getPreferences().getPrefInt(FPref.MATCH_AI_TIMEOUT);
 

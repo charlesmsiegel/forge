@@ -65,23 +65,22 @@ public class BiomeStructure {
         for (int i = 0; i < data.mappingInfo.length; i++) {
             colorIdMap.put(Integer.parseInt(data.mappingInfo[i].color, 16), i);
         }
+        for (int[] column : dataMap) java.util.Arrays.fill(column, -1);
         for (int mx = 0; mx < targetWidth; mx += Math.min(targetWidth - mx, MAXIMUM_WAVEFUNCTIONSIZE)) {
-            for (int my = 0; my < targetWidth; my += Math.min(targetHeight - my, MAXIMUM_WAVEFUNCTIONSIZE)) {
-                OverlappingModel model = new OverlappingModel(sourceImage, data.N, Math.min(targetWidth - mx, MAXIMUM_WAVEFUNCTIONSIZE), Math.min(targetHeight - my, MAXIMUM_WAVEFUNCTIONSIZE), data.periodicInput, data.periodicOutput, data.symmetry, data.ground);
+            for (int my = 0; my < targetHeight; my += Math.min(targetHeight - my, MAXIMUM_WAVEFUNCTIONSIZE)) {
+                int chunkWidth = Math.min(targetWidth - mx, MAXIMUM_WAVEFUNCTIONSIZE);
+                int chunkHeight = Math.min(targetHeight - my, MAXIMUM_WAVEFUNCTIONSIZE);
+                OverlappingModel model = new OverlappingModel(sourceImage, data.N, Math.max(data.N, chunkWidth), Math.max(data.N, chunkHeight), data.periodicInput, data.periodicOutput, data.symmetry, data.ground);
 
                 boolean suc = false;
                 for (int i = 0; i < 10 && !suc; i++)
                     suc = model.run((int) seed + (i * 5355) + mx * my, 0);
-                if (!suc) {
-                    for (int x = 0; x < dataMap.length; x++)
-                        for (int y = 0; y < dataMap[x].length; y++)
-                            dataMap[mx + x][my + y] = -1;
-                    return;
-                }
+                // An unsatisfiable chunk stays empty; never overwrite neighboring chunks.
+                if (!suc) continue;
                 image = model.graphics();
-                for (int x = 0; x < image.getWidth(); x++) {
+                for (int x = 0; x < chunkWidth; x++) {
 
-                    for (int y = 0; y < image.getHeight(); y++) {
+                    for (int y = 0; y < chunkHeight; y++) {
                         boolean isWhitePixel = maskImage != null && (maskImage.getColor((int) ((mx + x) * maskImage.getWidth() / (float) targetWidth), (int) ((my + y) * (maskImage.getHeight() / (float) targetHeight)))).equals(Color.WHITE);
 
                         if (isWhitePixel)
@@ -99,10 +98,8 @@ public class BiomeStructure {
                 }
 
             }
-            image = finalImage;
         }
-
-
+        image = finalImage;
     }
 
     public void initialize() {

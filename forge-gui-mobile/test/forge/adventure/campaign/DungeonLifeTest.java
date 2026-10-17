@@ -64,4 +64,11 @@ public class DungeonLifeTest extends AdventureTestBase {
         assertEquals(loaded.getLife(), 7);
         assertEquals(loaded.getMaxLife(), 12);
     }
+    @Test public void aTownPortalDoesNotHealInsideItsPersistentDungeon() {
+        assertFalse(DungeonLife.shouldAutoHealLocation("town", true, true));
+        assertTrue(DungeonLife.shouldAutoHealLocation("town", false, true));
+        assertTrue(DungeonLife.shouldAutoHealLocation("capital", true, false), "Other planes retain normal location behavior");
+        assertFalse(DungeonLife.shouldAutoHealLocation("dungeon", false, true));
+    }
+
 }

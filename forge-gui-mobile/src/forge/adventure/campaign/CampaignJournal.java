@@ -1,0 +1,54 @@
+package forge.adventure.campaign;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/** Read-only presentation projection; browsing does not create campaign progress. */
+public final class CampaignJournal {
+    public record Section(String title, String text) { }
+    private CampaignJournal() { }
+    public static List<String> accomplishments(CampaignConfig config, CampaignState state) {
+        java.util.Set<String> names = new java.util.TreeSet<>(); var deeds = state.deeds();
+        for (var encounter : config.story.encounters) if (deeds.has("encounter." + encounter.id)) names.add("Defeated " + encounter.name);
+        for (var realm : config.realms) if (deeds.has("realm." + realm.id + ".completed")) names.add("Completed " + realm.name);
+        for (var entry : state.seededLegends().entries()) if (state.seededLegends().isClaimed(entry.slot())) names.add("Mastered " + entry.card().getName());
+        if (deeds.has("shandalar.champion")) names.add("Champion of Shandalar");
+        if (deeds.has("seal.broken")) names.add("Broke Shandalar's seal — Planeswalker");
+        return List.copyOf(names);
+    }
+    public static List<Section> sections(CampaignConfig config, CampaignState state) {
+        List<Section> result = new ArrayList<>(); var deeds = state.deeds();
+        StringBuilder story = new StringBuilder(CampaignStory.title(deeds));
+        story.append("\n\n").append(deeds.has("seal.broken") ? "The seal is broken. Seek the legendary figures and follow their challenges home."
+                : deeds.has("shandalar.champion") ? "The five guardians have fallen. Confront the seal warden."
+                : "Defeat the five color guardians, then confront the keeper of Shandalar's seal.");
+        for (var encounter : config.story.encounters) story.append("\n\n").append(encounter.name).append("\n")
+                .append((deeds.has("encounter." + encounter.id) ? "Complete" : CampaignStory.canChallenge(config, encounter.id, deeds) ? "Ready to challenge" : encounter.refusal));
+        result.add(new Section("Shandalar", story.toString()));
+        StringBuilder realms = new StringBuilder("Historical realms offer set-specific cards, saved checkpoints and full-block mastery.");
+        for (var realm : config.realms) {
+            RealmProgress progress = state.realmProgressSnapshot(realm.id);
+            realms.append("\n\n").append(realm.name).append("\nCheckpoint: ").append(realm.chapter(progress.checkpoint(realm)).name)
+                    .append("\nFull clears: ").append(state.progression().fullClears(realm.id));
+        }
+        if (state.expedition().isActive()) realms.append("\n\nExpedition underway. Only carried cards are available. Return home to bank your acquisitions.");
+        else realms.append("\n\nAt home. Your full collection is available.");
+        result.add(new Section("Historical realms", realms.toString()));
+        StringBuilder landmarks = new StringBuilder("These landmarks were chosen for this world. Ask the town Chronicler for directions.");
+        for (var entry : state.seededLegends().entries()) landmarks.append("\n\n").append(entry.card().getName()).append(" • ")
+                .append(entry.card().getEdition()).append("\n").append(state.seededLegends().isClaimed(entry.slot()) ? "Mastered — named reward received" : "Unmastered — named reward awaits");
+        result.add(new Section("Legendary landmarks", landmarks.toString()));
+        var progress = state.progression();
+        result.add(new Section("Your abilities", "Ordinary copies per card: " + progress.ordinaryLimit(config.player.ordinaryCopyLimit)
+                + "\nRestricted copies: " + config.player.restrictedCopyLimit + " (earned exceptions apply)"
+                + "\nProtection slots: " + progress.protectionSlots() + "\nRestricted-copy choices available: " + progress.restrictedChoiceTokens()
+                + "\nMaster Collector: " + (progress.isMasterCollector() ? "Unlocked — ordinary limits apply per printing" : "Not yet unlocked")
+                + "\n\nComplete full historical blocks to earn new abilities. Visit the town Collector to assign protection and restricted choices."));
+        var universe = state.universeFor(config);
+        result.add(new Section("Card universe", universe == null ? "No campaign snapshot available." : universe.summary()
+                + "\n\nThis universe is frozen for this campaign. Later format rotation and configuration changes do not replace it. Owned reprints follow card-name legality. Authored rewards may bypass ordinary generation exclusions, but never actual bans."));
+        List<String> deedsList = accomplishments(config, state);
+        result.add(new Section("Remembered deeds", deedsList.isEmpty() ? "Your great deeds are still ahead of you." : String.join("\n\n", deedsList)));
+        return List.copyOf(result);
+    }
+}

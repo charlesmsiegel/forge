@@ -1,6 +1,8 @@
 package forge.game.event;
 
 public interface IGameEventVisitor<T> {
+    /** Optional observation event; existing visitors need no reveal-specific behavior. */
+    default T visit(GameEventCardsRevealed event) { return null; }
     T visit(GameEventAnteCardsSelected event);
     T visit(GameEventAttackersDeclared event);
     T visit(GameEventBlockersDeclared event);

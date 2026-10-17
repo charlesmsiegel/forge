@@ -91,13 +91,15 @@ public class WorldSave {
                  ObjectInputStream oos = new ObjectInputStream(inf)) {
                 currentSave.header = (WorldSaveHeader) oos.readObject();
                 SaveFileData mainData = (SaveFileData) oos.readObject();
+                CampaignState.instance().load(mainData.containsKey("campaign") ? mainData.readSubData("campaign") : null);
+                CampaignState.instance().initializeUniverse(CampaignConfig.instance(), Config.instance().getPlaneConfigData());
                 currentSave.player.load(mainData.readSubData("player"));
                 GamePlayerUtil.getGuiPlayer().setName(currentSave.player.getName());
                 try {
                     currentSave.world.load(mainData.readSubData("world"));
+                    CampaignState.instance().initializeWorld(currentSave.world.getSeed(), CampaignConfig.instance());
                     currentSave.pointOfInterestChanges.load(mainData.readSubData("pointOfInterestChanges"));
                     WorldStage.getInstance().load(mainData.readSubData("worldStage"));
-                    CampaignState.instance().load(mainData.containsKey("campaign") ? mainData.readSubData("campaign") : null);
                     CampaignState.instance().initializeOwnership(currentSave.player);
                     if (mainData.containsKey("mapResume")) {
                         MapResumeState resume = new MapResumeState();
@@ -157,15 +159,29 @@ public class WorldSave {
     }
 
     public static WorldSave generateNewWorld(String name, boolean male, int race, int avatarIndex, ColorSet startingColorIdentity, DifficultyData diff, AdventureModes mode, int customDeckIndex, CardEdition starterEdition, long seed) {
+        return generateNewWorld(name, male, race, avatarIndex, startingColorIdentity, diff, mode, customDeckIndex, starterEdition, seed, null);
+    }
+
+    public static WorldSave generateNewWorld(String name, boolean male, int race, int avatarIndex, ColorSet startingColorIdentity, DifficultyData diff, AdventureModes mode, int customDeckIndex, CardEdition starterEdition, long seed, String campaignPreset) {
         Forge.getLocalizer().loadAdventureBundle(Config.instance().getPlanePath(Config.instance().getSettingData().plane) + "languages/");
+        CampaignState previousCampaign = CampaignState.instance();
+        CampaignState.setInstance(new CampaignState());
+        CampaignConfig campaign = forge.adventure.campaign.CampaignSetup.withPreset(CampaignConfig.instance(), campaignPreset);
+        Deck starterDeck;
+        try {
+            CampaignState.instance().initializeUniverse(campaign, Config.instance().getPlaneConfigData());
+            starterDeck = Config.instance().starterDeck(startingColorIdentity, diff, mode, customDeckIndex, starterEdition);
+            starterDeck = forge.adventure.campaign.CampaignSetup.starter(starterDeck, startingColorIdentity, campaign, CampaignState.instance().universeFor(campaign));
+        } catch (IllegalArgumentException | IllegalStateException failure) {
+            CampaignState.setInstance(previousCampaign);
+            throw failure;
+        }
         currentSave.world.generateNew(seed);
         currentSave.pointOfInterestChanges.clear();
-        CampaignState.setInstance(new CampaignState());
         currentSave.pendingMapResume = null;
         boolean chaos = mode == AdventureModes.Chaos;
         boolean custom = mode == AdventureModes.Custom;
 
-        Deck starterDeck = Config.instance().starterDeck(startingColorIdentity, diff, mode, customDeckIndex, starterEdition);
         currentSave.player.create(name, starterDeck, male, race, avatarIndex, chaos, custom, diff, mode);
 
         currentSave.player.setWorldPosY((int) (currentSave.world.getData().playerStartPosY * currentSave.world.getData().height * currentSave.world.getTileSize()));

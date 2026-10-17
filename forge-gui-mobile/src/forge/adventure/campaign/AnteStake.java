@@ -10,7 +10,7 @@ import java.util.List;
  * The cards each side puts up before a campaign duel. Exact printings; order is irrelevant.
  */
 public class AnteStake {
-    public enum Kind { NORMAL, RECLAMATION }
+    public enum Kind { NORMAL, TARGETED, RECLAMATION }
 
     public final Kind kind;
     public final List<PaperCard> playerCards;

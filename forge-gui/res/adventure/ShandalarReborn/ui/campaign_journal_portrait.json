@@ -1,0 +1,70 @@
+{
+  "width": 270,
+  "height": 480,
+  "yDown": true,
+  "elements": [
+    {
+      "type": "Image",
+      "image": "ui/title_bg.png",
+      "width": 270,
+      "height": 480
+    },
+    {
+      "type": "Window",
+      "name": "paper",
+      "style": "paper",
+      "x": 10,
+      "y": 10,
+      "width": 250,
+      "height": 460
+    },
+    {
+      "type": "Label",
+      "name": "heading",
+      "text": "[BLACK]Campaign journal",
+      "x": 24,
+      "y": 22,
+      "width": 222,
+      "height": 18
+    },
+    {
+      "type": "Table",
+      "name": "content",
+      "x": 20,
+      "y": 50,
+      "width": 230,
+      "height": 376
+    },
+    {
+      "type": "TextButton",
+      "name": "previous",
+      "text": "Previous",
+      "selectable": true,
+      "x": 20,
+      "y": 436,
+      "width": 76,
+      "height": 26
+    },
+    {
+      "type": "TextButton",
+      "name": "next",
+      "text": "Next",
+      "selectable": true,
+      "x": 97.0,
+      "y": 436,
+      "width": 76,
+      "height": 26
+    },
+    {
+      "type": "TextButton",
+      "name": "return",
+      "text": "Back",
+      "binding": "Back",
+      "selectable": true,
+      "x": 174,
+      "y": 436,
+      "width": 76,
+      "height": 26
+    }
+  ]
+}
