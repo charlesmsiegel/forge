@@ -433,5 +433,20 @@
       "LegendaryLandmark",
       "BiomeGreen"
     ]
+  },
+  {
+    "name": "HistoricalCrossroads",
+    "displayName": "Historical Crossroads",
+    "type": "dungeon",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "MageTower",
+    "map": "../ShandalarReborn/maps/map/realm_crossroads.tmx",
+    "radiusFactor": 0.6,
+    "questTags": [
+      "Historical",
+      "Portal",
+      "Hub"
+    ]
   }
 ]

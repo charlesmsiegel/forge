@@ -89,9 +89,12 @@ public class CampaignTradeTest extends AdventureTestBase {
     @Test
     public void collectorAndDefaultMilestonesArePresentInTownContent() throws Exception {
         CampaignConfig config = CampaignConfig.load(PLANE_DIR + "campaign.json");
-        assertEquals(config.trades.length, 3);
+        assertTrue(java.util.Arrays.stream(config.trades).map(recipe -> recipe.id).collect(java.util.stream.Collectors.toSet())
+                .containsAll(java.util.Set.of("tempest-common-rare", "stronghold-common-rare", "exodus-common-rare")));
         for (var recipe : config.trades) CampaignTrades.validate(recipe);
-        assertEquals(config.progression.milestones.length, 3);
+        CampaignProgress.validateRules(config.progression);
+        assertTrue(java.util.Arrays.stream(config.progression.milestones).map(milestone -> milestone.id).collect(java.util.stream.Collectors.toSet())
+                .containsAll(java.util.Set.of("rath-first-clear", "rath-second-clear", "rath-master-collector")));
         String town = java.nio.file.Files.readString(java.nio.file.Path.of(PLANE_DIR + "maps/map/sr_town.tmx"));
         assertTrue(town.contains("campaignServices"), "existing towns need a reachable collector");
     }
