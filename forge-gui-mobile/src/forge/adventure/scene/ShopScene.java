@@ -64,16 +64,19 @@ public class ShopScene extends ForgeScene {
     }
 
     private void processAutoSell() {
-        if (FModel.getPreferences().getPrefBoolean(ForgePreferences.FPref.PROMPT_FOR_AUTOSELL)) {
+        boolean touchesProtection = forge.adventure.campaign.CampaignState.instance()
+                .saleTouchesProtection(Current.player(), Current.player().autoSellCards);
+        if (touchesProtection || FModel.getPreferences().getPrefBoolean(ForgePreferences.FPref.PROMPT_FOR_AUTOSELL)) {
             int profit = 0;
             int cards = 0;
             for (PaperCard cardToSell : Current.player().autoSellCards.toFlatList()) {
                 cards++;
                 profit += getCardPrice(cardToSell);
             }
-            if (profit == 0 || cards == 0)
+            if ((!touchesProtection && profit == 0) || cards == 0)
                 return;
-            FOptionPane.showConfirmDialog(Forge.getLocalizer().getMessage("lblSellAllConfirm", cards, profit),
+            FOptionPane.showConfirmDialog((touchesProtection ? "Autosell includes protected physical copies and will free their slots.\n" : "")
+                            + Forge.getLocalizer().getMessage("lblSellAllConfirm", cards, profit),
                 Forge.getLocalizer().getMessage("lblAutoSellable"), Forge.getLocalizer().getMessage("lblSell"),
                 Forge.getLocalizer().getMessage("lblCancel"), false, result -> {
                     if (result) {

@@ -105,6 +105,7 @@ public class DuelScene extends ForgeScene {
     /** Shandalar Reborn: cards at stake in this duel (null = no campaign ante). */
     private AnteStake campaignStake;
     private boolean campaignAnteActive;
+    private volatile forge.adventure.campaign.PublicCardObserver campaignObserver;
 
     private EnemySprite campaignStakeEnemy;
 
@@ -244,8 +245,14 @@ public class DuelScene extends ForgeScene {
                         anteWonCards, anteLostCards, campaignStake)
                     : CampaignState.instance().onPhysicalMatchEnd(enemy.campaignRivalId, enemy.getData(), winner,
                         physicalAnte, campaignStake);
-            if (rivalId != null)
+            if (rivalId != null) {
                 enemy.campaignRivalId = rivalId;
+                if (campaignObserver != null) {
+                    campaignObserver.snapshot();
+                    for (PaperCard seen : campaignObserver.observations())
+                        CampaignState.instance().knowledge().observe(rivalId, seen);
+                }
+            }
             CampaignLog.event("match")
                     .with("enemy", enemyName)
                     .with("enemyTemplate", enemy.getData().name)
@@ -261,6 +268,7 @@ public class DuelScene extends ForgeScene {
                     .write();
         }
         campaignStake = null;
+        campaignObserver = null;
         boolean showMessages = enemy.getData().boss || (enemy.getData().copyPlayerDeck && Current.player().isUsingCustomDeck());
         Current.player().clearBlessing();
 
@@ -516,6 +524,9 @@ public class DuelScene extends ForgeScene {
         if (!campaignAnteActive || campaignStakeEnemy != enemy)
             campaignStake = null; // a pre-set stake only applies to the enemy it was rolled for
         campaignStakeEnemy = null;
+        Deck preparedCampaignDeck = enemy.campaignEncounter().take();
+        if (!campaignAnteActive) preparedCampaignDeck = null;
+        campaignObserver = null;
 
         List<RegisteredPlayer> players = new ArrayList<>();
 
@@ -613,7 +624,8 @@ public class DuelScene extends ForgeScene {
                 deck = eventData.nextOpponent.getDeck();
             } else {
                 boolean useGeneticAI = Config.instance().getConfigData().enableGeneticAI && (Current.player().isUsingCustomDeck() || Current.player().isHardorInsaneDifficulty());
-                deck = currentEnemy.copyPlayerDeck ? this.playerDeck : currentEnemy.generateDeck(Current.player().isFantasyMode(), useGeneticAI);
+                deck = i == 0 && preparedCampaignDeck != null ? preparedCampaignDeck
+                        : currentEnemy.copyPlayerDeck ? this.playerDeck : currentEnemy.generateDeck(Current.player().isFantasyMode(), useGeneticAI);
             }
             if (deck == null) {
                 isDeckMissing = true;
@@ -623,10 +635,21 @@ public class DuelScene extends ForgeScene {
                 System.err.println(isDeckMissingMsg);
                 deck = this.eventData == null && canUseGeneticAI ? Aggregates.random(DeckProxy.getAllGeneticAIDecks()).getDeck() : this.playerDeck;
             }
+            if (i == 0 && enemy.campaignLandmarkSlot != null)
+                deck = forge.adventure.campaign.CampaignLandmarks.encounterDeck(deck,
+                        CampaignState.instance().seededLegends().entry(enemy.campaignLandmarkSlot));
+            if (i == 0 && enemy.campaignStoryEncounter != null) {
+                var storyConfig = CampaignConfig.instance();
+                if (forge.adventure.campaign.CampaignStory.encounter(storyConfig, enemy.campaignStoryEncounter).cards.length > 0)
+                    deck = forge.adventure.campaign.CampaignStory.deck(storyConfig, enemy.campaignStoryEncounter,
+                            CampaignState.instance().universeFor(storyConfig));
+            }
             RegisteredPlayer aiPlayer = RegisteredPlayer.forVariants(playerCount, appliedVariants, deck, null, false, null, null);
             if (campaignAnteActive && i == 0) {
                 if (campaignStake == null)
-                    campaignStake = AnteService.normalStake(playerDeck, deck, campaign.ante, MyRandom.getRandom());
+                    campaignStake = AnteService.normalStake(advPlayer, deck, campaign.ante, MyRandom.getRandom());
+                if (campaignStake.kind == AnteStake.Kind.TARGETED)
+                    AnteService.validateTargetedStake(campaignStake, deck, CampaignState.instance().knowledge(), enemy.campaignRivalId);
                 campaignStake = AnteService.preparePhysicalAnte(advPlayer, humanPlayer, aiPlayer, campaignStake, MyRandom.getRandom());
                 humanPlayer.setAnteCards(campaignStake.playerCards);
                 aiPlayer.setAnteCards(campaignStake.opponentCards);
@@ -705,6 +728,13 @@ public class DuelScene extends ForgeScene {
         final boolean showIntro = chaosBattle || isDeckMissing || enemy.getData().boss
             || (enemy.getData().copyPlayerDeck && Current.player().isUsingCustomDeck());
         MatchController.setIntroShowing(showIntro);
+        hostedMatch.setGameCreatedHook(campaignAnteActive ? observedGame -> {
+            for (Player observer : observedGame.getPlayers())
+                if (observer.getRegisteredPlayer() == humanPlayer) {
+                    campaignObserver = new forge.adventure.campaign.PublicCardObserver(observedGame, observer);
+                    break;
+                }
+        } : null);
         hostedMatch.startMatch(rules, appliedVariants, players, guiMap, bossBattle ? MusicPlaylist.BOSS : MusicPlaylist.MATCH);
         MatchController.instance.setGameView(hostedMatch.getGameView());
         boolean showMessages = enemy.getData().boss || (enemy.getData().copyPlayerDeck && Current.player().isUsingCustomDeck());
@@ -755,6 +785,9 @@ public class DuelScene extends ForgeScene {
     private static final String PLACEHOLDER_CONTRAPTION = "Automatic Fidget Spinner";
 
     private void applyAdventureDeckRules(DeckFormat format) {
+        // Campaign Constructed decks passed the ownership/earned-ability gate. Do not silently
+        // remove earned extra copies (including Master Collector printings) at duel startup.
+        if (CampaignConfig.instance().isActive() && eventData == null && !isArena && !chaosBattle) return;
         if(FModel.getPreferences().getPrefBoolean(ForgePreferences.FPref.DEV_MODE_ENABLED)
                 && !FModel.getPreferences().getPrefBoolean(ForgePreferences.FPref.ENFORCE_DECK_LEGALITY))
             return;

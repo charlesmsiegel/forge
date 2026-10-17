@@ -140,8 +140,12 @@ public class Config {
         }
     }
 
+    public ConfigData getPlaneConfigData() { return configData; }
+
     public ConfigData getConfigData() {
-        return configData;
+        forge.adventure.campaign.CardUniverse universe = forge.adventure.campaign.CampaignState.instance()
+                .universeFor(forge.adventure.campaign.CampaignConfig.instance());
+        return universe == null ? configData : universe.generationConfig(configData);
     }
 
     // Push the plane's allowed/restricted editions and restricted token pairs into TokenDb.

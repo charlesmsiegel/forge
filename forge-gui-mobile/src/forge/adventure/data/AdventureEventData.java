@@ -59,6 +59,8 @@ public class AdventureEventData implements Serializable {
     public Deck rewardDeck; //Copy of registered before basic lands are added for event reward purposes
     public List<Deck> jumpstartBoosters = new ArrayList<>();
     public boolean isDraftComplete = false;
+    public boolean campaignPoolClaimed;
+    public boolean campaignPhantom;
     public String description = "";
     public String[] packConfiguration = new String[0];
     public transient CardBlock cardBlock;
@@ -80,6 +82,9 @@ public class AdventureEventData implements Serializable {
         eventStatus = other.eventStatus;
         format = other.format;
         registeredDeck = other.registeredDeck;
+        rewardDeck = other.rewardDeck;
+        campaignPoolClaimed = other.campaignPoolClaimed;
+        campaignPhantom = other.campaignPhantom;
         isDraftComplete = other.isDraftComplete;
         description = other.description;
         cardBlockName = other.cardBlockName;
@@ -99,7 +104,7 @@ public class AdventureEventData implements Serializable {
 
     private Random getEventRandom() {
         if (random == null)
-            random = (eventSeed > 0 ? new Random(eventSeed) : new Random());
+            random = new Random(eventSeed);
         return random;
     }
 
@@ -142,6 +147,7 @@ public class AdventureEventData implements Serializable {
     }
 
     public void setEventSeed(long seed) {
+        eventSeed = seed;
         getEventRandom().setSeed(seed);
     }
 
@@ -208,7 +214,8 @@ public class AdventureEventData implements Serializable {
     private static CardBlock pickWeightedCardBlock() {
         CardEdition.Collection editions = FModel.getMagicDb().getEditions();
         ConfigData configData = Config.instance().getConfigData();
-        Predicate<CardEdition> filter = CardEdition.Predicates.CAN_MAKE_BOOSTER;
+        Predicate<CardEdition> filter = CardEdition.Predicates.CAN_MAKE_BOOSTER
+                .and(forge.adventure.campaign.CampaignLimited::isEditionAvailable);
 
         if(configData.allowedEvents != null && configData.allowedEvents.length > 0) {
             Set<String> allowedEvents = Set.of(configData.allowedEvents);
@@ -732,12 +739,20 @@ public class AdventureEventData implements Serializable {
     public Map<Integer, List<AdventureEventMatch>> matches = new HashMap<>();
 
     public void giveRewards() {
+        if (eventStatus == AdventureEventController.EventStatus.Awarded) return;
+        if (forge.adventure.campaign.CampaignLimited.isCampaignLimited(this))
+            forge.adventure.campaign.CampaignLimited.claimPool(this, forge.adventure.player.AdventurePlayer.current());
         int wins = matchesWon;
         Array<Reward> ret = new Array<>();
 
         //Todo: this should be automatic... "somehow"
 
-        if (format == AdventureEventController.EventFormat.Draft) {
+        if (forge.adventure.campaign.CampaignLimited.isCampaignLimited(this)) {
+            // Campaign participants already keep the actual pool, independently of wins.
+            rewards[3] = new AdventureEventReward();
+            rewards[3].minWins = 0;
+            rewards[3].maxWins = Integer.MAX_VALUE;
+        } else if (format == AdventureEventController.EventFormat.Draft) {
 
             rewards[3] = new AdventureEventReward();
             rewards[3].minWins = 3;

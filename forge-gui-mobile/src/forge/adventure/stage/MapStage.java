@@ -24,6 +24,7 @@ import com.github.tommyettinger.textra.TypingAdapter;
 import com.github.tommyettinger.textra.TypingLabel;
 import forge.Forge;
 import forge.adventure.campaign.CampaignState;
+import forge.adventure.campaign.CampaignConfig;
 import forge.adventure.campaign.ExpeditionGateActor;
 import forge.adventure.campaign.DeckRepairGate;
 import forge.adventure.campaign.DungeonLife;
@@ -334,8 +335,10 @@ public class MapStage extends GameStage {
             canFailDungeon = false;
         }
         if (MP.get("preventEscape") != null) preventEscape = (boolean) MP.get("preventEscape");
-        persistentLifeMap = MP.get("persistentLife") instanceof Boolean && (Boolean) MP.get("persistentLife");
-        if (persistentLifeMap && sourceMap.isEmpty()) //entering the dungeon from the world map
+        boolean inHistoricalRealm = CampaignState.instance().expedition().isActive()
+                && CampaignConfig.instance().hasRealm(CampaignState.instance().expedition().getRegionId());
+        persistentLifeMap = inHistoricalRealm || (MP.get("persistentLife") instanceof Boolean && (Boolean) MP.get("persistentLife"));
+        if (persistentLifeMap && !inHistoricalRealm && sourceMap.isEmpty()) //entering the dungeon from the world map
             DungeonLife.onEnter(Current.player());
 
         if (MP.get("music") != null && !MP.get("music").toString().isEmpty()) {
@@ -556,6 +559,10 @@ public class MapStage extends GameStage {
                         addMapActor(obj, portal);
                         break;
                     case "expeditionGate": { //Shandalar Reborn: enter/retreat portal of a historical region.
+                        // Reused Stronghold maps expose block continuation only during that block run.
+                        if ("advance".equals(prop.get("mode")) && (prop.get("region") == null
+                                || !CampaignState.instance().expedition().isActive()
+                                || !prop.get("region").equals(CampaignState.instance().expedition().getRegionId()))) break;
                         float gx = Float.parseFloat(prop.get("x").toString());
                         float gy = Float.parseFloat(prop.get("y").toString());
                         float gw = Float.parseFloat(prop.get("width").toString());
@@ -591,16 +598,29 @@ public class MapStage extends GameStage {
                     case "enemy":
                         if (!canSpawn(prop)) break;
                         Object enemy = prop.get("enemy");
+                        forge.adventure.campaign.CampaignConfig.StoryEncounter storyEntry = null;
+                        if (prop.get("storyEncounter") != null) {
+                            if (!CampaignConfig.instance().isActive()) break;
+                            storyEntry = forge.adventure.campaign.CampaignStory.encounter(CampaignConfig.instance(), prop.get("storyEncounter").toString());
+                            enemy = storyEntry.enemy;
+                        }
+                        forge.adventure.campaign.SeededLegends.Entry landmarkEntry = null;
+                        if (prop.get("seedSlot") != null) {
+                            landmarkEntry = CampaignState.instance().seededLegends().entry(prop.get("seedSlot").toString());
+                            if (landmarkEntry == null) break;
+                            enemy = landmarkEntry.enemy();
+                        }
                         if (enemy != null && !enemy.toString().isEmpty()) {
                             EnemyData EN = WorldData.getEnemy(enemy.toString());
                             if (EN == null) {
+                                if (landmarkEntry != null || storyEntry != null) throw new IllegalArgumentException("Unknown authored encounter enemy " + enemy);
                                 System.err.printf("Enemy \"%s\" not found, choosing a random one for current biome\n", enemy);
                                 forge.adventure.world.World world = Current.world();
                                 Vector2 poiPos = AdventureQuestController.instance().mostRecentPOI.getPosition();
                                 int currentBiome = forge.adventure.world.World.highestBiome(world.getBiome((int) poiPos.x / world.getTileSize(), (int) poiPos.y / world.getTileSize()));
                                 EN = world.getData().GetBiomes().get(currentBiome).getEnemy(1.0f);
                             }
-                            EnemySprite mob = new EnemySprite(id, EN);
+                            EnemySprite mob = new EnemySprite(id, landmarkEntry == null && storyEntry == null ? EN : new EnemyData(EN));
                             Object dialogObject = prop.get("dialog"); //Check if the enemy has a dialogue attached to it.
                             if (dialogObject != null && !dialogObject.toString().isEmpty()) {
                                 mob.dialog = new MapDialog(dialogObject.toString(), this, mob.getId(), currentMap);
@@ -629,6 +649,8 @@ public class MapStage extends GameStage {
                             if (dialogObject != null && !dialogObject.toString().isEmpty()) {
                                 mob.completesRegion = dialogObject.toString();
                             }
+                            if (prop.get("completesRealm") != null) mob.completesRealm = prop.get("completesRealm").toString();
+                            if (prop.get("completesChapter") != null) mob.completesChapter = prop.get("completesChapter").toString();
                             if (prop.containsKey("threatRange")) //Check for threat range.
                             {
                                 mob.threatRange = Float.parseFloat(prop.get("threatRange").toString());
@@ -676,6 +698,14 @@ public class MapStage extends GameStage {
                                 mob.speedModifier = Float.parseFloat(prop.get("speedModifier").toString());
                             }
 
+                            if (landmarkEntry != null) {
+                                mob.campaignLandmarkSlot = landmarkEntry.slot();
+                                mob.nameOverride = landmarkEntry.card().getName();
+                            }
+                            if (storyEntry != null) {
+                                mob.campaignStoryEncounter = storyEntry.id;
+                                mob.nameOverride = storyEntry.name;
+                            }
                             enemies.add(mob);
                             addMapActor(obj, mob);
                         }
@@ -716,6 +746,25 @@ public class MapStage extends GameStage {
                         break;
                     case "spellsmith":
                         addMapActor(obj, new OnCollide(() -> Forge.switchScene(SpellSmithScene.instance())));
+                        break;
+                    case "campaignChronicler":
+                        if (!CampaignConfig.instance().isActive()) break;
+                        if (obj instanceof TiledMapTileMapObject chroniclerObject)
+                            addMapActor(obj, new TextureSprite(chroniclerObject.getTextureRegion()));
+                        addMapActor(obj, new OnCollide(() -> forge.adventure.campaign.CampaignChronicler.show(this)));
+                        break;
+                    case "campaignLimited":
+                        if (!CampaignConfig.instance().isActive()) break;
+                        if (obj instanceof TiledMapTileMapObject limitedObject)
+                            addMapActor(obj, new TextureSprite(limitedObject.getTextureRegion()));
+                        String organizerId = prop.get("organizer") == null ? "" : prop.get("organizer").toString();
+                        addMapActor(obj, new OnCollide(() -> forge.adventure.campaign.CampaignLimitedOrganizer.show(this, organizerId, currentMap, id)));
+                        break;
+                    case "campaignServices":
+                        if (!CampaignConfig.instance().isActive()) break;
+                        if (obj instanceof TiledMapTileMapObject serviceObject)
+                            addMapActor(obj, new TextureSprite(serviceObject.getTextureRegion()));
+                        addMapActor(obj, new OnCollide(() -> forge.adventure.campaign.CampaignServices.show(this)));
                         break;
                     case "shardtrader":
                         MapActor shardTraderActor = new OnCollide(() -> Forge.switchScene(ShardTraderScene.instance()));
@@ -1127,14 +1176,57 @@ public class MapStage extends GameStage {
     protected void getReward() {
         isLoadingMatch = false;
         Array<Reward> rewards = currentMob.getRewards();
-        if (currentMob.completesRegion != null && !currentMob.completesRegion.isEmpty()) {
-            java.util.List<forge.deck.Deck> packs = CampaignState.instance().onRegionCompleted(currentMob.completesRegion, Current.player());
-            int completion = CampaignState.instance().completions(currentMob.completesRegion);
-            pendingCampaignMessage = "[GOLD]" + Character.toUpperCase(currentMob.completesRegion.charAt(0)) + currentMob.completesRegion.substring(1)
-                    + " completed![WHITE] (clear #" + completion + ")\n"
-                    + (packs.isEmpty() ? "" : packs.size() + " unopened " + packs.get(0).getComment()
-                    + " booster" + (packs.size() == 1 ? "" : "s") + " added to your inventory. Open them one at a time from the Inventory screen.\n")
-                    + "Use the exit portal or the map exit to return to Shandalar; this region resets when you leave.";
+        CampaignState campaign = CampaignState.instance();
+        forge.adventure.campaign.HistoricalRealm.Chapter activeChapter = null;
+        try {
+            if (currentMob.campaignStoryEncounter != null) {
+                var storyConfig = CampaignConfig.instance();
+                var storyEntry = forge.adventure.campaign.CampaignStory.encounter(storyConfig, currentMob.campaignStoryEncounter);
+                boolean firstVictory = !campaign.deeds().has("encounter." + storyEntry.id);
+                var unique = forge.adventure.campaign.CampaignStory.resolve(storyConfig, storyEntry.id, true, Current.player(),
+                        campaign.deeds(), campaign.universeFor(storyConfig));
+                if (firstVictory) pendingCampaignMessage = "[GOLD]" + storyEntry.name + " defeated![WHITE]\nYour title: "
+                        + forge.adventure.campaign.CampaignStory.title(campaign.deeds())
+                        + (unique.isEmpty() ? "" : "\nReceived " + DuelScene.describeAll(unique) + ".")
+                        + (storyEntry.pursuit.isBlank() ? "\nYour deed is remembered across Shandalar."
+                        : "\nThe pursuit is open. Return to this figure or ask the Chronicler to follow the path home.");
+            }
+            if (currentMob.campaignLandmarkSlot != null) {
+                forge.item.PaperCard card = campaign.onLandmarkResult(currentMob.campaignLandmarkSlot, true, Current.player());
+                if (card != null) pendingCampaignMessage = "[GOLD]Legendary landmark mastered![WHITE]\nReceived "
+                        + DuelScene.describeAll(java.util.List.of(card)) + ". The Chronicler will remember this deed.";
+            }
+            activeChapter = campaign.activeRealmChapter();
+            if (activeChapter != null && ((activeChapter.id.equals(currentMob.completesChapter)
+                    && campaign.expedition().getRegionId().equals(currentMob.completesRealm))
+                    || (!activeChapter.legacyRegion.isEmpty() && activeChapter.legacyRegion.equals(currentMob.completesRegion)))) {
+                java.util.List<forge.deck.Deck> packs = campaign.onChapterCompleted(campaign.expedition().getRegionId(), activeChapter.id, Current.player());
+                forge.adventure.campaign.RealmProgress progress = campaign.realmProgress(campaign.expedition().getRegionId());
+                pendingCampaignMessage = "[GOLD]" + activeChapter.name + " completed![WHITE]\n"
+                        + packs.size() + " unopened " + activeChapter.boosterEdition + " boosters added to your inventory.\n"
+                        + (progress.isRunComplete() ? "The expedition is complete. Use the portal to return to Shandalar."
+                        : "The next set checkpoint is secured. Use the portal to continue, or return home and resume there later.");
+                if (progress.isRunComplete() && !progress.isSingleChapter()) {
+                    forge.adventure.campaign.CampaignProgress earned = campaign.progression();
+                    pendingCampaignMessage += "\nFull block clear #" + earned.fullClears(campaign.expedition().getRegionId())
+                            + ". Ordinary copy limit: " + earned.ordinaryLimit(CampaignConfig.instance().player.ordinaryCopyLimit)
+                            + "; protection slots: " + earned.protectionSlots() + ". Visit the Collector in town to manage protection."
+                            + (earned.restrictedChoiceTokens() > 0 ? " An extra restricted-copy choice is available." : "")
+                            + (earned.isMasterCollector() ? " Master Collector is unlocked." : "");
+                }
+            } else if (activeChapter == null && currentMob.completesRegion != null && !currentMob.completesRegion.isEmpty()) {
+                java.util.List<forge.deck.Deck> packs = campaign.onRegionCompleted(currentMob.completesRegion, Current.player());
+                int completion = campaign.completions(currentMob.completesRegion);
+                pendingCampaignMessage = "[GOLD]" + Character.toUpperCase(currentMob.completesRegion.charAt(0)) + currentMob.completesRegion.substring(1)
+                        + " completed![WHITE] (clear #" + completion + ")\n"
+                        + (packs.isEmpty() ? "" : packs.size() + " unopened " + packs.get(0).getComment()
+                        + " boosters added to your inventory. Open them one at a time from the Inventory screen.\n")
+                        + "Use the exit portal or the map exit to return to Shandalar; this region resets when you leave.";
+            }
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            pendingCampaignMessage = "Chapter reward could not be granted: " + e.getMessage()
+                    + "\nNo completion was recorded. Return home and retry after correcting the realm configuration.";
+            System.err.println(pendingCampaignMessage);
         }
         RewardScene.instance().loadRewards(rewards, RewardScene.Type.Loot, null);
         Forge.switchScene(RewardScene.instance());
@@ -1267,7 +1359,9 @@ public class MapStage extends GameStage {
                     EnemySprite mob = (EnemySprite) actor;
                     currentMob = mob;
                     resetPosition();
-                    if (mob.campaignRivalId != null) { //Shandalar Reborn rival: offer normal duel / reclamation / leave.
+                    if (mob.campaignStoryEncounter != null) {
+                        forge.adventure.campaign.CampaignStoryEncounter.show(this, mob);
+                    } else if (mob.campaignRivalId != null) { //Shandalar Reborn rival: offer normal duel / reclamation / leave.
                         RivalEncounter.start(this, mob);
                     } else if (mob.dialog != null && mob.dialog.canShow()) { //This enemy has something to say. Display a dialog like if it was a DialogActor but only if dialogue is possible.
                         mob.dialog.activate();
@@ -1320,6 +1414,10 @@ public class MapStage extends GameStage {
     
     public void beginDuel(EnemySprite mob) {
         if (mob == null) return;
+        if (mob.campaignStoryEncounter != null && !forge.adventure.campaign.CampaignStory.canChallenge(
+                CampaignConfig.instance(), mob.campaignStoryEncounter, CampaignState.instance().deeds())) {
+            forge.adventure.campaign.CampaignStoryEncounter.show(this, mob); return;
+        }
         if (!DeckRepairGate.ensureDeckLegal(this)) {
             mob.freezeMovement();
             resetPosition();

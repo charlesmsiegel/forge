@@ -12,6 +12,10 @@ public final class DungeonLife {
     private DungeonLife() {
     }
 
+    public static boolean shouldAutoHealLocation(String rootType, boolean persistentMap, boolean activeCampaign) {
+        return ("town".equals(rootType) || "capital".equals(rootType)) && !(activeCampaign && persistentMap);
+    }
+
     /** Entering a persistent-life dungeon from the world map: start at full life. */
     public static void onEnter(AdventurePlayer player) {
         player.resetToMaxLife();

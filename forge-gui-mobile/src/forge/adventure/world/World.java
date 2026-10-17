@@ -53,6 +53,8 @@ public class World implements Disposable, SaveFileContent {
     private Pixmap globalTileDrawing = null;
     private Pixmap emptyTile = null;
 
+    public long getSeed() { return seed; }
+
     public Random getRandom() {
         return random;
     }
@@ -111,6 +113,11 @@ public class World implements Disposable, SaveFileContent {
 
         biomeImage = saveFileData.readPixmap("biomeImage");
         biomeMap = (long[][]) saveFileData.readObject("biomeMap");
+        int currentBiomes = data.GetBiomes().size();
+        int legacyBiomes = forge.adventure.campaign.CampaignConfig.instance().worldRules.legacyBiomeCount;
+        int savedBiomes = saveFileData.containsKey("biomeCount") ? saveFileData.readInt("biomeCount")
+                : (forge.adventure.campaign.CampaignConfig.instance().isActive() && legacyBiomes > 0 ? legacyBiomes : currentBiomes);
+        BiomeIndexMigration.remapRoadBit(biomeMap, savedBiomes, currentBiomes);
         terrainMap = (int[][]) saveFileData.readObject("terrainMap");
 
 
@@ -130,6 +137,7 @@ public class World implements Disposable, SaveFileContent {
 
         data.store("biomeImage", biomeImage);
         data.storeObject("biomeMap", biomeMap);
+        data.store("biomeCount", this.data.GetBiomes().size());
         data.storeObject("terrainMap", terrainMap);
         data.store("width", width);
         data.store("height", height);
@@ -316,6 +324,7 @@ public class World implements Disposable, SaveFileContent {
             }
             this.seed = seed;
             random.setSeed(seed);
+            forge.adventure.campaign.CampaignState.instance().initializeWorld(seed, forge.adventure.campaign.CampaignConfig.instance());
             OpenSimplexNoise noise = new OpenSimplexNoise(seed);
 
             float noiseZoom = data.noiseZoomBiome;
@@ -469,7 +478,8 @@ public class World implements Disposable, SaveFileContent {
                 running = false;
                 for (BiomeData biome : data.GetBiomes()) {
                     biomeIndex2++;
-                    for (PointOfInterestData poi : biome.getPointsOfInterest()) {
+                    for (PointOfInterestData template : biome.getPointsOfInterest()) {
+                        PointOfInterestData poi = forge.adventure.campaign.CampaignLandmarks.pointData(template);
                         for (int i = 0; i < poi.count; i++) {
                             for (int counter = 0; counter < 500; counter++)//tries 500 times to find a free point
                             {

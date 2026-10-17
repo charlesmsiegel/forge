@@ -88,8 +88,15 @@ public class EnemySprite extends CharacterSprite implements Steerable<Vector2> {
     public String questStageID;
     /** Shandalar Reborn: id of the persistent rival this sprite represents, or null for a generic enemy. */
     public String campaignRivalId;
+    public String campaignLandmarkSlot;
+    public String campaignStoryEncounter;
     /** Shandalar Reborn: defeating this enemy completes the named region (Tiled property completesRegion). */
     public String completesRegion;
+    /** Historical chapter boss metadata; separate from the legacy standalone completion. */
+    public String completesRealm;
+    public String completesChapter;
+    private final forge.adventure.campaign.PreparedCampaignEncounter campaignEncounter = new forge.adventure.campaign.PreparedCampaignEncounter();
+    public forge.adventure.campaign.PreparedCampaignEncounter campaignEncounter() { return campaignEncounter; }
     private ProgressableGraphPath<NavigationVertex> navPath;
     public Vector2 fleeTarget;
     private final Vector2 spriteToPlayerVec = new Vector2();

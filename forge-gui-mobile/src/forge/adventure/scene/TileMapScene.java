@@ -174,19 +174,13 @@ public class TileMapScene extends HudScene {
 
     public PointOfInterest rootPoint;
     String oldMap;
-    private final static String[] AUTO_HEAL_LOCATIONS = { "capital", "town" };
     public boolean isAutoHealLocation() {
         if (rootPoint == null || rootPoint.getData() == null) {
             return false;
         }
 
-        String currentType = rootPoint.getData().type;
-        for (int i = 0; i < AUTO_HEAL_LOCATIONS.length; i++) {
-            if (AUTO_HEAL_LOCATIONS[i].equals(currentType)) {
-                return true;
-            }
-        }
-        return false;
+        return forge.adventure.campaign.DungeonLife.shouldAutoHealLocation(rootPoint.getData().type,
+                ((MapStage) stage).isPersistentLifeMap(), forge.adventure.campaign.CampaignConfig.instance().isActive());
     }
 
     public MapResumeState captureResumeState() {

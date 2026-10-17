@@ -474,6 +474,7 @@ public class WorldStage extends GameStage implements SaveFileContent {
             foregroundSprites.removeActor(enemy.getValue());
         enemies.clear();
         background.clear();
+        if (player != null) foregroundSprites.removeActor(player);
         player = null;
     }
 

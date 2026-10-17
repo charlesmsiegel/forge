@@ -376,11 +376,14 @@ public abstract class GameStage extends Stage {
     public GameStage() {
         super(new ScalingViewport(Scaling.stretch, Scene.getIntendedWidth(), Scene.getIntendedHeight(), new OrthographicCamera()), Forge.getGraphics().getBatch());
         WorldSave.getCurrentSave().onLoad(() -> {
-            if (player == null)
+            if (player == null && !(GameStage.this instanceof WorldStage))
                 return;
-            foregroundSprites.removeActor(player);
+            if (player != null) foregroundSprites.removeActor(player);
             player = null;
-            GameStage.this.getPlayerSprite();
+            PlayerSprite restored = GameStage.this.getPlayerSprite();
+            // Quick-load switches away from the same world scene after these callbacks.
+            // Its leave() must store restored coordinates, not the new actor's default zero.
+            if (GameStage.this instanceof WorldStage) restored.LoadPos();
         });
         camera = (OrthographicCamera) getCamera();
 

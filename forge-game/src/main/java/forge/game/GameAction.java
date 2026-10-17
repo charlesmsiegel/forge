@@ -2229,6 +2229,7 @@ public class GameAction {
         final Player owner = cards.getFirst().getOwner();
         for (final Player p : to) {
             p.getController().reveal(cards, zone, owner, messagePrefix, addSuffix);
+            game.fireEvent(new GameEventCardsRevealed(cards.stream().map(Card::getView).toList(), p.getView()));
         }
     }
 
@@ -2258,6 +2259,7 @@ public class GameAction {
                 continue;
             }
             p.getController().reveal(cards, zt, cardOwner, messagePrefix, msgAddSuffix);
+            game.fireEvent(new GameEventCardsRevealed(cards.stream().map(Card::getView).toList(), p.getView()));
         }
     }
 

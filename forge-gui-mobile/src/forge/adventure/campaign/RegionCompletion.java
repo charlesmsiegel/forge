@@ -20,6 +20,7 @@ public final class RegionCompletion {
     }
 
     public static SealedTemplate boosterTemplate(String edition) {
+        CampaignState.instance().requireCampaignEdition(edition);
         SealedTemplate template = StaticData.instance().getBoosters().get(edition);
         if (template == null)
             throw new IllegalArgumentException("No booster template for edition " + edition);
@@ -56,6 +57,7 @@ public final class RegionCompletion {
             List<PaperCard> cards = BoosterGenerator.getBoosterPack(template);
             Deck pack = new Deck();
             pack.getMain().add(cards);
+            CampaignState.instance().filterGeneratedPack(pack);
             pack.setName(label == null ? editionName + " Booster"
                     : editionName + " Booster (" + label + " " + (i + 1) + "/" + count + ")");
             pack.setComment(edition);
