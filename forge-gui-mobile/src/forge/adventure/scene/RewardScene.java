@@ -2,6 +2,8 @@ package forge.adventure.scene;
 
 import forge.adventure.campaign.CampaignConfig;
 import forge.adventure.campaign.CampaignLog;
+import forge.adventure.campaign.CampaignPresentation;
+import forge.adventure.campaign.CampaignState;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.controllers.Controller;
@@ -46,6 +48,39 @@ public class RewardScene extends UIScene {
     private TypingLabel headerLabel;
     private Vector2 headerLabelOrigPos;
     private boolean autoSell;
+    private TextraLabel packLabel;
+    private CampaignPresentation.PackSummary packSummary;
+    private String packName;
+    private int unopenedPacks;
+    private float originalCardsHeight, originalDoneX, originalDoneWidth;
+    private boolean loadingPack;
+
+    /** Presentation context only: settlement still uses the normal Loot path. */
+    public void loadPack(Deck deck, int unopened) {
+        var summary = CampaignPresentation.pack(deck.getAllCardsInASinglePool(true, true).toFlatList(),
+                CampaignState.instance().ownedCopies(Current.player()));
+        loadingPack = true;
+        try { loadRewards(deck, Type.Loot, null, deck.getTags().contains("noSell")); }
+        finally { loadingPack = false; }
+        packSummary = summary;
+        packName = deck.getName();
+        if (packName.length() > 34) packName = packName.substring(0, 33) + "…";
+        unopenedPacks = Math.max(0, unopened);
+        packLabel.setVisible(true);
+        if (Forge.isLandscapeMode()) { doneButton.setX(400); doneButton.setWidth(74); }
+        updatePackFeedback();
+    }
+
+    private void updatePackFeedback() {
+        if (packSummary == null) return;
+        int revealed = 0;
+        for (Actor actor : generated) if (actor instanceof RewardActor reward && reward.isFlipped()) revealed++;
+        boolean all = revealed == packSummary.cards();
+        String progress = all ? packSummary.newNames() + " new names • " + packSummary.newArts() + " new arts"
+                : revealed + "/" + packSummary.cards() + " revealed • tap a card or Reveal";
+        packLabel.setText("[WHITE][%80]" + packName + " • " + unopenedPacks + " unopened\n" + progress);
+        doneButton.setText(all ? "Collect" : "Reveal");
+    }
 
     private ShopActor shopActor;
     private static RewardScene object;
@@ -87,6 +122,14 @@ public class RewardScene extends UIScene {
         detailButton.setVisible(false);
         doneButton = ui.findActor("done");
         restockButton = ui.findActor("restock");
+        originalDoneX = doneButton.getX(); originalDoneWidth = doneButton.getWidth();
+        Actor cards = ui.findActor("cards");
+        originalCardsHeight = cards.getHeight();
+        packLabel = Controls.newTextraLabel("");
+        packLabel.setBounds(cards.getX(), cards.getY() + cards.getHeight() - 30, cards.getWidth(), 30);
+        packLabel.setWrap(true);
+        packLabel.setVisible(false);
+        ui.addActor(packLabel);
     }
 
     @Override
@@ -207,6 +250,7 @@ public class RewardScene extends UIScene {
     @Override
     public void act(float delta) {
         stage.act(delta);
+        updatePackFeedback();
         ImageCache.getInstance().allowSingleLoad();
         if (doneClicked) {
             if (type == Type.Loot || type == Type.QuestReward) {
@@ -238,6 +282,7 @@ public class RewardScene extends UIScene {
                 break;
             }
         }
+        if (packSummary != null && !exit && shown) return; // Finish the reveal before collection.
         if (exit)
             done(true);
         else if ((type == Type.Loot || type == Type.QuestReward) && !shown) {
@@ -356,6 +401,13 @@ public class RewardScene extends UIScene {
             newRewards.add(r);
         }
 
+        packSummary = null;
+        packLabel.setVisible(false);
+        shown = false;
+        doneButton.setDisabled(false);
+        doneButton.setX(originalDoneX); doneButton.setWidth(originalDoneWidth);
+        Actor cardsArea = ui.findActor("cards");
+        cardsArea.setHeight(originalCardsHeight - (loadingPack ? 32 : 0));
         headerLabel.clearListeners();
         // Sort the rewards based on the rarity of the card inside the reward/ lets give items rarity
         newRewards.sort(Comparator.comparing(reward -> {

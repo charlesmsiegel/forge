@@ -30,10 +30,10 @@
  <properties>
   <property name="persistentLife" type="bool" value="true" />
   <property name="respawnEnemies" type="bool" value="true" />
-  <property name="campaignLayoutRevision" value="authored-v1:d8d5db55df7073ce" />
+  <property name="campaignLayoutRevision" value="authored-v1:93f9e6eca928bb5c" />
  </properties>
  <objectgroup id="900" name="Campaign places">
-  <object id="38" template="../../../common/maps/obj/entry_up.tx" x="272" y="480">
+  <object id="38" template="../../../common/maps/obj/entry_up.tx" x="200" y="480">
    <properties>
     <property name="teleport" value="" />
    </properties>
