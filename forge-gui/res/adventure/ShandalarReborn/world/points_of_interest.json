@@ -63,5 +63,255 @@
       "Expedition",
       "BiomeColorless"
     ]
+  },
+  {
+    "name": "SRWhiteTown",
+    "displayName": "White Town",
+    "type": "town",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "WasteTown",
+    "map": "../ShandalarReborn/maps/map/sr_town.tmx",
+    "radiusFactor": 0.7,
+    "questTags": [
+      "Town",
+      "TownGeneric",
+      "Sidequest",
+      "QuestSource",
+      "BiomeWhite"
+    ]
+  },
+  {
+    "name": "SRWhiteCave",
+    "displayName": "White Wilds Cave",
+    "type": "cave",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "Cave",
+    "map": "../ShandalarReborn/maps/map/sr_cave.tmx",
+    "radiusFactor": 0.8,
+    "questTags": [
+      "Hostile",
+      "Cave",
+      "Dungeon",
+      "Sidequest",
+      "BiomeWhite"
+    ]
+  },
+  {
+    "name": "SRBlueTown",
+    "displayName": "Blue Town",
+    "type": "town",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "WasteTown",
+    "map": "../ShandalarReborn/maps/map/sr_town.tmx",
+    "radiusFactor": 0.7,
+    "questTags": [
+      "Town",
+      "TownGeneric",
+      "Sidequest",
+      "QuestSource",
+      "BiomeBlue"
+    ]
+  },
+  {
+    "name": "SRBlueCave",
+    "displayName": "Blue Wilds Cave",
+    "type": "cave",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "Cave",
+    "map": "../ShandalarReborn/maps/map/sr_cave.tmx",
+    "radiusFactor": 0.8,
+    "questTags": [
+      "Hostile",
+      "Cave",
+      "Dungeon",
+      "Sidequest",
+      "BiomeBlue"
+    ]
+  },
+  {
+    "name": "SRBlackTown",
+    "displayName": "Black Town",
+    "type": "town",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "WasteTown",
+    "map": "../ShandalarReborn/maps/map/sr_town.tmx",
+    "radiusFactor": 0.7,
+    "questTags": [
+      "Town",
+      "TownGeneric",
+      "Sidequest",
+      "QuestSource",
+      "BiomeBlack"
+    ]
+  },
+  {
+    "name": "SRBlackCave",
+    "displayName": "Black Wilds Cave",
+    "type": "cave",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "Cave",
+    "map": "../ShandalarReborn/maps/map/sr_cave.tmx",
+    "radiusFactor": 0.8,
+    "questTags": [
+      "Hostile",
+      "Cave",
+      "Dungeon",
+      "Sidequest",
+      "BiomeBlack"
+    ]
+  },
+  {
+    "name": "SRRedTown",
+    "displayName": "Red Town",
+    "type": "town",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "WasteTown",
+    "map": "../ShandalarReborn/maps/map/sr_town.tmx",
+    "radiusFactor": 0.7,
+    "questTags": [
+      "Town",
+      "TownGeneric",
+      "Sidequest",
+      "QuestSource",
+      "BiomeRed"
+    ]
+  },
+  {
+    "name": "SRRedCave",
+    "displayName": "Red Wilds Cave",
+    "type": "cave",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "Cave",
+    "map": "../ShandalarReborn/maps/map/sr_cave.tmx",
+    "radiusFactor": 0.8,
+    "questTags": [
+      "Hostile",
+      "Cave",
+      "Dungeon",
+      "Sidequest",
+      "BiomeRed"
+    ]
+  },
+  {
+    "name": "SRGreenTown",
+    "displayName": "Green Town",
+    "type": "town",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "WasteTown",
+    "map": "../ShandalarReborn/maps/map/sr_town.tmx",
+    "radiusFactor": 0.7,
+    "questTags": [
+      "Town",
+      "TownGeneric",
+      "Sidequest",
+      "QuestSource",
+      "BiomeGreen"
+    ]
+  },
+  {
+    "name": "SRGreenCave",
+    "displayName": "Green Wilds Cave",
+    "type": "cave",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "Cave",
+    "map": "../ShandalarReborn/maps/map/sr_cave.tmx",
+    "radiusFactor": 0.8,
+    "questTags": [
+      "Hostile",
+      "Cave",
+      "Dungeon",
+      "Sidequest",
+      "BiomeGreen"
+    ]
+  },
+  {
+    "name": "SeededChampion",
+    "displayName": "SeededChampion",
+    "type": "dungeon",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "MageTower",
+    "map": "../ShandalarReborn/maps/map/landmark_creature.tmx",
+    "radiusFactor": 0.6,
+    "questTags": [
+      "Hostile",
+      "LegendaryLandmark",
+      "BiomeGreen"
+    ],
+    "seedSlot": "creature"
+  },
+  {
+    "name": "SeededSanctum",
+    "displayName": "SeededSanctum",
+    "type": "dungeon",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "MageTower",
+    "map": "../ShandalarReborn/maps/map/landmark_location.tmx",
+    "radiusFactor": 0.6,
+    "questTags": [
+      "Hostile",
+      "LegendaryLandmark",
+      "BiomeBlue"
+    ],
+    "seedSlot": "location"
+  },
+  {
+    "name": "UrzaMineTrial",
+    "displayName": "UrzaMineTrial",
+    "type": "dungeon",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "Cave",
+    "map": "../ShandalarReborn/maps/map/tron_mine.tmx",
+    "radiusFactor": 0.6,
+    "questTags": [
+      "Hostile",
+      "LegendaryLandmark",
+      "BiomeRed"
+    ],
+    "seedSlot": "synergy.mine"
+  },
+  {
+    "name": "UrzaTowerTrial",
+    "displayName": "UrzaTowerTrial",
+    "type": "dungeon",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "MageTower",
+    "map": "../ShandalarReborn/maps/map/tron_tower.tmx",
+    "radiusFactor": 0.6,
+    "questTags": [
+      "Hostile",
+      "LegendaryLandmark",
+      "BiomeWhite"
+    ],
+    "seedSlot": "synergy.tower"
+  },
+  {
+    "name": "UrzaPlantTrial",
+    "displayName": "UrzaPlantTrial",
+    "type": "dungeon",
+    "count": 1,
+    "spriteAtlas": "../common/maps/tileset/buildings.atlas",
+    "sprite": "MageTower",
+    "map": "../ShandalarReborn/maps/map/tron_plant.tmx",
+    "radiusFactor": 0.6,
+    "questTags": [
+      "Hostile",
+      "LegendaryLandmark",
+      "BiomeBlack"
+    ],
+    "seedSlot": "synergy.plant"
   }
 ]

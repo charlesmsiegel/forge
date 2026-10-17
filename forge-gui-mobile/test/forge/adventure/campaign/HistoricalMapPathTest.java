@@ -34,6 +34,7 @@ public class HistoricalMapPathTest extends AdventureTestBase {
         paths.add("maps/map/sr_town.tmx");
         for (HistoricalRealm realm : config.realms)
             for (HistoricalRealm.Chapter chapter : realm.chapters) java.util.Collections.addAll(paths, chapter.maps);
+        for (CampaignConfig.LandmarkRoute route : config.seeds.routes) paths.add(route.map);
         for (String path : paths) checkMap(new File(PLANE_DIR + path));
     }
 
@@ -84,8 +85,11 @@ public class HistoricalMapPathTest extends AdventureTestBase {
         for (int i = 0; i < objects.getLength(); i++) {
             Element object = (Element) objects.item(i);
             int cell = (int) ((number(object, "y") - 8) / 16) * width + (int) ((number(object, "x") + 8) / 16);
+            NodeList props = object.getElementsByTagName("property");
+            for (int p = 0; p < props.getLength(); p++)
+                if (((Element)props.item(p)).getAttribute("name").equals("seedSlot")) gates.add(cell);
             if (object.getAttribute("id").equals("38") || (start < 0 && object.getAttribute("template").endsWith("/portal.tx"))) start = cell;
-            if (object.getAttribute("type").equals("expeditionGate") || object.getAttribute("type").equals("campaignServices") || object.getAttribute("type").equals("campaignLimited")) gates.add(cell);
+            if (object.getAttribute("type").equals("expeditionGate") || object.getAttribute("type").equals("campaignServices") || object.getAttribute("type").equals("campaignLimited") || object.getAttribute("type").equals("campaignChronicler")) gates.add(cell);
         }
         assertTrue(start >= 0 && start < blocked.length, file + " has no entrance");
         Set<Integer> reached = new HashSet<>();

@@ -164,7 +164,8 @@ public class TileMapScene extends HudScene {
     private final static ArrayList<String> AUTO_HEAL_LOCATIONS = Lists.newArrayList("capital", "town");
 
     public boolean isAutoHealLocation() {
-        return AUTO_HEAL_LOCATIONS.contains(rootPoint.getData().type);
+        return forge.adventure.campaign.DungeonLife.shouldAutoHealLocation(rootPoint.getData().type,
+                ((MapStage) stage).isPersistentLifeMap(), forge.adventure.campaign.CampaignConfig.instance().isActive());
     }
 
     public PointOfInterest rootPoint;

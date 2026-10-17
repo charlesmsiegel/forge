@@ -2,7 +2,7 @@
   "startPointX": 0.5,
   "startPointY": 0.5,
   "noiseWeight": 0.3,
-  "distWeight": 1,
+  "distWeight": 1.5,
   "name": "shandalar_reborn",
   "tilesetAtlas": "world/tilesets/terrain.atlas",
   "tilesetName": "Colorless",
@@ -19,8 +19,8 @@
       "resolution": 5
     }
   ],
-  "width": 0.9,
-  "height": 0.9,
+  "width": 0.48,
+  "height": 0.48,
   "color": "aeaeae",
   "spriteNames": [
     "Stone"

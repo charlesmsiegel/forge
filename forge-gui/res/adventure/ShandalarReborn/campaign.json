@@ -224,5 +224,99 @@
       "block": "Tempest",
       "phantom": false
     }
-  ]
+  ],
+  "worldRules": {
+    "legacyBiomeCount": 2
+  },
+  "seeds": {
+    "creatures": [
+      {
+        "id": "mirri",
+        "card": "Mirri, Cat Warrior",
+        "preferredEdition": "EXO",
+        "enemy": "Adept Green Wizard"
+      },
+      {
+        "id": "crovax",
+        "card": "Crovax the Cursed",
+        "preferredEdition": "STH",
+        "enemy": "Adept Black Wizard"
+      }
+    ],
+    "locations": [
+      {
+        "id": "pendelhaven",
+        "card": "Pendelhaven",
+        "preferredEdition": "LEG",
+        "enemy": "Adept Green Wizard"
+      },
+      {
+        "id": "karakas",
+        "card": "Karakas",
+        "preferredEdition": "LEG",
+        "enemy": "Adept White Wizard"
+      },
+      {
+        "id": "cradle",
+        "card": "Gaea's Cradle",
+        "preferredEdition": "USG",
+        "enemy": "Adept Green Wizard",
+        "allowGenerationExcluded": true
+      },
+      {
+        "id": "urborg",
+        "card": "Urborg, Tomb of Yawgmoth",
+        "preferredEdition": "PLC",
+        "enemy": "Adept Black Wizard"
+      }
+    ],
+    "synergy": [
+      {
+        "id": "mine",
+        "card": "Urza's Mine",
+        "preferredEdition": "ATQ",
+        "enemy": "Adept Red Wizard"
+      },
+      {
+        "id": "tower",
+        "card": "Urza's Tower",
+        "preferredEdition": "ATQ",
+        "enemy": "Adept White Wizard"
+      },
+      {
+        "id": "plant",
+        "card": "Urza's Power Plant",
+        "preferredEdition": "ATQ",
+        "enemy": "Adept Blue Wizard"
+      }
+    ],
+    "synergyChancePercent": 50,
+    "routes": [
+      {
+        "slot": "creature",
+        "poi": "SeededChampion",
+        "map": "maps/map/landmark_creature.tmx"
+      },
+      {
+        "slot": "location",
+        "poi": "SeededSanctum",
+        "map": "maps/map/landmark_location.tmx"
+      },
+      {
+        "slot": "synergy.mine",
+        "poi": "UrzaMineTrial",
+        "map": "maps/map/tron_mine.tmx"
+      },
+      {
+        "slot": "synergy.tower",
+        "poi": "UrzaTowerTrial",
+        "map": "maps/map/tron_tower.tmx"
+      },
+      {
+        "slot": "synergy.plant",
+        "poi": "UrzaPlantTrial",
+        "map": "maps/map/tron_plant.tmx"
+      }
+    ]
+  }
 }

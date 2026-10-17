@@ -87,6 +87,7 @@ public final class CardUniverse implements SaveFileContent {
         return card != null && !banned.contains(card.getName())
                 && (card.getRules().getType().isBasicLand() || names.contains(card.getName()));
     }
+    public boolean allowsBespokePrinting(PaperCard card) { return isLegal(card) && editions.contains(card.getEdition()); }
     public boolean allowsPrinting(PaperCard card) {
         return isLegal(card) && !generationBans.contains(card.getName())
                 && (allowsEdition(card.getEdition()) || (card.getRules().getType().isBasicLand()

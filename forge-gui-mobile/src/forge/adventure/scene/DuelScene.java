@@ -596,6 +596,9 @@ public class DuelScene extends ForgeScene {
                 System.err.println(isDeckMissingMsg);
                 deck = this.eventData == null && canUseGeneticAI ? Aggregates.random(DeckProxy.getAllGeneticAIDecks()).getDeck() : this.playerDeck;
             }
+            if (i == 0 && enemy.campaignLandmarkSlot != null)
+                deck = forge.adventure.campaign.CampaignLandmarks.encounterDeck(deck,
+                        CampaignState.instance().seededLegends().entry(enemy.campaignLandmarkSlot));
             RegisteredPlayer aiPlayer = RegisteredPlayer.forVariants(playerCount, appliedVariants, deck, null, false, null, null);
             if (campaignAnteActive && i == 0) {
                 if (campaignStake == null)

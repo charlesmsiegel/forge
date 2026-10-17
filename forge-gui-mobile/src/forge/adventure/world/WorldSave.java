@@ -97,6 +97,7 @@ public class WorldSave {
                 GamePlayerUtil.getGuiPlayer().setName(currentSave.player.getName());
                 try {
                     currentSave.world.load(mainData.readSubData("world"));
+                    CampaignState.instance().initializeWorld(currentSave.world.getSeed(), CampaignConfig.instance());
                     currentSave.pointOfInterestChanges.load(mainData.readSubData("pointOfInterestChanges"));
                     WorldStage.getInstance().load(mainData.readSubData("worldStage"));
                     CampaignState.instance().initializeOwnership(currentSave.player);

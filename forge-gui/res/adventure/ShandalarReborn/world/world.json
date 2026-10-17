@@ -15,6 +15,11 @@
   "maxRoadDistance": 1000,
   "biomesNames": [
     "world/biomes/base.json",
-    "world/biomes/shandalar_reborn.json"
+    "world/biomes/shandalar_reborn.json",
+    "world/biomes/white.json",
+    "world/biomes/blue.json",
+    "world/biomes/black.json",
+    "world/biomes/red.json",
+    "world/biomes/green.json"
   ]
 }

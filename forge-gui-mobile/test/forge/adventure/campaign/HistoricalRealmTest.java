@@ -134,9 +134,12 @@ public class HistoricalRealmTest extends AdventureTestBase {
             assertEquals(state.onChapterCompleted("rath", id, player).size(), 36);
             if (!id.equals("exodus")) state.advanceRealm("rath");
         }
+        assertTrue(state.deeds().has("realm.rath.completed"));
         state.leaveExpedition("exit");
         CampaignState loaded = new CampaignState();
-        loaded.load(state.save());
+        var legacy = state.save(); legacy.remove("deeds");
+        loaded.load(legacy);
+        assertTrue(loaded.deeds().has("realm.rath.completed"), "Migrate known prior block accomplishments without another clear");
         CampaignState.setInstance(loaded);
         loaded.enterRealm("rath", "stronghold", player, "");
         assertEquals(loaded.onChapterCompleted("rath", "stronghold", player).size(), 6);

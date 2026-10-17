@@ -28,6 +28,8 @@ public class CampaignState implements SaveFileContent {
 
     private static CampaignState current = new CampaignState();
 
+    private final SeededLegends seededLegends = new SeededLegends();
+    private final WorldDeeds deeds = new WorldDeeds();
     private CardUniverse universe;
     private final CampaignProgress progression = new CampaignProgress();
     private final OpponentKnowledge knowledge = new OpponentKnowledge();
@@ -52,6 +54,8 @@ public class CampaignState implements SaveFileContent {
 
     public void clear() {
         universe = null;
+        seededLegends.load(null);
+        deeds.load(null);
         forge.adventure.data.RewardData.invalidateCardPool();
         rivals.load(null);
         knowledge.load(null);
@@ -95,6 +99,16 @@ public class CampaignState implements SaveFileContent {
             else allowed += entry.getValue();
         if (allowed == 0) throw new IllegalArgumentException("No campaign-legal cards in generated product");
         for (Map.Entry<PaperCard, Integer> entry : remove) pack.getMain().remove(entry.getKey(), entry.getValue());
+    }
+
+    public SeededLegends seededLegends() { return seededLegends; }
+    public WorldDeeds deeds() { return deeds; }
+    public void initializeWorld(long seed, CampaignConfig config) {
+        if (!config.isActive()) return;
+        seededLegends.initialize(seed, config.seeds, universeFor(config));
+    }
+    public PaperCard onLandmarkResult(String slot, boolean won, AdventurePlayer player) {
+        return won ? seededLegends.claim(slot, player, deeds) : null;
     }
 
     public CampaignProgress progression() { return progression; }
@@ -303,8 +317,10 @@ public class CampaignState implements SaveFileContent {
         List<Deck> packs = RegionCompletion.createBoosters(chapter.boosterEdition,
                 count == 1 ? chapter.firstClearBoxBoosterCount : chapter.repeatClearBoosterCount, count == 1 ? "Box" : null);
         progress.complete(realm, chapterId);
-        if (progress.isRunComplete() && !progress.isSingleChapter())
+        if (progress.isRunComplete() && !progress.isSingleChapter()) {
             progression.onFullClear(realmId, player, CampaignConfig.instance().progression);
+            deeds.grant("realm." + realmId + ".completed");
+        }
         completions.put(key, count);
         for (Deck pack : packs) player.addBooster(pack);
         CampaignLog.event("chapter_completed").with("realm", realmId).with("chapter", chapterId)
@@ -448,6 +464,8 @@ public class CampaignState implements SaveFileContent {
         clear();
         if (data == null)
             return;
+        if (data.containsKey("seededLegends")) seededLegends.load(data.readSubData("seededLegends"));
+        if (data.containsKey("deeds")) deeds.load(data.readSubData("deeds"));
         if (data.containsKey("universe")) { universe = new CardUniverse(); universe.load(data.readSubData("universe")); }
         if (data.containsKey("campaignId")) campaignId = data.readString("campaignId");
         if (data.containsKey("configVersion")) configVersion = data.readInt("configVersion");
@@ -466,6 +484,9 @@ public class CampaignState implements SaveFileContent {
                 realms.put(id, progress); // Keep unknown ids: never reinterpret another realm's progress.
             }
         }
+        if (!data.containsKey("deeds"))
+            for (Map.Entry<String, RealmProgress> entry : realms.entrySet())
+                if (entry.getValue().isBlockComplete()) deeds.grant("realm." + entry.getKey() + ".completed");
         if (data.containsKey("completionKeys")) {
             String[] keys = (String[]) data.readObject("completionKeys");
             Integer[] values = (Integer[]) data.readObject("completionValues");
@@ -479,6 +500,8 @@ public class CampaignState implements SaveFileContent {
         SaveFileData data = new SaveFileData();
         data.store("version", SAVE_VERSION);
         if (universe != null) data.store("universe", universe.save());
+        data.store("seededLegends", seededLegends.save());
+        data.store("deeds", deeds.save());
         data.store("campaignId", campaignId);
         data.store("configVersion", configVersion);
         data.store("ownership", ownership.save());

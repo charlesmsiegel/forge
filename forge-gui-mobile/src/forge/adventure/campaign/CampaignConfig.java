@@ -26,6 +26,8 @@ public class CampaignConfig implements Serializable {
     public AnteRules ante = new AnteRules();
     public EconomyRules economy = new EconomyRules();
     public StrongholdRules stronghold = new StrongholdRules();
+    public WorldRules worldRules = new WorldRules();
+    public SeedRules seeds = new SeedRules();
     public LimitedOrganizer[] limitedOrganizers = new LimitedOrganizer[0];
     public TradeRecipe[] trades = new TradeRecipe[0];
     public ProgressionRules progression = new ProgressionRules();
@@ -97,6 +99,31 @@ public class CampaignConfig implements Serializable {
         public String boosterEdition = "STH";
         public int firstClearBoxBoosterCount = 36;
         public int repeatClearBoosterCount = 6;
+    }
+
+    public static class WorldRules implements Serializable {
+        /** Existing Shandalar Reborn saves predate saved biome counts and have two biomes. */
+        public int legacyBiomeCount;
+    }
+    public static class LandmarkRoute implements Serializable {
+        public String slot = "";
+        public String poi = "";
+        public String map = "";
+    }
+
+    public static class SeedRules implements Serializable {
+        public SeedCandidate[] creatures = new SeedCandidate[0];
+        public SeedCandidate[] locations = new SeedCandidate[0];
+        public SeedCandidate[] synergy = new SeedCandidate[0];
+        public int synergyChancePercent = 50;
+        public LandmarkRoute[] routes = new LandmarkRoute[0];
+    }
+    public static class SeedCandidate implements Serializable {
+        public String id = "";
+        public String card = "";
+        public String preferredEdition = "";
+        public String enemy = "";
+        public boolean allowGenerationExcluded;
     }
 
     public static class LimitedOrganizer implements Serializable {

@@ -584,16 +584,23 @@ public class MapStage extends GameStage {
                     case "enemy":
                         if (!canSpawn(prop)) break;
                         Object enemy = prop.get("enemy");
+                        forge.adventure.campaign.SeededLegends.Entry landmarkEntry = null;
+                        if (prop.get("seedSlot") != null) {
+                            landmarkEntry = CampaignState.instance().seededLegends().entry(prop.get("seedSlot").toString());
+                            if (landmarkEntry == null) break;
+                            enemy = landmarkEntry.enemy();
+                        }
                         if (enemy != null && !enemy.toString().isEmpty()) {
                             EnemyData EN = WorldData.getEnemy(enemy.toString());
                             if (EN == null) {
+                                if (landmarkEntry != null) throw new IllegalArgumentException("Unknown legendary encounter enemy " + enemy);
                                 System.err.printf("Enemy \"%s\" not found, choosing a random one for current biome\n", enemy);
                                 forge.adventure.world.World world = Current.world();
                                 Vector2 poiPos = AdventureQuestController.instance().mostRecentPOI.getPosition();
                                 int currentBiome = forge.adventure.world.World.highestBiome(world.getBiome((int) poiPos.x / world.getTileSize(), (int) poiPos.y / world.getTileSize()));
                                 EN = world.getData().GetBiomes().get(currentBiome).getEnemy(1.0f);
                             }
-                            EnemySprite mob = new EnemySprite(id, EN);
+                            EnemySprite mob = new EnemySprite(id, landmarkEntry == null ? EN : new EnemyData(EN));
                             Object dialogObject = prop.get("dialog"); //Check if the enemy has a dialogue attached to it.
                             if (dialogObject != null && !dialogObject.toString().isEmpty()) {
                                 mob.dialog = new MapDialog(dialogObject.toString(), this, mob.getId(), currentMap);
@@ -671,6 +678,10 @@ public class MapStage extends GameStage {
                                 mob.speedModifier = Float.parseFloat(prop.get("speedModifier").toString());
                             }
 
+                            if (landmarkEntry != null) {
+                                mob.campaignLandmarkSlot = landmarkEntry.slot();
+                                mob.nameOverride = landmarkEntry.card().getName();
+                            }
                             enemies.add(mob);
                             addMapActor(obj, mob);
                         }
@@ -711,6 +722,12 @@ public class MapStage extends GameStage {
                         break;
                     case "spellsmith":
                         addMapActor(obj, new OnCollide(() -> Forge.switchScene(SpellSmithScene.instance())));
+                        break;
+                    case "campaignChronicler":
+                        if (!CampaignConfig.instance().isActive()) break;
+                        if (obj instanceof TiledMapTileMapObject chroniclerObject)
+                            addMapActor(obj, new TextureSprite(chroniclerObject.getTextureRegion()));
+                        addMapActor(obj, new OnCollide(() -> forge.adventure.campaign.CampaignChronicler.show(this)));
                         break;
                     case "campaignLimited":
                         if (!CampaignConfig.instance().isActive()) break;
@@ -1140,6 +1157,11 @@ public class MapStage extends GameStage {
         CampaignState campaign = CampaignState.instance();
         forge.adventure.campaign.HistoricalRealm.Chapter activeChapter = null;
         try {
+            if (currentMob.campaignLandmarkSlot != null) {
+                forge.item.PaperCard card = campaign.onLandmarkResult(currentMob.campaignLandmarkSlot, true, Current.player());
+                if (card != null) pendingCampaignMessage = "[GOLD]Legendary landmark mastered![WHITE]\nReceived "
+                        + DuelScene.describeAll(java.util.List.of(card)) + ". The Chronicler will remember this deed.";
+            }
             activeChapter = campaign.activeRealmChapter();
             if (activeChapter != null && ((activeChapter.id.equals(currentMob.completesChapter)
                     && campaign.expedition().getRegionId().equals(currentMob.completesRealm))
