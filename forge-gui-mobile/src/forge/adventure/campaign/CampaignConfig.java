@@ -31,6 +31,16 @@ public class CampaignConfig implements Serializable {
     public StoryRules story = new StoryRules();
     public LimitedOrganizer[] limitedOrganizers = new LimitedOrganizer[0];
     public TradeRecipe[] trades = new TradeRecipe[0];
+    public TrainingPath[] training = new TrainingPath[0];
+
+    public static class TrainingPath implements Serializable {
+        public String id = "", name = "", color = "", map = "";
+        public TrainingLesson[] lessons = new TrainingLesson[0];
+    }
+    public static class TrainingLesson implements Serializable {
+        public String id = "", name = "", enemy = "", guidance = "";
+        public String[] rewards = new String[0];
+    }
     public ProgressionRules progression = new ProgressionRules();
     public HistoricalRealm[] realms = new HistoricalRealm[0];
     public DungeonRules dungeon = new DungeonRules();
@@ -164,6 +174,7 @@ public class CampaignConfig implements Serializable {
     }
 
     public static class TradeRecipe implements Serializable {
+        public String[] requires = new String[0];
         public String id = "";
         public String name = "";
         public int requiredCount = 20;

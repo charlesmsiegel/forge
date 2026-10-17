@@ -1178,6 +1178,13 @@ public class MapStage extends GameStage {
         CampaignState campaign = CampaignState.instance();
         forge.adventure.campaign.HistoricalRealm.Chapter activeChapter = null;
         try {
+            var lesson = forge.adventure.campaign.CampaignTraining.lessonFor(CampaignConfig.instance(), currentMob.getData());
+            if (lesson != null) {
+                var card = forge.adventure.campaign.CampaignTraining.complete(CampaignConfig.instance(), lesson.id, true,
+                        Current.player(), campaign.deeds(), campaign.universeFor(CampaignConfig.instance()));
+                if (card != null) pendingCampaignMessage = "[GOLD]Lesson completed: " + lesson.name + "[WHITE]\nReceived "
+                        + DuelScene.describeAll(java.util.List.of(card)) + ". Progress is saved; return to the Chronicler to change paths.";
+            }
             if (currentMob.campaignStoryEncounter != null) {
                 var storyConfig = CampaignConfig.instance();
                 var storyEntry = forge.adventure.campaign.CampaignStory.encounter(storyConfig, currentMob.campaignStoryEncounter);
@@ -1223,7 +1230,7 @@ public class MapStage extends GameStage {
                         + "Use the exit portal or the map exit to return to Shandalar; this region resets when you leave.";
             }
         } catch (IllegalArgumentException | IllegalStateException e) {
-            pendingCampaignMessage = "Chapter reward could not be granted: " + e.getMessage()
+            pendingCampaignMessage = "Campaign reward could not be granted: " + e.getMessage()
                     + "\nNo completion was recorded. Return home and retry after correcting the realm configuration.";
             System.err.println(pendingCampaignMessage);
         }
@@ -1341,6 +1348,8 @@ public class MapStage extends GameStage {
                     resetPosition();
                     if (mob.campaignStoryEncounter != null) {
                         forge.adventure.campaign.CampaignStoryEncounter.show(this, mob);
+                    } else if (forge.adventure.campaign.CampaignTraining.lessonFor(CampaignConfig.instance(), mob.getData()) != null) {
+                        forge.adventure.campaign.CampaignTrainingEncounter.show(this, mob);
                     } else if (mob.campaignRivalId != null) { //Shandalar Reborn rival: offer normal duel / reclamation / leave.
                         RivalEncounter.start(this, mob);
                     } else if (mob.dialog != null && mob.dialog.canShow()) { //This enemy has something to say. Display a dialog like if it was a DialogActor but only if dialogue is possible.

@@ -37,6 +37,7 @@ public class HistoricalMapPathTest extends AdventureTestBase {
             for (HistoricalRealm.Chapter chapter : realm.chapters) java.util.Collections.addAll(paths, chapter.maps);
         for (CampaignConfig.LandmarkRoute route : config.seeds.routes) paths.add(route.map);
         for (var encounter : config.story.encounters) paths.add(encounter.map);
+        for (var path : config.training) paths.add(path.map);
         for (String path : paths) checkMap(new File(PLANE_DIR + path));
     }
 
@@ -102,7 +103,7 @@ public class HistoricalMapPathTest extends AdventureTestBase {
             int cell = (int) ((number(object, "y") - 8) / 16) * width + (int) ((number(object, "x") + 8) / 16);
             NodeList props = object.getElementsByTagName("property");
             for (int p = 0; p < props.getLength(); p++)
-                if (((Element)props.item(p)).getAttribute("name").equals("seedSlot") || ((Element)props.item(p)).getAttribute("name").equals("storyEncounter") || ((Element)props.item(p)).getAttribute("name").equals("completesChapter") || ((Element)props.item(p)).getAttribute("name").equals("campaignLore")) gates.add(cell);
+                if (((Element)props.item(p)).getAttribute("name").equals("seedSlot") || ((Element)props.item(p)).getAttribute("name").equals("storyEncounter") || ((Element)props.item(p)).getAttribute("name").equals("completesChapter") || ((Element)props.item(p)).getAttribute("name").equals("campaignLore") || ((Element)props.item(p)).getAttribute("name").equals("trainingLesson")) gates.add(cell);
             if (object.getAttribute("id").equals("38") || (start < 0 && object.getAttribute("template").endsWith("/portal.tx"))) start = cell;
             if (object.getAttribute("type").equals("expeditionGate") || object.getAttribute("type").equals("campaignServices") || object.getAttribute("type").equals("campaignLimited") || object.getAttribute("type").equals("campaignChronicler")) gates.add(cell);
         }
