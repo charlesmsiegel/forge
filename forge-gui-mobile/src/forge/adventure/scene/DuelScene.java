@@ -445,7 +445,7 @@ public class DuelScene extends ForgeScene {
                 float h = getHeight(), w = cardWidth(), gap = gap(), xPos = startX();
                 for (int i = 0; i < views.size(); i++) {
                     if (i == playerCount && playerCount > 0) xPos += gap * 2;
-                    CardRenderer.drawCard(g, views.get(i), xPos, 0, w, h, CardStackPosition.Top, true);
+                    CardRenderer.drawCard(g, views.get(i), xPos, 0, w, h, CardStackPosition.Top);
                     xPos += w + gap;
                 }
             }
